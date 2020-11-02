@@ -1,7 +1,8 @@
-package com.example.tourapp
+package com.example.tourapp.views
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.tourapp.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
