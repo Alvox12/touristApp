@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dimensiones del menu -->
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="size_10dp">10dp</dimen>
+    <dimen name="size_12">12sp</dimen>
+    <dimen name="size_20">20sp</dimen>
+    <dimen name="size_36">36sp</dimen>
+    <dimen name="size_40">40sp</dimen>
+
+
+    <dimen name="margin_0">0dp</dimen>
+    <dimen name="margin_2">2dp</dimen>
+    <dimen name="margin_5">5dp</dimen>
+    <dimen name="margin_8">8dp</dimen>
+    <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_16">16dp</dimen>
+    <dimen name="margin_20">20dp</dimen>
+    <dimen name="margin_30">30dp</dimen>
+    <dimen name="margin_36">36dp</dimen>
+    <dimen name="margin_40">40dp</dimen>
+    <dimen name="margin_46">46dp</dimen>
+    <dimen name="margin_48">48dp</dimen>
+    <dimen name="margin_56">56dp</dimen>
+    <dimen name="max_height_et">200dp</dimen>
+    <dimen name="max_height_et2">150dp</dimen>
+
+    <!-- LOGIN  -->
+    <dimen name="btn_login_width">1dp</dimen>
+    <dimen name="btn_login_radius">3dp</dimen>
+    <dimen name="width_login_input">250dp</dimen>
+
+
+    <dimen name="neg_margin_30">-30dp</dimen>
+    <dimen name="margin_12">12dp</dimen>
+    <dimen name="margin_3">3dp</dimen>
+    <dimen name="margin_44">44dp</dimen>
+    <dimen name="margin_52">52dp</dimen>
+    <dimen name="margin_72">72dp</dimen>
+    <dimen name="margin_50">50dp</dimen>
+    <dimen name="margin_275">275dp</dimen>
+    <dimen name="margin_214">214dp</dimen>
+    <dimen name="margin_28">28dp</dimen>
+    <dimen name="margin_128">128dp</dimen>
+    <dimen name="margin_142">142dp</dimen>
+    <dimen name="margin_164">164dp</dimen>
+    <dimen name="margin_400">400dp</dimen>
+    <dimen name="margin_270">270dp</dimen>
+    <dimen name="size_16">16sp</dimen>
+    <dimen name="size_80">80dp</dimen>
+    <dimen name="size_18">18sp</dimen>
+    <dimen name="size_6">6dp</dimen>
+    <dimen name="size_50">50dp</dimen>
+    <dimen name="size_200">200dp</dimen>
+
+    <!-- Create User -->
+    <dimen name="width_create_users">250dp</dimen>
+
+    <!-- Chat meesage -->
+    <dimen name="width_message">300dp</dimen>
+
+
+</resources>
