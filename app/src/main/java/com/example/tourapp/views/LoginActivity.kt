@@ -3,6 +3,7 @@ package com.example.tourapp.views
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.tourapp.R
+import com.example.tourapp.commons.SharedPreferencesManager
 
 class LoginActivity : AppCompatActivity() {
 
@@ -14,5 +15,7 @@ class LoginActivity : AppCompatActivity() {
                 .replace(R.id.container, LoginFragment.newInstance())
                 .commitNow()
         }
+
+        
     }
 }

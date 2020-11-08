@@ -8,4 +8,9 @@
     <string name="user_login">User</string>
     <string name="email_login">Email</string>
     <string name="name_register">Name</string>
+    <string name="title_error_login">Error en los datos introducidos</string>
+    <string name="reintentar">Reintentar</string>
+
+    <string name="ob_campo">Campo obligatorio</string>
+
 </resources>
