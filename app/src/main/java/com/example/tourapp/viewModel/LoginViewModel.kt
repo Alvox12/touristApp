@@ -37,7 +37,7 @@ class LoginViewModel : ViewModel() {
                     else {
                         //SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
                         Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
-                        loginNotify.value = true
+                        loginNotify.value = false
                     }
                 }
     }
