@@ -10,6 +10,8 @@
     <string name="name_register">Name</string>
     <string name="title_error_login">Error en los datos introducidos</string>
     <string name="reintentar">Reintentar</string>
+    <string name="registrate">¿No tienes cuenta todavía? Crea una</string>
+    <string name="registrateEn">No account yet? Create one</string>
 
     <string name="ob_campo">Campo obligatorio</string>
 

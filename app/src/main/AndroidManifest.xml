@@ -9,10 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tourapp">
-        <activity android:name=".views.RegisterActivity"></activity>
+        <activity
+            android:name=".views.RegisterActivity"
+            android:theme="@style/Theme.TourappNoBar" />
         <activity
             android:name=".views.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.TourappNoBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

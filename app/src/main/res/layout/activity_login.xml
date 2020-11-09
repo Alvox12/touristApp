@@ -76,12 +76,12 @@
             android:text="@string/acceder_login" />
 
         <TextView
-            android:id="@+id/link_signup"
+            android:id="@+id/link_register"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:gravity="center"
-            android:text="No account yet? Create one"
+            android:text="@string/registrate"
             android:textSize="16dip" />
 
     </LinearLayout>

@@ -16,6 +16,7 @@ class LoginViewModel : ViewModel() {
     var loginData : Login = Login(email = "", password = "")
     val mFirebaseAuth = FirebaseAuth.getInstance()
     var loginNotify: MutableLiveData<Boolean> = MutableLiveData()
+    var registerNotify: MutableLiveData<Boolean> = MutableLiveData()
 
     lateinit var user: User
 

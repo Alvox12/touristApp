@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
@@ -21,6 +22,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     //private val executor = Executor {}
     lateinit var email : EditText
     lateinit var password : EditText
+    lateinit var linkRegister: TextView
 
     //Observador del booleano loginNotify
     lateinit var observerLogin: Observer<Boolean>
@@ -33,6 +35,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
         email = findViewById(R.id.input_email)
         password = findViewById(R.id.input_password)
+        linkRegister = findViewById(R.id.link_register)
 
         observerLogin = Observer {
             if(model.loginNotify.value!!)
@@ -41,6 +44,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         }
 
         model.loginNotify.observe(this, observerLogin)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        linkRegister.setOnClickListener {
+            val registerIntent = Intent(this, RegisterActivity::class.java)
+            startActivity(registerIntent)
+            finish()
+        }
     }
 
 
