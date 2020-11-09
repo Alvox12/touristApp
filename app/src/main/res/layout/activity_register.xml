@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".views.RegisterFragment">
+    tools:context=".views.RegisterActivity">
+
+    <data>
+        <variable
+            name="model"
+            type="com.example.tourapp.viewModel.LoginViewModel"/>
+    </data>
 
     <LinearLayout
         android:orientation="vertical"
@@ -34,6 +36,7 @@
 
         <!--  Name Label -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tiName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -47,6 +50,7 @@
 
         <!-- Email Label -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tiEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -60,6 +64,7 @@
 
         <!-- Password Label -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tiPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -73,12 +78,13 @@
 
         <!-- Signup Button -->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_signup"
+            android:id="@+id/btn_register"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
+            android:onClick="onRegisterClick"
             android:text="Create Account"/>
 
         <TextView android:id="@+id/link_login"
@@ -90,4 +96,5 @@
             android:textSize="16dip"/>
 
     </LinearLayout>
-</ScrollView>
+
+</layout>
