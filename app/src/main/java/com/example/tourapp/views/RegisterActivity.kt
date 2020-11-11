@@ -10,21 +10,27 @@ import android.widget.ImageView
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
+import com.example.tourapp.commons.Constants
+import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityRegisterBinding
 import com.example.tourapp.viewModel.LoginViewModel
+import com.example.tourapp.viewModel.RegisterViewModel
+import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : BaseActivity<ActivityRegisterBinding, LoginViewModel>() {
+class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>() {
 
     lateinit var email : EditText
     lateinit var password : EditText
     lateinit var nameuser: EditText
     lateinit var backLogin: ImageView
 
+    private lateinit var user: User
+
     //Observador del booleano registerNotify
     lateinit var observerRegister: Observer<Boolean>
 
     override fun getLayoutResource(): Int = R.layout.activity_register
-    override fun getViewModel(): Class<LoginViewModel> = LoginViewModel::class.java
+    override fun getViewModel(): Class<RegisterViewModel> = RegisterViewModel::class.java
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +60,13 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, LoginViewModel>()
     }
 
     fun onRegisterClick(v: View) {
+
+        model.addNewUser(
+                userName = input_name.text.toString(),
+                userType = Constants.CLIENTE,
+                userMail = input_email.text.toString(),
+                userPassword = input_password.text.toString()
+        )
 
     }
 

@@ -17,5 +17,13 @@ class Constants {
         const val USERNAME = "userName"
 
         const val PROYECT_CODE = "proyectCode"
+        const val CONTACT = "contact"
+        const val CONTACTS = "contacts"
+        const val CLIENT_CONTACTS="clientContacts"
+
+        //Niveles
+        const val ADMIN = "ADMIN"
+        const val CLIENTE = "CLIENTE"
+
     }
 }
