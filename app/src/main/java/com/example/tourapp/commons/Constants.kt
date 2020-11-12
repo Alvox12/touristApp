@@ -7,7 +7,7 @@ class Constants {
         const val PASSWORD = "password"
         const val SAVELOGIN = "saveLogin"
 
-        const val USERS = "users"
+        const val USERS = "USUARIOS"
         const val CLIENTID = "clientId"
         const val USERPASSWORD = "userPassword"
         const val USERTYPE = "userType"
@@ -23,6 +23,7 @@ class Constants {
 
         //Niveles
         const val ADMIN = "ADMIN"
+        const val NORMAL = "NORMAL"
         const val CLIENTE = "CLIENTE"
 
     }

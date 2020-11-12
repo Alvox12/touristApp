@@ -85,7 +85,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
             finish()
             //Cerramos la actividad del login
 
-        } else {//Sino hace login
+        } else {//Si no hace login
 
             val dialogBuilder = AlertDialog.Builder(this)//Mostramos alerta de error en los datos introducidos
             val inflater = this.layoutInflater
