@@ -105,4 +105,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
+
+    //Eliminamos observer de loginNotify y lo ponemos a false para evitar probelmas en login
+    override fun onStop() {
+        super.onStop()
+        model.flagCreate.removeObserver(observerRegister)
+        model.flagCreate.value = false
+    }
 }

@@ -15,4 +15,9 @@
 
     <string name="ob_campo">Campo obligatorio</string>
 
+    <!--Menu desplegable-->
+    <string name="logout_menu">Cerrar sesión</string>
+    <string name="navigation_drawer_open">Abrir menú lateral</string>
+    <string name="navigation_drawer_close">Cerrar menú lateral</string>
+
 </resources>
