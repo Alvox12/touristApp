@@ -21,6 +21,7 @@
     <string name="navigation_drawer_close">Cerrar menú lateral</string>
 
     <string name="btn_cerrar">Cerrar</string>
+    <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
 
 </resources>

@@ -2,27 +2,35 @@ package com.example.tourapp.views
 
 import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import com.example.tourapp.R
+import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.SharedPreferencesManager
+import com.example.tourapp.databinding.ActivityMainBinding
+import com.example.tourapp.viewModel.UserViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_logout.view.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), NavigationView.OnNavigationItemSelectedListener {
 
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
+    override fun getLayoutResource(): Int = R.layout.activity_main
+    override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
 
@@ -31,6 +39,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
+
+        nav_view.setNavigationItemSelectedListener(this)
     }
 
     override fun onBackPressed() {
@@ -39,6 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         else
             super.onBackPressed()
     }
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

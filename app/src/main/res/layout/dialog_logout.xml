@@ -51,7 +51,7 @@
             android:layout_marginLeft="@dimen/size_16"
             android:layout_marginRight="@dimen/margin_16"
             android:layout_marginBottom="@dimen/size_16"
-            android:text="@string/btn_cerrar"
+            android:text="@string/btn_cancelar"
             android:textAllCaps="true"
             android:textColor="@color/black"
 
