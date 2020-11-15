@@ -40,6 +40,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        var navController = Navigation.findNavController(this, R.id.fragment_host)
+
+        NavigationUI.setupWithNavController (this.toolbar, navController, drawer_layout)
+        NavigationUI.setupWithNavController(nav_view,navController)
+
         nav_view.setNavigationItemSelectedListener(this)
     }
 
@@ -65,7 +70,6 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
         mFirebaseAuth?.signOut()
         Log.v("FIREBASE_LOGOUT", "LOGOUT")
-
     }
 
 

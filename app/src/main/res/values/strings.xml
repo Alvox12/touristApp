@@ -4,10 +4,10 @@
     <!-- LOGIN -->
     <string name="acceder_login">Login</string>
     <string name="recuerdame_login">Recuérdame</string>
-    <string name="password_login">Password</string>
-    <string name="user_login">User</string>
+    <string name="password_login">Contraseña</string>
+    <string name="user_login">Usuario</string>
     <string name="email_login">Email</string>
-    <string name="name_register">Name</string>
+    <string name="name_register">Nombre</string>
     <string name="title_error_login">Error en los datos introducidos</string>
     <string name="reintentar">Reintentar</string>
     <string name="registrate">¿No tienes cuenta todavía? Crea una</string>
