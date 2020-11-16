@@ -9,7 +9,11 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
@@ -29,22 +33,37 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     override fun getLayoutResource(): Int = R.layout.activity_main
     override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
 
+    private val navController by lazy { findNavController(R.id.nav_host_fragment) } //1
+    private val appBarConfiguration by lazy {
+        AppBarConfiguration(
+                setOf(
+                        R.id.userDataFragment,
+                        R.id.editUserFragment
+                ), drawer_layout
+        )
+    } //2
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setSupportActionBar(toolbar)
 
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
+        /*val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
         drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+        toggle.syncState()*/
 
-        var navController = Navigation.findNavController(this, R.id.fragment_host)
+        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_host) as NavHostFragment
+        //val navController = navHostFragment.navController
 
-        NavigationUI.setupWithNavController (this.toolbar, navController, drawer_layout)
-        NavigationUI.setupWithNavController(nav_view,navController)
+        initNavigation()
+    }
 
+    private fun initNavigation() {
+        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
+        NavigationUI.setupActionBarWithNavController (this, navController, drawer_layout)
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         nav_view.setNavigationItemSelectedListener(this)
     }
 
