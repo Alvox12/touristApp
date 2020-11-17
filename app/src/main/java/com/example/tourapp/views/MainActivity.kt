@@ -37,8 +37,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     private val appBarConfiguration by lazy {
         AppBarConfiguration(
                 setOf(
-                        R.id.userDataFragment,
-                        R.id.editUserFragment
+                        R.id.userDataFragment
                 ), drawer_layout
         )
     } //2
@@ -77,6 +76,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_edituser -> {
+                nav_host_fragment.view?.let { it1 -> Navigation.findNavController(it1).
+                navigate(R.id.action_userDataFragment_to_editUserFragment)
+                }
+            }
             R.id.nav_logout -> showDialogLogout(item)
         }
         return true

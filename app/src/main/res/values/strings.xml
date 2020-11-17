@@ -17,6 +17,7 @@
 
     <!--Menu desplegable-->
     <string name="logout_menu">Cerrar sesión</string>
+    <string name="edituser_menu">Editar perfil</string>
     <string name="navigation_drawer_open">Abrir menú lateral</string>
     <string name="navigation_drawer_close">Cerrar menú lateral</string>
 
@@ -25,5 +26,6 @@
     <string name="btn_aceptar">Aceptar</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

@@ -10,6 +10,11 @@
             android:icon="@drawable/ic_logout"
             android:title="@string/logout_menu" />
 
+        <item
+            android:id="@+id/nav_edituser"
+            android:icon="@drawable/ic_edit_user_black"
+            android:title="@string/edituser_menu" />
+
     </group>
 
 </menu>
