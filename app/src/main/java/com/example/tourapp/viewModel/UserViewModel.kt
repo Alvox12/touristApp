@@ -14,12 +14,14 @@ import com.google.firebase.database.ValueEventListener
 class UserViewModel : ViewModel() {
 
     private lateinit var mListenerUser : ValueEventListener
-    var user: MutableLiveData<User> = MutableLiveData()
+    private lateinit var currentUser: String
+    var userNotify: MutableLiveData<User> = MutableLiveData()
         private set
 
-    fun getUsersData() {
-        val currentUser = FirebaseAuth.getInstance().currentUser?.uid
-        val user_reference = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+
+    fun getUserData() {
+        currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
 
         mListenerUser = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -34,13 +36,29 @@ class UserViewModel : ViewModel() {
                     val name = snapshot.child("userName").value as String
                     val password = snapshot.child("userPassword").value as String
                     val type = snapshot.child("userType").value as String
-                    user.value = User(name, password, type, email)
+                    userNotify.value = User(name, password, type, email)
                 }
                 else Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
             }
 
         }
 
-        user_reference.addValueEventListener(mListenerUser)
+        userRef.addValueEventListener(mListenerUser)
     }
+    
+    
+    fun uploadUserData(user: User) {
+        //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        userRef.child("userName").setValue(user.userName)
+        userRef.child("userMail").setValue(user.userMail)
+        userRef.child("userPassword").setValue(user.userPassword)
+        userRef.child("userType").setValue(user.userType)
+    }
+
+    fun deleteUserListener() {
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        userRef.removeEventListener(mListenerUser)
+    }
+
 }

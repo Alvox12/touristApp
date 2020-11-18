@@ -5,11 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseFragment
+import com.example.tourapp.commons.Constants
+import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.FragmentEditUserBinding
 import com.example.tourapp.databinding.FragmentUserDataBinding
 import com.example.tourapp.viewModel.UserViewModel
+import kotlinx.android.synthetic.main.fragment_edit_user.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +45,23 @@ class EditUserFragment : BaseFragment<FragmentEditUserBinding, UserViewModel>() 
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_user, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val user = (activity as MainActivity).user
+
+        input_name.setText(user.userName, TextView.BufferType.EDITABLE)
+        input_email.setText(user.userMail, TextView.BufferType.EDITABLE)
+
+        btn_upload.setOnClickListener {
+            onUploadData()
+        }
+    }
+
+    private fun onUploadData() {
+        val userAux = User(input_name.text.toString(),input_password.text.toString(),Constants.NORMAL,input_email.text.toString())
+        model.uploadUserData(userAux)
     }
 
     /*companion object {

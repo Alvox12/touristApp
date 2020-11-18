@@ -12,6 +12,7 @@
     <string name="reintentar">Reintentar</string>
     <string name="registrate">¿No tienes cuenta todavía? Crea una</string>
     <string name="registrateEn">No account yet? Create one</string>
+    <string name="btn_crear_cuenta">Crear cuenta</string>
 
     <string name="ob_campo">Campo obligatorio</string>
 
@@ -24,8 +25,13 @@
     <string name="btn_cerrar">Cerrar</string>
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--User data fragment-->
+    <string name="user_data_name">Nombre:</string>
+    <string name="user_data_email">Email:</string>
+    <string name="user_data_type">Tipo usuario:</string>
+
+    <!--Edit user fragment-->
+    <string name="btn_edit_data">Editar datos usuario</string>
 
 </resources>

@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -18,6 +19,7 @@ import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.SharedPreferencesManager
+import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityMainBinding
 import com.example.tourapp.viewModel.UserViewModel
 import com.google.android.material.navigation.NavigationView
@@ -29,6 +31,9 @@ import kotlinx.android.synthetic.main.dialog_logout.view.*
 class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), NavigationView.OnNavigationItemSelectedListener {
 
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    lateinit var user: User
+    //Observador del booleano usuario descargado
+    lateinit var observerUser: Observer<User>
 
     override fun getLayoutResource(): Int = R.layout.activity_main
     override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
@@ -56,8 +61,15 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         //val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_host) as NavHostFragment
         //val navController = navHostFragment.navController
 
+        observerUser = Observer {user->
+            this.user = user
+        }
+        model.userNotify.observe(this, observerUser)
+        model.getUserData()
+
         initNavigation()
     }
+
 
     private fun initNavigation() {
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
@@ -65,6 +77,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         nav_view.setNavigationItemSelectedListener(this)
     }
+
 
     override fun onBackPressed() {
         if(drawer_layout.isDrawerOpen(GravityCompat.START))
@@ -77,8 +90,8 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_edituser -> {
-                nav_host_fragment.view?.let { it1 -> Navigation.findNavController(it1).
-                navigate(R.id.action_userDataFragment_to_editUserFragment)
+                nav_host_fragment.view?.let { view ->
+                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_editUserFragment)
                 }
             }
             R.id.nav_logout -> showDialogLogout(item)
@@ -120,6 +133,13 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
         b.setCancelable(false)
         b.show()
+    }
+
+    //Eliminamos observer
+    override fun onStop() {
+        super.onStop()
+        model.deleteUserListener()
+        model.userNotify.removeObserver(observerUser)
     }
 
 }
