@@ -26,5 +26,7 @@ class Constants {
         const val NORMAL = "NORMAL"
         const val CLIENTE = "CLIENTE"
 
+        //Variables
+        const val MAX_LENGTH_USER = 6
     }
 }

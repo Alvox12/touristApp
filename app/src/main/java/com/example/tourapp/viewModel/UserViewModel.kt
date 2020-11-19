@@ -1,5 +1,6 @@
 package com.example.tourapp.viewModel
 
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,13 +15,13 @@ import com.google.firebase.database.ValueEventListener
 class UserViewModel : ViewModel() {
 
     private lateinit var mListenerUser : ValueEventListener
-    private lateinit var currentUser: String
+    private val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
     var userNotify: MutableLiveData<User> = MutableLiveData()
         private set
 
 
     fun getUserData() {
-        currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
 
         mListenerUser = object : ValueEventListener {
@@ -49,10 +50,11 @@ class UserViewModel : ViewModel() {
     
     fun uploadUserData(user: User) {
         //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val password =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
         val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
         userRef.child("userName").setValue(user.userName)
         userRef.child("userMail").setValue(user.userMail)
-        userRef.child("userPassword").setValue(user.userPassword)
+        userRef.child("userPassword").setValue(password)
         userRef.child("userType").setValue(user.userType)
     }
 

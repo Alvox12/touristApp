@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -78,6 +79,16 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         nav_view.setNavigationItemSelectedListener(this)
     }
 
+    /**
+     *Activa o descativa la presencia del menu lateral y muestra el boton de la barra superior
+     */
+    fun setDrawerEnabled(enabled: Boolean) {
+        val lockMode = if (enabled)
+            DrawerLayout.LOCK_MODE_UNLOCKED
+        else
+            DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+        drawer_layout.setDrawerLockMode(lockMode)
+    }
 
     override fun onBackPressed() {
         if(drawer_layout.isDrawerOpen(GravityCompat.START))

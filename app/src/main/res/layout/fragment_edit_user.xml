@@ -40,7 +40,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email Label -->
-        <com.google.android.material.textfield.TextInputLayout
+        <!--<com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tiEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:hint="Email" />
-        </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>-->
 
         <!-- Password Label -->
         <com.google.android.material.textfield.TextInputLayout
@@ -67,7 +67,7 @@
                 android:hint="Contraseña"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--<com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tiPasswordSecure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:hint="Repetir contraseña"/>
-        </com.google.android.material.textfield.TextInputLayout>-->
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Signup Button -->
         <androidx.appcompat.widget.AppCompatButton
