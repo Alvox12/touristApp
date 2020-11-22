@@ -21,6 +21,7 @@
     <!--Menu desplegable-->
     <string name="logout_menu">Cerrar sesión</string>
     <string name="edituser_menu">Editar perfil</string>
+    <string name="userlist_menu">Lista usuarios</string>
     <string name="navigation_drawer_open">Abrir menú lateral</string>
     <string name="navigation_drawer_close">Cerrar menú lateral</string>
 

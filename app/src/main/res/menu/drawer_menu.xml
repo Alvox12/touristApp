@@ -15,6 +15,11 @@
             android:icon="@drawable/ic_edit_user_black"
             android:title="@string/edituser_menu" />
 
+        <item
+            android:id="@+id/nav_userlist"
+            android:icon="@drawable/ic_baseline_contacts_24"
+            android:title="@string/userlist_menu" />
+
     </group>
 
 </menu>
