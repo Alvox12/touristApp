@@ -32,7 +32,8 @@ import kotlinx.android.synthetic.main.dialog_logout.view.*
 class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), NavigationView.OnNavigationItemSelectedListener {
 
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    lateinit var user: User
+    private lateinit var user: User
+    lateinit var useredit: User
     //Observador del booleano usuario descargado
     lateinit var observerUser: Observer<User>
 
@@ -101,8 +102,19 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_edituser -> {
+                useredit = user
                 nav_host_fragment.view?.let { view ->
                     Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_editUserFragment)
+                }
+            }
+            R.id.nav_userlist -> {
+                nav_host_fragment.view?.let { view->
+                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_listAuxFragment)
+                }
+            }
+            R.id.opt_edituser -> {
+                nav_host_fragment.view?.let { view ->
+                    Navigation.findNavController(view).navigate(R.id.action_listAuxFragment_to_editUserFragment)
                 }
             }
             R.id.nav_logout -> showDialogLogout(item)
@@ -114,7 +126,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
      * Método para desconectar la conexión con firebase
      */
     private fun logout(){
-        SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
+        //SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
         mFirebaseAuth?.signOut()
         Log.v("FIREBASE_LOGOUT", "LOGOUT")
     }

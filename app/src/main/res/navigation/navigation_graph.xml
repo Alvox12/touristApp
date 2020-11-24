@@ -8,11 +8,7 @@
     <fragment
         android:id="@+id/editUserFragment"
         android:name="com.example.tourapp.views.EditUserFragment"
-        tools:layout="@layout/fragment_edit_user">
-        <action
-            android:id="@+id/action_editUserFragment_to_userDataFragment2"
-            app:destination="@id/userDataFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_edit_user"/>
 
     <fragment
         android:id="@+id/userDataFragment"
@@ -20,6 +16,24 @@
         tools:layout="@layout/fragment_user_data" >
         <action
             android:id="@+id/action_userDataFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_userDataFragment_to_userListFragment"
+            app:destination="@id/userListFragment" />
+        <action
+            android:id="@+id/action_userDataFragment_to_listAuxFragment"
+            app:destination="@id/listAuxFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.example.tourapp.views.UserListFragment"
+        tools:layout="@layout/user_list_fragment" />
+    <fragment
+        android:id="@+id/listAuxFragment"
+        android:name="com.example.tourapp.views.ListAuxFragment"
+        tools:layout="@layout/fragment_list_aux" >
+        <action
+            android:id="@+id/action_listAuxFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />
     </fragment>
 

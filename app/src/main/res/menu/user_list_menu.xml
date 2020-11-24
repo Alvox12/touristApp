@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="none">
+
+        <item
+            android:id="@+id/opt_edituser"
+            android:icon="@drawable/ic_edit_user_black"
+            android:title="@string/edituser_menu" />
+
+        <!--<item
+            android:id="@+id/opt_deleteuser"
+            android:icon="@drawable/ic_baseline_contacts_24"
+            android:title="@string/deleteuser_menu" />-->
+
+    </group>
+
+</menu>

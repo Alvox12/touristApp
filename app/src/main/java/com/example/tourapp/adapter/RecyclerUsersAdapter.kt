@@ -1,7 +1,6 @@
 package com.example.tourapp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
@@ -16,10 +15,6 @@ class RecyclerUsersAdapter(var model: UserListViewModel): RecyclerView.Adapter<R
 
     private var listUser: List<User>? = null
 
-    fun setUserList(users: List<User>) {
-        this.listUser = users
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
@@ -28,7 +23,8 @@ class RecyclerUsersAdapter(var model: UserListViewModel): RecyclerView.Adapter<R
         return ViewHolder(incidenceBinding)
     }
 
-    override fun getItemCount() = listUser?.size ?: 0
+
+    override fun getItemCount() = this.listUser?.size ?: 0
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(position)
@@ -37,6 +33,11 @@ class RecyclerUsersAdapter(var model: UserListViewModel): RecyclerView.Adapter<R
         holder.itemView.findViewById<TextView>(R.id.tv_user_email).text = listUser!![position].userMail
         holder.itemView.findViewById<TextView>(R.id.tv_user_type).text = listUser!![position].userType
     }
+
+    fun setUserList(users: List<User>) {
+        this.listUser = users
+    }
+
 
     inner class ViewHolder(var incidenceBinding: UserItemLayoutBinding)
         : RecyclerView.ViewHolder(incidenceBinding.root) {

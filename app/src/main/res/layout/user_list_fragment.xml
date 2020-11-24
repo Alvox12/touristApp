@@ -12,7 +12,10 @@
     </data>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerUser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:setAdapter="@{model.adapter}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:scrollbars="vertical"/>
 </layout>

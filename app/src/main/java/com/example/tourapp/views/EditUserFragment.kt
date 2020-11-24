@@ -59,7 +59,7 @@ class EditUserFragment : BaseFragment<FragmentEditUserBinding, UserViewModel>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        user = (activity as MainActivity).user
+        user = (activity as MainActivity).useredit
 
         input_name.setText(user.userName, TextView.BufferType.EDITABLE)
         initListener()

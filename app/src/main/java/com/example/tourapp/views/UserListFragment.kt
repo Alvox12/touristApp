@@ -1,30 +1,42 @@
 package com.example.tourapp.views
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tourapp.R
+import com.example.tourapp.commons.BaseFragment
+import com.example.tourapp.databinding.UserListFragmentBinding
 import com.example.tourapp.viewModel.UserListViewModel
+import kotlinx.android.synthetic.main.user_list_fragment.*
 
-class UserListFragment : Fragment() {
+class UserListFragment : BaseFragment<UserListFragmentBinding, UserListViewModel>()  {
 
     companion object {
         fun newInstance() = UserListFragment()
     }
 
-    private lateinit var viewModel: UserListViewModel
+    override fun getLayoutResource(): Int = R.layout.user_list_fragment
+    override fun getViewModel(): Class<UserListViewModel> = UserListViewModel::class.java
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.user_list_fragment, container, false)
+        super.onCreateView(inflater, container, savedInstanceState)
+        //return inflater.inflate(R.layout.user_list_fragment, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerUser.adapter = model.adapter
+        recyclerUser.layoutManager = LinearLayoutManager(view.context)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(UserListViewModel::class.java)
+        model.getUserList()
     }
 
 }
