@@ -2,7 +2,7 @@ package com.example.tourapp.viewModel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.tourapp.adapter.RecyclerAuxAdapter
+import com.example.tourapp.adapter.RecyclerUserListAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
 import com.google.firebase.auth.FirebaseAuth
@@ -11,9 +11,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class ListAuxViewModel : ViewModel() {
+class UserListViewModel : ViewModel() {
 
-    lateinit var myAdapter: RecyclerAuxAdapter
+    lateinit var myAdapter: RecyclerUserListAdapter
 
     var  values = arrayOf("one", "two" , "three", "four", "five" , "six", "seven", "eight", "nine", "ten")
     var listUsu: ArrayList<User> = ArrayList()
@@ -22,7 +22,7 @@ class ListAuxViewModel : ViewModel() {
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     fun configAdapter() {
-        myAdapter = RecyclerAuxAdapter()
+        myAdapter = RecyclerUserListAdapter()
     }
 
     fun getUserList() {

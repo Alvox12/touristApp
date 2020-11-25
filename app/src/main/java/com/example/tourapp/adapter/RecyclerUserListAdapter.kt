@@ -14,8 +14,8 @@ import com.example.tourapp.dataModel.User
 import com.example.tourapp.views.MainActivity
 
 
-class RecyclerAuxAdapter():
-    RecyclerView.Adapter<RecyclerAuxAdapter.ViewHolder>() {
+class RecyclerUserListAdapter():
+    RecyclerView.Adapter<RecyclerUserListAdapter.ViewHolder>() {
 
     //private var dataSet: Array<String>? = null
     private var listUser: ArrayList<User>? = null

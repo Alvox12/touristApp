@@ -24,8 +24,8 @@
     </fragment>
     <fragment
         android:id="@+id/listAuxFragment"
-        android:name="com.example.tourapp.views.ListAuxFragment"
-        tools:layout="@layout/fragment_list_aux" >
+        android:name="com.example.tourapp.views.UserListFragment"
+        tools:layout="@layout/fragment_user_list" >
         <action
             android:id="@+id/action_listAuxFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />

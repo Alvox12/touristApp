@@ -9,19 +9,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
-import com.example.tourapp.adapter.RecyclerAuxAdapter
-import com.example.tourapp.viewModel.ListAuxViewModel
-import kotlinx.android.synthetic.main.fragment_list_aux.*
+import com.example.tourapp.viewModel.UserListViewModel
+import kotlinx.android.synthetic.main.fragment_user_list.*
 
-class ListAuxFragment : Fragment() {
+class UserListFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ListAuxFragment()
+        fun newInstance() = UserListFragment()
     }
 
 
 
-    private lateinit var viewModel: ListAuxViewModel
+    private lateinit var viewModelUser: UserListViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
     //private lateinit var myAdapter: RecyclerView.Adapter<*>
@@ -31,28 +30,28 @@ class ListAuxFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (activity as MainActivity).setDrawerEnabled(false)
-        return inflater.inflate(R.layout.fragment_list_aux, container, false)
+        return inflater.inflate(R.layout.fragment_user_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ListAuxViewModel::class.java)
+        viewModelUser = ViewModelProvider(this).get(UserListViewModel::class.java)
 
         manager = LinearLayoutManager(this.activity)
-        viewModel.configAdapter()
+        viewModelUser.configAdapter()
 
         recyclerView = recycler_view.apply {
             layoutManager = manager
-            adapter =  viewModel.myAdapter
+            adapter =  viewModelUser.myAdapter
         }
 
-        viewModel.getUserList()
+        viewModelUser.getUserList()
     }
 
     /**Eliminamos observer*/
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.deleteUserListener()
+        viewModelUser.deleteUserListener()
         (activity as MainActivity).setDrawerEnabled(true)
     }
 

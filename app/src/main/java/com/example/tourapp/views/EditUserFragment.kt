@@ -11,16 +11,11 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import com.example.tourapp.R
-import com.example.tourapp.commons.BaseFragment
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.Validation
 import com.example.tourapp.dataModel.User
-import com.example.tourapp.databinding.FragmentUserDataBinding
-import com.example.tourapp.viewModel.ListAuxViewModel
 import com.example.tourapp.viewModel.UserViewModel
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_edit_user.*
 
 // TODO: Rename parameter arguments, choose names that match
