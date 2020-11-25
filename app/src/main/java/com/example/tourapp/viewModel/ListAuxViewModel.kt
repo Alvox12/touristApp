@@ -77,4 +77,9 @@ class ListAuxViewModel : ViewModel() {
         values.set(1, aux)
         setListData()
     }
+
+    fun deleteUserListener() {
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS")
+        userRef.removeEventListener(mListenerUser)
+    }
 }

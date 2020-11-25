@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_user_data.*
 
 class UserDataFragment: BaseFragment<FragmentUserDataBinding, UserViewModel>() {
 
-    //Observador del booleano usuario descargado
+    //Observador del  usuario descargado
     lateinit var observerUser: Observer<User>
     lateinit var user: User
     //lateinit var observerFinished: Observer<Boolean>
@@ -27,6 +27,7 @@ class UserDataFragment: BaseFragment<FragmentUserDataBinding, UserViewModel>() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         super.onCreateView(inflater, container, savedInstanceState)
+
         return inflater.inflate(R.layout.fragment_user_data, container, false)
     }
 

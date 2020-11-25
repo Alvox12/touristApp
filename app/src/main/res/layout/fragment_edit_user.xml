@@ -1,103 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".views.EditUserFragment">
 
-<data>
+
+<!--<data>
 <variable
     name="model"
     type="com.example.tourapp.viewModel.UserViewModel"/>
-</data>
+</data>-->
 
-    <LinearLayout
-        android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".views.EditUserFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!--  Name Label -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp"
-        android:paddingHorizontal="24dp">
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-
-        <!--<ImageView android:src="@drawable/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />-->
-
-        <!--  Name Label -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tiName"
+        <EditText
+            android:id="@+id/input_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords"
-                android:hint="@string/name_register" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:hint="@string/name_register"
+            android:inputType="textCapWords" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Email Label -->
-        <!--<com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tiEmail"
+
+    <!-- Password Label -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tiName">
+
+        <EditText
+            android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="Email" />
-        </com.google.android.material.textfield.TextInputLayout>-->
+            android:hint="Contraseña"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Label -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tiPassword"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tiPasswordSecure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tiPassword">
+
+        <EditText
+            android:id="@+id/input_password_sec"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Contraseña"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Repetir contraseña"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tiPasswordSecure"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp">
-            <EditText android:id="@+id/input_password_sec"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="Repetir contraseña"/>
-        </com.google.android.material.textfield.TextInputLayout>
+    <!-- Signup Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_upload"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:padding="12dp"
+        android:text="@string/btn_edit_data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tiPasswordSecure" />
 
-        <!-- Signup Button -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_upload"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="@string/btn_edit_data"/>
 
-        <!-- <TextView android:id="@+id/link_login"
-             android:layout_width="fill_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginBottom="24dp"
-             android:text="Already a member? Login"
-             android:gravity="center"
-             android:textSize="16dip"/>-->
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
-
-</layout>

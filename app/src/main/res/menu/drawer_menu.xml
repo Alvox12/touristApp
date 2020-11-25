@@ -3,12 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_logout"
-            android:title="@string/logout_menu" />
+    <group android:checkableBehavior="none">
 
         <item
             android:id="@+id/nav_edituser"
@@ -19,6 +14,11 @@
             android:id="@+id/nav_userlist"
             android:icon="@drawable/ic_baseline_contacts_24"
             android:title="@string/userlist_menu" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/logout_menu" />
 
     </group>
 

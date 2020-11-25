@@ -9,13 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseFragment
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.Validation
 import com.example.tourapp.dataModel.User
-import com.example.tourapp.databinding.FragmentEditUserBinding
 import com.example.tourapp.databinding.FragmentUserDataBinding
+import com.example.tourapp.viewModel.ListAuxViewModel
 import com.example.tourapp.viewModel.UserViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_edit_user.*
@@ -30,29 +33,22 @@ import kotlinx.android.synthetic.main.fragment_edit_user.*
  * Use the [EditUserFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class EditUserFragment : BaseFragment<FragmentEditUserBinding, UserViewModel>() {
-    // TODO: Rename and change types of parameters
-    //private var param1: String? = null
-    //private var param2: String? = null
+class EditUserFragment : Fragment() {
 
-    override fun getLayoutResource(): Int = R.layout.fragment_edit_user
-    override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
 
+    //override fun getLayoutResource(): Int = R.layout.fragment_edit_user
+    //override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
+
+    //Observador del booleano usuario editado
+    lateinit var observerUser: Observer<Boolean>
     private lateinit var user: User
+    private lateinit var viewModel: UserViewModel
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }*/
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         (activity as MainActivity).setDrawerEnabled(false)
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_user, container, false)
     }
 
@@ -68,10 +64,36 @@ class EditUserFragment : BaseFragment<FragmentEditUserBinding, UserViewModel>() 
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        observerUser = Observer {
+            //showUserData()
+            input_name.text.clear()
+            input_password.text.clear()
+            input_password_sec.text.clear()
+            //enableElements(true)
+            (activity as MainActivity).onBackPressed()
+        }
+        viewModel.userEdited.observe(this, observerUser)
+    }
 
     private fun onUploadData() {
         val userAux = User(input_name.text.toString(),input_password.text.toString(), user.userType, user.userMail, user.userId)
-        model.uploadUserData(userAux)
+        val currentuser = (activity as MainActivity).user
+        enableElements(false)
+        viewModel.uploadUserData(userAux, user.userPassword, currentuser)
+    }
+
+    private fun enableElements(value: Boolean) {
+        btn_upload.isEnabled = value
+        tiName.isEnabled = value
+        tiPassword.isEnabled = value
+        tiPasswordSecure.isEnabled = value
     }
 
     /**
@@ -149,6 +171,15 @@ class EditUserFragment : BaseFragment<FragmentEditUserBinding, UserViewModel>() 
             else -> btn_upload.isEnabled = false
         }
         return btn_upload.isEnabled
+    }
+
+
+    /**Eliminamos observer*/
+    override fun onDestroyView() {
+        super.onDestroyView()
+//        viewModel.deleteUserListener()
+        viewModel.userEdited.removeObserver(observerUser)
+        (activity as MainActivity).setDrawerEnabled(true)
     }
 
 }

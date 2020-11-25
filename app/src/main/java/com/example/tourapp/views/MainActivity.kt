@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -32,7 +33,7 @@ import kotlinx.android.synthetic.main.dialog_logout.view.*
 class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), NavigationView.OnNavigationItemSelectedListener {
 
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private lateinit var user: User
+    lateinit var user: User
     lateinit var useredit: User
     //Observador del booleano usuario descargado
     lateinit var observerUser: Observer<User>
@@ -100,6 +101,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
         when (item.itemId) {
             R.id.nav_edituser -> {
                 useredit = user

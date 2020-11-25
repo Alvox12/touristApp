@@ -21,8 +21,6 @@ class ListAuxFragment : Fragment() {
 
 
 
-    //val  values = arrayOf("one", "two" , "three", "four", "five" , "six", "seven", "eight", "nine", "ten")
-
     private lateinit var viewModel: ListAuxViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
@@ -48,8 +46,14 @@ class ListAuxFragment : Fragment() {
             adapter =  viewModel.myAdapter
         }
 
-        //viewModel.addValue("JUJUUU")
         viewModel.getUserList()
+    }
+
+    /**Eliminamos observer*/
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.deleteUserListener()
+        (activity as MainActivity).setDrawerEnabled(true)
     }
 
 }

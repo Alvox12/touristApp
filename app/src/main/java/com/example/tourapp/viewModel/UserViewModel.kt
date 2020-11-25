@@ -2,9 +2,12 @@ package com.example.tourapp.viewModel
 
 import android.util.Base64
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.dataModel.User
+import com.google.firebase.auth.EmailAuthCredential
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -16,9 +19,11 @@ class UserViewModel : ViewModel() {
 
     private lateinit var mListenerUser : ValueEventListener
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+    var userEdited: MutableLiveData<Boolean> = MutableLiveData()
     var userNotify: MutableLiveData<User> = MutableLiveData()
         private set
 
+    private val mFirebaseAuth = FirebaseAuth.getInstance()
 
     fun getUserData() {
         //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -49,14 +54,37 @@ class UserViewModel : ViewModel() {
     }
     
     
-    fun uploadUserData(user: User) {
-        //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
-        val password =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
-        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/${user.userId}")
-        userRef.child("userName").setValue(user.userName)
-        userRef.child("userMail").setValue(user.userMail)
-        userRef.child("userPassword").setValue(password)
-        userRef.child("userType").setValue(user.userType)
+    fun uploadUserData(newuser: User, oldPssw: String, currentuser: User) {
+
+        var data = Base64.decode(oldPssw, Base64.DEFAULT)
+        var psswd = String(data)
+        val credential = EmailAuthProvider.getCredential(newuser.userMail, psswd)
+
+        mFirebaseAuth.signOut()
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener {
+            if(it.isSuccessful) {
+                mFirebaseAuth.currentUser?.updatePassword(newuser.userPassword)?.addOnCompleteListener { task ->
+                    if(task.isSuccessful) {
+                        //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                        val password =  Base64.encodeToString(newuser.userPassword.toByteArray(), Base64.DEFAULT)
+                        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/${newuser.userId}")
+                        userRef.child("userName").setValue(newuser.userName)
+                        userRef.child("userMail").setValue(newuser.userMail)
+                        userRef.child("userPassword").setValue(password)
+                        userRef.child("userType").setValue(newuser.userType).addOnCompleteListener {
+
+                            FirebaseAuth.getInstance().signOut()
+                            data = Base64.decode(currentuser.userPassword, Base64.DEFAULT)
+                            psswd = String(data)
+                            FirebaseAuth.getInstance().signInWithEmailAndPassword(currentuser.userMail, psswd).addOnCompleteListener {
+                                userEdited.value = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     fun deleteUserListener() {
