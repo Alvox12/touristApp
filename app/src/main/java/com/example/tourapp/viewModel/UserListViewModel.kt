@@ -3,7 +3,6 @@ package com.example.tourapp.viewModel
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.adapter.RecyclerUsersAdapter
 import com.example.tourapp.dataModel.User
 import com.google.firebase.auth.FirebaseAuth
@@ -49,8 +48,9 @@ class UserListViewModel : ViewModel() {
                         val name = user.child("userName").value as String
                         val password = user.child("userPassword").value as String
                         val type = user.child("userType").value as String
+                        val id = user.child("userId").value as String
 
-                        userAux = User(name, password, type, email)
+                        userAux = User(name, password, type, email, id)
                         listUsu.add(userAux)
                         setUserList()
                     }

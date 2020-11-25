@@ -1,9 +1,7 @@
 package com.example.tourapp.viewModel
 
-import android.provider.SyncStateContract
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.adapter.RecyclerAuxAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
@@ -50,8 +48,9 @@ class ListAuxViewModel : ViewModel() {
                             val email = user.child("userMail").value as String
                             val name = user.child("userName").value as String
                             val password = user.child("userPassword").value as String
+                            val id = user.child("userId").value as String
 
-                            userAux = User(name, password, type, email)
+                            userAux = User(name, password, type, email, id)
                             listUsu.add(userAux)
                             setUserList()
                         }

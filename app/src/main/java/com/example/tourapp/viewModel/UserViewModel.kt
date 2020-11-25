@@ -37,7 +37,8 @@ class UserViewModel : ViewModel() {
                     val name = snapshot.child("userName").value as String
                     val password = snapshot.child("userPassword").value as String
                     val type = snapshot.child("userType").value as String
-                    userNotify.value = User(name, password, type, email)
+                    val id = snapshot.child("userId").value as String
+                    userNotify.value = User(name, password, type, email, id)
                 }
                 else Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
             }
@@ -51,7 +52,7 @@ class UserViewModel : ViewModel() {
     fun uploadUserData(user: User) {
         //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val password =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
-        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/${user.userId}")
         userRef.child("userName").setValue(user.userName)
         userRef.child("userMail").setValue(user.userMail)
         userRef.child("userPassword").setValue(password)

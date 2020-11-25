@@ -15,6 +15,7 @@ class Constants {
         const val USERMAIL = "userMail"
         const val CLIENTNAME = "clientName"
         const val USERNAME = "userName"
+        const val USERID = "userId"
 
         const val PROYECT_CODE = "proyectCode"
         const val CONTACT = "contact"

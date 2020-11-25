@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseFragment
 import com.example.tourapp.commons.Constants
@@ -71,7 +70,7 @@ class EditUserFragment : BaseFragment<FragmentEditUserBinding, UserViewModel>() 
 
 
     private fun onUploadData() {
-        val userAux = User(input_name.text.toString(),input_password.text.toString(),user.userType,user.userMail)
+        val userAux = User(input_name.text.toString(),input_password.text.toString(), user.userType, user.userMail, user.userId)
         model.uploadUserData(userAux)
     }
 

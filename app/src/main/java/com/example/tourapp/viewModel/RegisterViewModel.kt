@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.commons.Constants
-import com.example.tourapp.commons.Utils
 import com.example.tourapp.dataModel.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -78,6 +77,7 @@ class RegisterViewModel : ViewModel() {
                             user.userPassword =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
                             mFirebaseAuth.uid?.let { uid ->
 
+                                user.userId = uid
                                 //Damos de alta el usuraio en el nodo User
                                 refUser.child(uid).setValue(user).addOnCompleteListener { result ->
 
