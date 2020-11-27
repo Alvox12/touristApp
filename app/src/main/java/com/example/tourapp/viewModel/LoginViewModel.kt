@@ -16,6 +16,8 @@ class LoginViewModel : ViewModel() {
     var loginData : Login = Login(email = "", password = "")
     val mFirebaseAuth = FirebaseAuth.getInstance()
     var loginNotify: MutableLiveData<Boolean> = MutableLiveData()
+    private lateinit var mListenerUser : ValueEventListener
+    var userNotify: MutableLiveData<User> = MutableLiveData()
 
 
     lateinit var user: User
@@ -64,4 +66,41 @@ class LoginViewModel : ViewModel() {
 
         })
     }
+
+    fun getUserData() {
+        //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+
+        mListenerUser = object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if(snapshot.key == currentUser) {
+                    Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
+                    //val user: User? = snapshot.getValue(User::class.java)
+                    val email = snapshot.child("userMail").value as String
+                    val name = snapshot.child("userName").value as String
+                    val password = snapshot.child("userPassword").value as String
+                    val type = snapshot.child("userType").value as String
+                    val id = snapshot.child("userId").value as String
+                    userNotify.value = User(name, password, type, email, id)
+                }
+                else Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
+            }
+
+        }
+
+        userRef.addValueEventListener(mListenerUser)
+    }
+
+    fun deleteUserListener() {
+        val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        if(this::mListenerUser.isInitialized)
+            userRef.removeEventListener(mListenerUser)
+    }
+
 }

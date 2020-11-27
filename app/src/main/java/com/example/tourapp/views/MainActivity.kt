@@ -55,6 +55,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
 
+        user = intent.getSerializableExtra("MyUser") as User
         /*val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 
@@ -64,11 +65,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         //val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_host) as NavHostFragment
         //val navController = navHostFragment.navController
 
-        observerUser = Observer {user->
+        /*observerUser = Observer {user->
             this.user = user
         }
         model.userNotify.observe(this, observerUser)
-        model.getUserData()
+        model.getUserData()*/
 
         initNavigation()
     }
@@ -79,6 +80,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         NavigationUI.setupActionBarWithNavController (this, navController, drawer_layout)
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         nav_view.setNavigationItemSelectedListener(this)
+
+        if(user.userType != Constants.ADMIN){
+            nav_view.menu.findItem(R.id.nav_userlist).isEnabled = false
+            nav_view.menu.findItem(R.id.nav_userlist).isVisible = false
+        }
     }
 
     /**
@@ -161,10 +167,10 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     }
 
     //Eliminamos observer
-    override fun onStop() {
+   /* override fun onStop() {
         super.onStop()
         model.deleteUserListener()
         model.userNotify.removeObserver(observerUser)
-    }
+    }*/
 
 }

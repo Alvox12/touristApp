@@ -42,9 +42,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
 
         observerRegister = Observer {
-            if(model.flagCreate.value!!)
-            //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
+            if(model.flagCreate.value!!) {
+                //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
+                this.user = model.user
                 registerFinished(it)
+            }
         }
 
         model.flagCreate.observe(this, observerRegister)
@@ -76,6 +78,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         if (registerSuccess){//Si hace login correctamente
 
             val intent = Intent(this, MainActivity::class.java)//Entramos a pantallan principal
+            intent.putExtra("MyUser", user)
             //intent.putExtra(Constants.USERS, model.user)
             startActivity(intent)
             finish()

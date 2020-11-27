@@ -13,6 +13,7 @@ import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.SharedPreferencesManager
+import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityLoginBinding
 import com.example.tourapp.viewModel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
@@ -27,6 +28,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     //Observador del booleano loginNotify
     lateinit var observerLogin: Observer<Boolean>
 
+    //Observador del booleano usuario descargado
+    lateinit var observerUser: Observer<User>
+    private lateinit var user: User
+
     override fun getLayoutResource(): Int = R.layout.activity_login
     override fun getViewModel(): Class<LoginViewModel> = LoginViewModel::class.java
 
@@ -38,9 +43,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         linkRegister = findViewById(R.id.link_register)
 
         observerLogin = Observer {
-            if(model.loginNotify.value!!)
+            if(model.loginNotify.value!!) {
                 //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
-                loginFinished(it)
+                getUserData(it)
+                //loginFinished(it)
+            }
         }
 
         model.loginNotify.observe(this, observerLogin)
@@ -80,6 +87,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         if (loginSuccess){//Si hace login correctamente
 
             val intent = Intent(this, MainActivity::class.java)//Entramos a pantallan principal
+            intent.putExtra("MyUser", user)
             //intent.putExtra(Constants.USERS, model.user)
             startActivity(intent)
             finish()
@@ -104,6 +112,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         }
     }
 
+    private fun getUserData(loginSuccess: Boolean) {
+        observerUser = Observer {user->
+            this.user = user
+            loginFinished(loginSuccess)
+        }
+        model.userNotify.observe(this, observerUser)
+        model.getUserData()
+    }
+
     //Ocultar teclado
     private fun View.hideKeyboard() {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -115,6 +132,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     override fun onStop() {
         super.onStop()
         model.loginNotify.removeObserver(observerLogin)
+        model.deleteUserListener()
+
+        if(this::observerUser.isInitialized)
+            model.userNotify.removeObserver(observerUser)
+
         model.loginNotify.value = false
     }
 
