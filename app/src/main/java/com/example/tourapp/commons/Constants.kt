@@ -17,6 +17,12 @@ class Constants {
         const val USERNAME = "userName"
         const val USERID = "userId"
 
+        const val PLACES = "LUGARES"
+        const val PLACEID = "placeId"
+        const val PLACEDESCRIPTION = "placeDescription"
+        const val PLACENAME = "placeName"
+        const val PLACECREATOR = "placeCreator"
+
         const val PROYECT_CODE = "proyectCode"
         const val CONTACT = "contact"
         const val CONTACTS = "contacts"
