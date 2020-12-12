@@ -87,6 +87,33 @@ class UserViewModel : ViewModel() {
 
     }
 
+    fun deleteUserData(userDel: User, oldPssw: String, currentuser: User) {
+
+        var data = Base64.decode(oldPssw, Base64.DEFAULT)
+        var psswd = String(data)
+        val credential = EmailAuthProvider.getCredential(userDel.userMail, psswd)
+
+        mFirebaseAuth.signOut()
+        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener {
+            if(it.isSuccessful) {
+                val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/${userDel.userId}")
+                userRef.removeValue().addOnCompleteListener { it2 ->
+                    if(it2.isSuccessful) {
+                        FirebaseAuth.getInstance().currentUser?.delete()?.addOnCompleteListener { task ->
+                            if(task.isSuccessful) {
+                                FirebaseAuth.getInstance().signInWithEmailAndPassword(currentuser.userMail, psswd).addOnCompleteListener {
+                                    userEdited.value = true
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+
     fun deleteUserListener() {
         val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
         userRef.removeEventListener(mListenerUser)

@@ -125,6 +125,9 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
                     Navigation.findNavController(view).navigate(R.id.action_listAuxFragment_to_editUserFragment)
                 }
             }
+            R.id.opt_deleteuser -> {
+                model.deleteUserData(useredit, useredit.userPassword, user)
+            }
             R.id.nav_logout -> showDialogLogout(item)
         }
         return true

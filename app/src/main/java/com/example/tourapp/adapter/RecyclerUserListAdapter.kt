@@ -63,6 +63,7 @@ class RecyclerUserListAdapter():
                     popup.setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.opt_edituser -> callActivity(parent.context, item, listUser!![position])
+                            R.id.opt_deleteuser -> callActivity(parent.context, item, listUser!![position])
                             else -> false
                         }
                     }

@@ -9,10 +9,10 @@
             android:icon="@drawable/ic_edit_user_black"
             android:title="@string/edituser_menu" />
 
-        <!--<item
+        <item
             android:id="@+id/opt_deleteuser"
             android:icon="@drawable/ic_baseline_contacts_24"
-            android:title="@string/deleteuser_menu" />-->
+            android:title="@string/deleteuser_menu" />
 
     </group>
 
