@@ -9,49 +9,43 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
-import com.example.tourapp.viewModel.UserListViewModel
+import com.example.tourapp.viewModel.PlaceListViewModel
 import kotlinx.android.synthetic.main.fragment_user_list.*
 
-class UserListFragment : Fragment() {
+class PlaceListFragment : Fragment() {
 
     companion object {
-        fun newInstance() = UserListFragment()
+        fun newInstance() = PlaceListFragment()
     }
 
-
-
-    private lateinit var viewModelUser: UserListViewModel
+    private lateinit var viewModel: PlaceListViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
-    //private lateinit var myAdapter: RecyclerView.Adapter<*>
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        (activity as MainActivity).setDrawerEnabled(false)
-        return inflater.inflate(R.layout.fragment_user_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_place_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModelUser = ViewModelProvider(this).get(UserListViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(PlaceListViewModel::class.java)
 
         manager = LinearLayoutManager(this.activity)
-        viewModelUser.configAdapter()
+        viewModel.configAdapter()
 
         recyclerView = recycler_user_view.apply {
             layoutManager = manager
-            adapter =  viewModelUser.myAdapter
+            adapter =  viewModel.myAdapter
         }
 
-        viewModelUser.getUserList()
+        viewModel.getPlaceList()
     }
 
     /**Eliminamos observer*/
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModelUser.deleteUserListener()
+       viewModel.deletePlaceListener()
         (activity as MainActivity).setDrawerEnabled(true)
     }
 

@@ -15,7 +15,6 @@ class UserListViewModel : ViewModel() {
 
     lateinit var myAdapter: RecyclerUserListAdapter
 
-    var  values = arrayOf("one", "two" , "three", "four", "five" , "six", "seven", "eight", "nine", "ten")
     var listUsu: ArrayList<User> = ArrayList()
     private lateinit var mListenerUser : ValueEventListener
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -28,7 +27,7 @@ class UserListViewModel : ViewModel() {
     fun getUserList() {
 
         listUsu.clear()
-        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS")
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         var userAux: User
 
         mListenerUser = object : ValueEventListener {
@@ -71,11 +70,6 @@ class UserListViewModel : ViewModel() {
     fun setListData() {
         //myAdapter.setListData(values)
         myAdapter.notifyDataSetChanged()
-    }
-
-    fun addValue(aux: String) {
-        values.set(1, aux)
-        setListData()
     }
 
     fun deleteUserListener() {
