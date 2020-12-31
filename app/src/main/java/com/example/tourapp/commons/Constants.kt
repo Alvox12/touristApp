@@ -22,6 +22,10 @@ class Constants {
         const val PLACEDESCRIPTION = "placeDescription"
         const val PLACENAME = "placeName"
         const val PLACECREATOR = "placeCreator"
+        const val PLACESCORE = "placeScore"
+        const val PLACEPICTURES = "placePictures"
+
+        const val MAXPLACEPICS = 2
 
         const val PROYECT_CODE = "proyectCode"
         const val CONTACT = "contact"

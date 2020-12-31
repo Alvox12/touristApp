@@ -120,6 +120,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
                     Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_listAuxFragment)
                 }
             }
+            R.id.nav_placelist -> {
+                nav_host_fragment.view?.let { view->
+                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_placeListFragment)
+                }
+            }
             R.id.opt_edituser -> {
                 nav_host_fragment.view?.let { view ->
                     Navigation.findNavController(view).navigate(R.id.action_listAuxFragment_to_editUserFragment)

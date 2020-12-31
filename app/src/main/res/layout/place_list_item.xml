@@ -14,17 +14,36 @@
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="256dp"
+        android:layout_marginRight="256dp"
         android:text="Nombre lugar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_place_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Puntuación"
+        app:layout_constraintStart_toStartOf="@+id/tv_place_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_place_name" />
 
     <TextView
         android:id="@+id/tv_place_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+
+        android:layout_marginTop="20dp"
+        android:fadingEdgeLength="@dimen/margin_20"
+        android:maxLines="4"
+        android:minLines="1"
+        android:requiresFadingEdge="vertical"
+        android:scrollHorizontally="false"
         android:text="Descripción"
         app:layout_constraintStart_toStartOf="@+id/tv_place_name"
-        app:layout_constraintTop_toBottomOf="@+id/tv_place_name" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_place_score" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

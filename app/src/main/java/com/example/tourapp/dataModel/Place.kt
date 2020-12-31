@@ -7,11 +7,12 @@ class Place(
     var placeId: String = "",
     var placeName: String = "",
     var placeDescription: String = "",
-    var placeCreator: String = ""
+    var placeCreator: String = "",
+    var placeScore: Int = 0
 ): Serializable {
 
     override fun toString(): String =
-        "Nombre lugar: $placeName\nDescripcion lugar: $placeDescription\n"
+        "Nombre lugar: $placeName\nDescripcion lugar: $placeDescription\nPuntuación: $placeScore\n"
 
     fun toAnyObject(): MutableMap<String, Any> {
         val place: MutableMap<String, Any> = mutableMapOf()
@@ -19,6 +20,7 @@ class Place(
         place[Constants.PLACEID] = this.placeId
         place[Constants.PLACEDESCRIPTION] = this.placeDescription
         place[Constants.PLACECREATOR] = this.placeCreator
+        place[Constants.PLACESCORE] = this.placeScore
 
         return place
     }

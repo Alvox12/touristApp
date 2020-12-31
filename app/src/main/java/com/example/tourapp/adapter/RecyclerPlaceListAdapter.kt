@@ -19,8 +19,10 @@ class RecyclerPlaceListAdapter():
         fun bind(place: Place, parent: ViewGroup){
             val tvname = view.findViewById<TextView>(R.id.tv_place_name)
             val tvdescription = view.findViewById<TextView>(R.id.tv_place_description)
+            val tvscore = view.findViewById<TextView>(R.id.tv_place_score)
             tvname.text = place.placeName
             tvdescription.text = place.placeDescription
+            tvscore.text = place.placeScore.toString()
         }
     }
 

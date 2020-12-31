@@ -11,6 +11,11 @@
             android:title="@string/edituser_menu" />
 
         <item
+            android:id="@+id/nav_placelist"
+            android:icon="@drawable/ic_arc_de_triomphe"
+            android:title="@string/placeList_menu"/>
+
+        <item
             android:id="@+id/nav_userlist"
             android:icon="@drawable/ic_baseline_contacts_24"
             android:title="@string/userlist_menu" />

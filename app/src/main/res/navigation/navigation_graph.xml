@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_userDataFragment_to_listAuxFragment"
             app:destination="@id/listAuxFragment" />
+        <action
+            android:id="@+id/action_userDataFragment_to_placeListFragment"
+            app:destination="@id/placeListFragment" />
     </fragment>
     <fragment
         android:id="@+id/listAuxFragment"
@@ -30,6 +33,11 @@
             android:id="@+id/action_listAuxFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/placeListFragment"
+        android:name="com.example.tourapp.views.PlaceListFragment"
+        android:label="fragment_place_list"
+        tools:layout="@layout/fragment_place_list" />
 
 
 </navigation>
