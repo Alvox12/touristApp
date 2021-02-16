@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerPlaceListAdapter
 import com.example.tourapp.commons.Constants
+import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.Place
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -53,7 +54,33 @@ class PlaceListViewModel : ViewModel() {
                     val score = place.child(Constants.PLACESCORE).value as Int
                     val pictures = place.child(Constants.PLACEPICTURES).value as String
 
-                    placeAux = Place(id, name, description, creator, score)
+                    //COMMENTS
+                    var aux = snapshot.child(Constants.PLACECOMMENTS).value
+                    //var aux = dataSnapshot.children.elementAt(2).value
+                    var listaComent = (aux as ArrayList<*>).get(0)
+                    var comentario = Comment()
+                    var placeComments: MutableList<Comment> = mutableListOf()
+
+                    var i = 0
+
+                    for (comment in aux) {
+                        Log.d("onChildAdded()","i: " + i)
+
+                        listaComent = (aux as ArrayList<*>).get(i)
+                        Log.d("onChildAdded()","listaComent: " + listaComent)
+
+                        comentario = Comment((listaComent as Map<String, String>)["comment"] as String,
+                            listaComent["nameUser"] as String,
+                            listaComent["date"] as String,
+                            listaComent["time"] as String)
+
+                        placeComments.add(comentario)
+
+                        i++
+                    }
+
+
+                    placeAux = Place(id, name, description, creator, score, placeComments)
                     listPlace.add(placeAux)
                     setPlaceList()
 

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.PlaceDataFragment">
+
+
+    <TextView
+        android:id="@+id/tv_placeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/calibri"
+        android:text="Nombre Lugar"
+        android:textColor="@color/black"
+        android:textSize="@dimen/size_40"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_slider_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_placeName">
+
+        <com.smarteist.autoimageslider.SliderView
+            android:id="@+id/sliderView"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            app:sliderIndicatorEnabled="true"
+            app:sliderIndicatorGravity="center_horizontal|bottom"
+            app:sliderIndicatorMargin="15dp"
+            app:sliderIndicatorOrientation="horizontal">
+
+        </com.smarteist.autoimageslider.SliderView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_slider_view">
+
+        <TextView
+            android:id="@+id/tv_placeDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:gravity="start"
+            android:text="Descripción"
+            android:textColor="@color/black" />
+
+    </LinearLayout>
+
+    <RatingBar
+        android:id="@+id/place_rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:layout_marginTop="32dp"
+        android:saveEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

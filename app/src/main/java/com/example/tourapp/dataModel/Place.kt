@@ -8,7 +8,8 @@ class Place(
     var placeName: String = "",
     var placeDescription: String = "",
     var placeCreator: String = "",
-    var placeScore: Int = 0
+    var placeScore: Int = 0,
+    var placeComments: MutableList<Comment> = mutableListOf()
 ): Serializable {
 
     override fun toString(): String =
@@ -21,6 +22,7 @@ class Place(
         place[Constants.PLACEDESCRIPTION] = this.placeDescription
         place[Constants.PLACECREATOR] = this.placeCreator
         place[Constants.PLACESCORE] = this.placeScore
+        place[Constants.PLACECOMMENTS] = this.placeComments
 
         return place
     }

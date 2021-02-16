@@ -35,10 +35,10 @@ class PlaceListFragment : Fragment() {
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
 
-        recyclerView = recycler_user_view.apply {
+        /*recyclerView = recycler_user_view.apply {
             layoutManager = manager
             adapter =  viewModel.myAdapter
-        }
+        }*/
 
         viewModel.getPlaceList()
     }

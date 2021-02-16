@@ -24,6 +24,9 @@ class Constants {
         const val PLACECREATOR = "placeCreator"
         const val PLACESCORE = "placeScore"
         const val PLACEPICTURES = "placePictures"
+        const val PLACECOMMENTS = "placeComments"
+        const val COMMENTTXT = "commentTxt"
+        const val COMMENTUSER = "commentUser"
 
         const val MAXPLACEPICS = 2
 

@@ -41,4 +41,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
+
+    <!--LORE IPSUM TEST-->
+    <string name="lore_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce commodo, ex vulputate scelerisque varius, nibh quam ornare nunc, imperdiet accumsan ipsum lorem eu sem. Vestibulum dignissim urna in neque dapibus aliquet ac sit amet eros. Morbi ac sollicitudin lorem, sed consectetur augue. Phasellus vestibulum dui libero. Suspendisse suscipit velit orci, a consequat libero dapibus et. Quisque ex lectus, bibendum eu rutrum eget, porta eget ante. Mauris aliquam felis tortor, non lacinia ante laoreet ut.
+
+    Donec sagittis orci vitae odio iaculis mollis. Suspendisse nisl mi, gravida cursus suscipit eu, maximus sed tellus. Vivamus nunc diam, fermentum id arcu ac, bibendum tristique nunc. Nullam a vulputate elit. Integer pretium arcu eget orci mollis dignissim. Nullam et vulputate est, vitae rhoncus est. Aenean placerat ut mauris mollis tempor. Nulla sit amet felis ex. Cras faucibus odio sed dui vestibulum, at fermentum arcu faucibus. Nunc elementum, mauris a luctus varius, elit nisi consequat lorem, sed cursus arcu velit vel lectus. Sed posuere eget ante sit amet pellentesque. Etiam gravida odio eu maximus vehicula. In ornare tortor et felis pretium, ac faucibus diam cursus.
+
+    Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur bibendum est a leo molestie, quis semper leo gravida. Aliquam sagittis sit amet felis ullamcorper ullamcorper. Aliquam vitae dui lorem. Etiam mattis magna a aliquet ullamcorper. Nulla nunc sem, tempor ac porttitor placerat, imperdiet nec ipsum. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi tristique lacus neque, et viverra ante cursus at. Nam neque ligula, iaculis id nulla sit amet, faucibus elementum mauris. Integer sed lorem odio.
+    </string>
+
 </resources>
