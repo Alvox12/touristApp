@@ -36,8 +36,17 @@
     <fragment
         android:id="@+id/placeListFragment"
         android:name="com.example.tourapp.views.PlaceListFragment"
-        android:label="fragment_place_list"
-        tools:layout="@layout/fragment_place_list" />
+        tools:layout="@layout/fragment_place_list"
+        android:label="@string/place_list_label">
+        <action
+            android:id="@+id/action_placeListFragment_to_placeDataFragment"
+            app:destination="@id/placeDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/placeDataFragment"
+        android:name="com.example.tourapp.views.PlaceDataFragment"
+        android:label="fragment_place_data"
+        tools:layout="@layout/fragment_place_data" />
 
 
 </navigation>

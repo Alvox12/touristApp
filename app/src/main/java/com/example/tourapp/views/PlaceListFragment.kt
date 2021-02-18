@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.viewModel.PlaceListViewModel
+import kotlinx.android.synthetic.main.fragment_place_list.*
 import kotlinx.android.synthetic.main.fragment_user_list.*
 
 class PlaceListFragment : Fragment() {
@@ -35,6 +36,10 @@ class PlaceListFragment : Fragment() {
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
 
+        recyclerView = recycler_place_view.apply {
+            layoutManager = manager
+            adapter =  viewModel.myAdapter
+        }
         /*recyclerView = recycler_user_view.apply {
             layoutManager = manager
             adapter =  viewModel.myAdapter

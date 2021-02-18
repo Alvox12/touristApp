@@ -27,7 +27,7 @@ class Comment : Serializable {
     }
 
     override fun toString(): String {
-        return "Comentario de $idUser: $comment,con fecha: $date a las $time"
+        return "Comentario de $idUser,con fecha: $date a las $time"
 
     }
 

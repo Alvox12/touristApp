@@ -51,25 +51,41 @@ class PlaceListViewModel : ViewModel() {
                     val description = place.child(Constants.PLACEDESCRIPTION).value as String
                     val id = place.child(Constants.PLACEID).value as String
                     val creator = place.child(Constants.PLACECREATOR).value as String
-                    val score = place.child(Constants.PLACESCORE).value as Int
+                    val score = place.child(Constants.PLACESCORE).value as String
                     val pictures = place.child(Constants.PLACEPICTURES).value as String
 
                     //COMMENTS
-                    var aux = snapshot.child(Constants.PLACECOMMENTS).value
-                    //var aux = dataSnapshot.children.elementAt(2).value
-                    var listaComent = (aux as ArrayList<*>).get(0)
+                    var placeComments: MutableList<Comment> = mutableListOf()
+                    var userid:String = ""
+                    var commenttxt:String = ""
+                    var comentario: Comment
+
+                    place.child(Constants.PLACECOMMENTS).children.forEach {
+
+                        userid = it.child(Constants.COMMENTUSER).value as String
+                        commenttxt = it.child(Constants.COMMENTTXT).value as String
+
+                        comentario = Comment(commenttxt, userid)
+                        placeComments.add(comentario)
+                    }
+                    
+
+
+                    /*var aux = place.child(Constants.PLACECOMMENTS).value
+
                     var comentario = Comment()
                     var placeComments: MutableList<Comment> = mutableListOf()
+                    var coment: MutableList<Comment>? = mutableListOf()
 
                     var i = 0
 
                     for (comment in aux) {
                         Log.d("onChildAdded()","i: " + i)
 
-                        listaComent = (aux as ArrayList<*>).get(i)
+                        var listaComent = (aux as ArrayList<*>).get(i)
                         Log.d("onChildAdded()","listaComent: " + listaComent)
 
-                        comentario = Comment((listaComent as Map<String, String>)["comment"] as String,
+                        comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
                             listaComent["nameUser"] as String,
                             listaComent["date"] as String,
                             listaComent["time"] as String)
@@ -77,10 +93,10 @@ class PlaceListViewModel : ViewModel() {
                         placeComments.add(comentario)
 
                         i++
-                    }
+                    }*/
 
 
-                    placeAux = Place(id, name, description, creator, score, placeComments)
+                    placeAux = Place(id, name, description, creator, Integer.parseInt(score) , placeComments)
                     listPlace.add(placeAux)
                     setPlaceList()
 

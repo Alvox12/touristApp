@@ -31,6 +31,9 @@
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
 
+    <!--Place list fragment-->
+    <string name="place_list_label">Lista lugares</string>
+
     <!--User data fragment-->
     <string name="user_data_name">Nombre:</string>
     <string name="user_data_email">Email:</string>
