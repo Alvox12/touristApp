@@ -2,6 +2,7 @@ package com.example.tourapp.dataModel
 
 
 import com.example.tourapp.commons.Constants
+import com.example.tourapp.commons.RandomString
 import java.io.Serializable
 
 class User(
@@ -32,5 +33,10 @@ class User(
         //user[Constants.PROYECT_CODE] = this.userProyectCode
 
         return user
+    }
+
+    fun generateId(): String {
+        val randomString = RandomString()
+        return randomString.generateId(28)
     }
 }

@@ -45,8 +45,17 @@
     <fragment
         android:id="@+id/placeDataFragment"
         android:name="com.example.tourapp.views.PlaceDataFragment"
-        android:label="fragment_place_data"
-        tools:layout="@layout/fragment_place_data" />
+        android:label="Información lugar"
+        tools:layout="@layout/fragment_place_data">
+        <action
+            android:id="@+id/action_placeDataFragment_to_commentListFragment"
+            app:destination="@id/commentListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentListFragment"
+        android:name="com.example.tourapp.views.CommentListFragment"
+        android:label="Comentarios"
+        tools:layout="@layout/fragment_comment_list" />
 
 
 </navigation>

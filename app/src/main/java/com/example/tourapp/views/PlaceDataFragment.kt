@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.example.tourapp.R
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceDataViewModel
@@ -42,6 +43,26 @@ class PlaceDataFragment : Fragment() {
         tv_placeName.text = viewModel.place.placeName
         tv_placeDescription.text = viewModel.place.placeDescription
         place_rating_bar.rating = viewModel.place.placeScore.toFloat()
+        place_rating_bar.isEnabled = false
+
+        viewModel.getCommentList()
+
+        btn_comment.setOnClickListener {
+            val bundle : Bundle = Bundle()
+            bundle.putSerializable("Comments", viewModel.place)
+
+            view.let {
+                if (it != null) {
+                    Navigation.findNavController(it).navigate(R.id.action_placeDataFragment_to_commentListFragment, bundle)
+                }
+            }
+        }
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.deleteCommentListener()
+        (activity as MainActivity).setDrawerEnabled(true)
+    }
 }

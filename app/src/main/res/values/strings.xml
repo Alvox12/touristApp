@@ -34,6 +34,10 @@
     <!--Place list fragment-->
     <string name="place_list_label">Lista lugares</string>
 
+    <!--Place data fragment-->
+    <string name="place_btn_rate_txt">Puntuar</string>
+    <string name="place_btn_comment_txt">Comentarios</string>
+
     <!--User data fragment-->
     <string name="user_data_name">Nombre:</string>
     <string name="user_data_email">Email:</string>

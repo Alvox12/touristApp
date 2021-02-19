@@ -1,34 +1,40 @@
 package com.example.tourapp.dataModel
 
 
+import com.example.tourapp.commons.RandomString
 import java.io.Serializable
+import java.security.SecureRandom
+
 
 class Comment : Serializable {
     lateinit var comment: String
+    lateinit var idComment: String
     lateinit var idUser: String
+    lateinit var nameUser: String
     lateinit var date: String
     lateinit var time: String
 
     constructor()
 
-    constructor(comentario: String, idUsuario: String) {
+    constructor(comentario: String, idUsuario: String, nameUsuario: String) {
         this.comment = comentario
         this.idUser = idUsuario
+        this.nameUser = nameUsuario
         this.date = "1/1/2000"
         this.time = "00:00"
     }
 
-    constructor(comentario: String, idUsuario: String,
-                fecha_alta: String,hora_alta: String) {
+    constructor(comentario: String, idUsuario: String, nameUsuario: String,
+                fecha_alta: String, hora_alta: String) {
         this.comment = comentario
         this.idUser = idUsuario
+        this.nameUser = nameUsuario
         this.date = fecha_alta
         this.time = hora_alta
     }
 
     override fun toString(): String {
-        return "Comentario de $idUser,con fecha: $date a las $time"
-
+        return "Comentario de $nameUser ($idUser),con fecha: $date a las $time"
     }
 
     fun toAnyObject(): MutableMap<String, Any>{
@@ -41,6 +47,11 @@ class Comment : Serializable {
         com["time"]= this.time!!
 
         return com
+    }
+
+    fun generateId(): String {
+        val randomString = RandomString()
+        return randomString.generateId(16)
     }
 
 }

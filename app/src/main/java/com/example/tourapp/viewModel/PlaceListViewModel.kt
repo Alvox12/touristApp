@@ -55,7 +55,7 @@ class PlaceListViewModel : ViewModel() {
                     val pictures = place.child(Constants.PLACEPICTURES).value as String
 
                     //COMMENTS
-                    var placeComments: MutableList<Comment> = mutableListOf()
+                    /*var placeComments: MutableList<Comment> = mutableListOf()
                     var userid:String = ""
                     var commenttxt:String = ""
                     var comentario: Comment
@@ -67,7 +67,7 @@ class PlaceListViewModel : ViewModel() {
 
                         comentario = Comment(commenttxt, userid)
                         placeComments.add(comentario)
-                    }
+                    }*/
                     
 
 
@@ -96,7 +96,7 @@ class PlaceListViewModel : ViewModel() {
                     }*/
 
 
-                    placeAux = Place(id, name, description, creator, Integer.parseInt(score) , placeComments)
+                    placeAux = Place(id, name, description, creator, Integer.parseInt(score))
                     listPlace.add(placeAux)
                     setPlaceList()
 

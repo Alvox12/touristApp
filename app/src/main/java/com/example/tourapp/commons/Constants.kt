@@ -26,7 +26,9 @@ class Constants {
         const val PLACEPICTURES = "placePictures"
         const val PLACECOMMENTS = "placeComments"
         const val COMMENTTXT = "commentTxt"
-        const val COMMENTUSER = "commentUser"
+        const val COMMENTUSERID = "commentUserId"
+        const val COMMENTUSERNAME = "commentUserName"
+        const val COMMENTID = "commentId"
 
         const val MAXPLACEPICS = 2
 

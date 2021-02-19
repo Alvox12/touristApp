@@ -1,6 +1,7 @@
 package com.example.tourapp.dataModel
 
 import com.example.tourapp.commons.Constants
+import com.example.tourapp.commons.RandomString
 import java.io.Serializable
 
 class Place(
@@ -25,5 +26,10 @@ class Place(
         place[Constants.PLACECOMMENTS] = this.placeComments
 
         return place
+    }
+
+    fun generateId(): String {
+        val randomString = RandomString()
+        return randomString.generateId(30)
     }
 }
