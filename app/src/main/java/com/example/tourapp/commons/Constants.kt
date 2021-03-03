@@ -25,6 +25,7 @@ class Constants {
         const val PLACESCORE = "placeScore"
         const val PLACEPICTURES = "placePictures"
         const val PLACECOMMENTS = "placeComments"
+        const val USERPLACESCORE = "userPlaceScore"
         const val COMMENTTXT = "commentTxt"
         const val COMMENTUSERID = "commentUserId"
         const val COMMENTUSERNAME = "commentUserName"

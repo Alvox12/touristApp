@@ -1,33 +1,36 @@
 package com.example.tourapp.views
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
-import android.view.View
-import androidx.appcompat.app.ActionBarDrawerToggle
+import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.GravityCompat
-import androidx.core.view.get
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
-import com.example.tourapp.commons.SharedPreferencesManager
+import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityMainBinding
+import com.example.tourapp.viewModel.CommentListViewModel
+import com.example.tourapp.viewModel.PlaceDataViewModel
 import com.example.tourapp.viewModel.UserViewModel
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_logout.view.*
+import kotlinx.android.synthetic.main.dialog_edit_comment.*
+import kotlinx.android.synthetic.main.dialog_edit_comment.view.*
+import kotlinx.android.synthetic.main.dialog_edit_comment.view.btn_edit_cancel
+import kotlinx.android.synthetic.main.dialog_score_place.view.*
 
 
 class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), NavigationView.OnNavigationItemSelectedListener {
@@ -77,7 +80,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
     private fun initNavigation() {
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-        NavigationUI.setupActionBarWithNavController (this, navController, drawer_layout)
+        NavigationUI.setupActionBarWithNavController(this, navController, drawer_layout)
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         nav_view.setNavigationItemSelectedListener(this)
 
@@ -105,6 +108,65 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
             super.onBackPressed()
     }
 
+    fun closeKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+
+    fun ratePlace(place_model: PlaceDataViewModel) {
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_score_place, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btn_score_cancel.setOnClickListener {
+            dialogView.btn_score_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_score_accept.setOnClickListener {
+            dialogView.btn_score_cancel.isEnabled = false
+            dialogView.ratingBar.isEnabled = false
+            val rating = dialogView.ratingBar.rating
+
+            place_model.uploadScoreUser(rating)
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
+
+
+    fun editCommentPopup(comment: Comment, comment_model: CommentListViewModel) {
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_comment, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btn_edit_cancel.setOnClickListener {
+            dialogView.btn_edit_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_edit_accept.setOnClickListener {
+            dialogView.btn_edit_cancel.isEnabled = false
+            val textComment = dialogView.et_edit_comment.text.toString()
+
+            if(!textComment.isBlank())
+                comment_model.editComment(comment.commentId, textComment)
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
@@ -116,12 +178,12 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
                 }
             }
             R.id.nav_userlist -> {
-                nav_host_fragment.view?.let { view->
+                nav_host_fragment.view?.let { view ->
                     Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_listAuxFragment)
                 }
             }
             R.id.nav_placelist -> {
-                nav_host_fragment.view?.let { view->
+                nav_host_fragment.view?.let { view ->
                     Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_placeListFragment)
                 }
             }

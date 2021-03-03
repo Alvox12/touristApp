@@ -8,13 +8,15 @@
     <fragment
         android:id="@+id/editUserFragment"
         android:name="com.example.tourapp.views.EditUserFragment"
-        tools:layout="@layout/fragment_edit_user"/>
+        android:label="Editar datos usuario"
+        tools:layout="@layout/fragment_edit_user" />
 
 
     <fragment
         android:id="@+id/userDataFragment"
         android:name="com.example.tourapp.views.UserDataFragment"
-        tools:layout="@layout/fragment_user_data" >
+        android:label="Datos usuario"
+        tools:layout="@layout/fragment_user_data">
         <action
             android:id="@+id/action_userDataFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />

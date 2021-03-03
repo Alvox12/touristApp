@@ -38,6 +38,9 @@ class PlaceDataFragment : Fragment() {
         viewModel.place = arguments?.get("Place") as Place
 
 
+        val user = (activity as MainActivity).user
+        viewModel.user = user
+
         (context as MainActivity).toolbar.title = viewModel.place.placeName
 
         tv_placeName.text = viewModel.place.placeName
@@ -56,6 +59,10 @@ class PlaceDataFragment : Fragment() {
                     Navigation.findNavController(it).navigate(R.id.action_placeDataFragment_to_commentListFragment, bundle)
                 }
             }
+        }
+
+        btn_rate.setOnClickListener {
+            (activity as MainActivity).ratePlace(viewModel)
         }
     }
 

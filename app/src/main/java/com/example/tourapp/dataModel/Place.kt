@@ -10,7 +10,8 @@ class Place(
     var placeDescription: String = "",
     var placeCreator: String = "",
     var placeScore: Int = 0,
-    var placeComments: MutableList<Comment> = mutableListOf()
+    //var placeComments: MutableList<Comment> = mutableListOf(),
+    var placeComments: MutableMap<String, Comment> = mutableMapOf()
 ): Serializable {
 
     override fun toString(): String =
