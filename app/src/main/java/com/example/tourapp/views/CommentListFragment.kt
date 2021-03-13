@@ -1,14 +1,16 @@
 package com.example.tourapp.views
 
-import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
@@ -20,7 +22,7 @@ import kotlinx.android.synthetic.main.fragment_comment_list.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
 
 
-class CommentListFragment : Fragment() {
+class CommentListFragment : Fragment()  {
 
     companion object {
         fun newInstance() = CommentListFragment()
@@ -30,6 +32,7 @@ class CommentListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
     private lateinit var user: User
+    private  lateinit var place: Place
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -39,12 +42,21 @@ class CommentListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(CommentListViewModel::class.java)
-        val place = arguments?.get("Comments") as Place
+        this.place = arguments?.get("Comments") as Place
+        viewModel.arrayLIstBitmap = arguments?.get("ImagesMap") as ArrayList<Bitmap>
+
         viewModel.placeId = place.placeId
         viewModel.mapComments = place.placeComments
 
         this.user = (activity as MainActivity).user
         viewModel.userId = this.user.userId
+
+        // This callback will only be called when MyFragment is at least Started.
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            // Handle the back button event
+            prepareCallback()
+        }
+        callback.isEnabled = true
 
         setListeners()
 
@@ -59,6 +71,32 @@ class CommentListFragment : Fragment() {
         viewModel.setCommentList()
 
         viewModel.loadChildEventListener()
+    }
+
+    private fun prepareCallback() {
+
+        val bundle : Bundle = Bundle()
+        val arrayBitmap: ArrayList<Bitmap> = viewModel.arrayLIstBitmap
+
+        bundle.putParcelableArrayList("ImagesMap", arrayBitmap)
+        bundle.putSerializable("Place", this.place)
+        bundle.putString("Previous", "Comments")
+
+        val manager: FragmentManager = (activity as MainActivity).supportFragmentManager
+        val trans: FragmentTransaction = manager.beginTransaction()
+
+        val fragment: Fragment? = manager.findFragmentById(R.id.placeDataFragment)
+        if (fragment != null) {
+            trans.remove(fragment)
+        }
+        //manager.popBackStack(R.id.commentListFragment, 0)
+       // manager.popBackStackImmediate()
+
+        view.let {
+            if (it != null) {
+                Navigation.findNavController(it).navigate(R.id.action_commentListFragment_to_placeDataFragment, bundle)
+            }
+        }
     }
 
     private fun setListeners() {
@@ -89,10 +127,10 @@ class CommentListFragment : Fragment() {
     }
 
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         viewModel.removeChildListener()
-        (activity as MainActivity).setDrawerEnabled(true)
     }
 
 }

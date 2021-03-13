@@ -10,6 +10,7 @@ class Place(
     var placeDescription: String = "",
     var placeCreator: String = "",
     var placeScore: Int = 0,
+    var placePictures: String = "",
     //var placeComments: MutableList<Comment> = mutableListOf(),
     var placeComments: MutableMap<String, Comment> = mutableMapOf()
 ): Serializable {
@@ -25,6 +26,7 @@ class Place(
         place[Constants.PLACECREATOR] = this.placeCreator
         place[Constants.PLACESCORE] = this.placeScore
         place[Constants.PLACECOMMENTS] = this.placeComments
+        place[Constants.PLACEPICTURES] = this.placePictures
 
         return place
     }

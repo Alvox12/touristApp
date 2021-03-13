@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.PlaceDataFragment">
@@ -39,10 +43,16 @@
             android:layout_height="220dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
+            app:sliderIndicatorAnimationDuration="600"
             app:sliderIndicatorEnabled="true"
             app:sliderIndicatorGravity="center_horizontal|bottom"
             app:sliderIndicatorMargin="15dp"
-            app:sliderIndicatorOrientation="horizontal">
+            app:sliderIndicatorOrientation="horizontal"
+            app:sliderIndicatorPadding="3dp"
+            app:sliderIndicatorRadius="2dp"
+            app:sliderIndicatorSelectedColor="#5A5A5A"
+            app:sliderIndicatorUnselectedColor="#FFF"
+            app:sliderScrollTimeInSec="1" >
 
         </com.smarteist.autoimageslider.SliderView>
     </LinearLayout>
@@ -88,7 +98,9 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="32dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/place_rating_bar">
@@ -114,3 +126,5 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

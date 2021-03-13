@@ -95,8 +95,8 @@ class PlaceListViewModel : ViewModel() {
                         i++
                     }*/
 
-
-                    placeAux = Place(id, name, description, creator, Integer.parseInt(score))
+                    placeAux = Place(id, name, description, creator, Integer.parseInt(score), pictures)
+                    //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
                     listPlace.add(placeAux)
                     setPlaceList()
 

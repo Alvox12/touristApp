@@ -4,9 +4,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -31,6 +33,7 @@ import kotlinx.android.synthetic.main.dialog_edit_comment.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.btn_edit_cancel
 import kotlinx.android.synthetic.main.dialog_score_place.view.*
+import kotlinx.android.synthetic.main.nav_header.*
 
 
 class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), NavigationView.OnNavigationItemSelectedListener {
@@ -84,11 +87,20 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
         nav_view.setNavigationItemSelectedListener(this)
 
+        val viewHeader = nav_view.getHeaderView(0)
+        val tvName = viewHeader.findViewById<TextView>(R.id.tv_name)
+        val tvEmail = viewHeader.findViewById<TextView>(R.id.tv_email)
+
+        tvName.text = user.userName
+        tvEmail.text = user.userMail
+
         if(user.userType != Constants.ADMIN){
             nav_view.menu.findItem(R.id.nav_userlist).isEnabled = false
             nav_view.menu.findItem(R.id.nav_userlist).isVisible = false
         }
+
     }
+
 
     /**
      *Activa o descativa la presencia del menu lateral y muestra el boton de la barra superior

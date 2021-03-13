@@ -57,7 +57,11 @@
         android:id="@+id/commentListFragment"
         android:name="com.example.tourapp.views.CommentListFragment"
         android:label="Comentarios"
-        tools:layout="@layout/fragment_comment_list" />
+        tools:layout="@layout/fragment_comment_list" >
+        <action
+            android:id="@+id/action_commentListFragment_to_placeDataFragment"
+            app:destination="@id/placeDataFragment" />
+    </fragment>
 
 
 </navigation>

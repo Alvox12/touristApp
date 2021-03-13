@@ -60,6 +60,7 @@ class RecyclerPlaceListAdapter():
         //Creo un bundle para guardar la información y recogerla en el siguiente activity
         val bundle : Bundle = Bundle()
         bundle.putSerializable("Place", auxPlace)
+        bundle.putString("Previous", "")
 
         view.let { Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeDataFragment, bundle)}
     }

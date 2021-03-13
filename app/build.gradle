@@ -71,7 +71,7 @@ dependencies {
     //firebase
     implementation 'com.google.firebase:firebase-auth:20.0.0'
     implementation 'com.google.firebase:firebase-database:19.5.1'
-    implementation 'com.google.firebase:firebase-storage:19.2.0'
+    implementation 'com.google.firebase:firebase-storage:19.2.1'
     //implementation 'com.google.firebase:firebase-messaging:11.8.0'
     implementation 'com.google.firebase:firebase-messaging:21.0.0'
     implementation 'com.google.firebase:firebase-core:18.0.0'

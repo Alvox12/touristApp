@@ -1,5 +1,6 @@
 package com.example.tourapp.viewModel
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerCommentListAdapter
@@ -19,6 +20,9 @@ class CommentListViewModel : ViewModel() {
     lateinit var placeId: String
     lateinit var userId: String
     var mapComments: MutableMap<String, Comment> = mutableMapOf()
+
+    //Guardamos las imagenes de PlaceDataFragment
+    var arrayLIstBitmap: ArrayList<Bitmap> = arrayListOf()
 
     fun configAdapter() {
         myAdapter = RecyclerCommentListAdapter(this)
