@@ -1,17 +1,15 @@
 <resources>
     <string name="app_name">tourapp</string>
 
+    <string name="google_maps_api_key">AIzaSyB3Y3dTrO2AEFq22lsV5APYFD-qq-RGPP0</string>
     <!-- LOGIN -->
     <string name="acceder_login">Login</string>
-    <string name="recuerdame_login">Recuérdame</string>
     <string name="password_login">Contraseña</string>
-    <string name="user_login">Usuario</string>
     <string name="email_login">Email</string>
     <string name="name_register">Nombre</string>
     <string name="title_error_login">Error en los datos introducidos</string>
     <string name="reintentar">Reintentar</string>
     <string name="registrate">¿No tienes cuenta todavía? Crea una</string>
-    <string name="registrateEn">No account yet? Create one</string>
     <string name="btn_crear_cuenta">Crear cuenta</string>
 
     <string name="ob_campo">Campo obligatorio</string>
@@ -24,10 +22,7 @@
     <string name="deleteuser_menu">Eliminar usuario</string>
     <string name="userlist_menu">Lista usuarios</string>
     <string name="placeList_menu">Lista lugares</string>
-    <string name="navigation_drawer_open">Abrir menú lateral</string>
-    <string name="navigation_drawer_close">Cerrar menú lateral</string>
 
-    <string name="btn_cerrar">Cerrar</string>
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
 
@@ -49,7 +44,6 @@
     <!--Edit user fragment-->
     <string name="btn_edit_data">Editar datos usuario</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Comentario item menu-->
     <string name="editcomment_menu">Editar comentario</string>
@@ -58,11 +52,5 @@
 
 
     <!--LORE IPSUM TEST-->
-    <string name="lore_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce commodo, ex vulputate scelerisque varius, nibh quam ornare nunc, imperdiet accumsan ipsum lorem eu sem. Vestibulum dignissim urna in neque dapibus aliquet ac sit amet eros. Morbi ac sollicitudin lorem, sed consectetur augue. Phasellus vestibulum dui libero. Suspendisse suscipit velit orci, a consequat libero dapibus et. Quisque ex lectus, bibendum eu rutrum eget, porta eget ante. Mauris aliquam felis tortor, non lacinia ante laoreet ut.
-
-    Donec sagittis orci vitae odio iaculis mollis. Suspendisse nisl mi, gravida cursus suscipit eu, maximus sed tellus. Vivamus nunc diam, fermentum id arcu ac, bibendum tristique nunc. Nullam a vulputate elit. Integer pretium arcu eget orci mollis dignissim. Nullam et vulputate est, vitae rhoncus est. Aenean placerat ut mauris mollis tempor. Nulla sit amet felis ex. Cras faucibus odio sed dui vestibulum, at fermentum arcu faucibus. Nunc elementum, mauris a luctus varius, elit nisi consequat lorem, sed cursus arcu velit vel lectus. Sed posuere eget ante sit amet pellentesque. Etiam gravida odio eu maximus vehicula. In ornare tortor et felis pretium, ac faucibus diam cursus.
-
-    Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur bibendum est a leo molestie, quis semper leo gravida. Aliquam sagittis sit amet felis ullamcorper ullamcorper. Aliquam vitae dui lorem. Etiam mattis magna a aliquet ullamcorper. Nulla nunc sem, tempor ac porttitor placerat, imperdiet nec ipsum. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi tristique lacus neque, et viverra ante cursus at. Nam neque ligula, iaculis id nulla sit amet, faucibus elementum mauris. Integer sed lorem odio.
-    </string>
 
 </resources>

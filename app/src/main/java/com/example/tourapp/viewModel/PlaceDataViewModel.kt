@@ -90,7 +90,7 @@ class PlaceDataViewModel : ViewModel() {
                         val bmp: Bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                         myBitmapPlaceImg[index] = bmp
 
-                        if(index == listResult.items.size-1)
+                        if(index == listResult.items.lastIndex)
                             imagesDownloaded.value = true
                     }
 

@@ -1,14 +1,21 @@
 package com.example.tourapp.views
 
+import android.Manifest
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
-import android.util.AttributeSet
+import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -19,19 +26,24 @@ import androidx.navigation.ui.NavigationUI
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
+import com.example.tourapp.commons.Constants.Companion.ERROR_DIALOG_REQUEST
+import com.example.tourapp.commons.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
+import com.example.tourapp.commons.Constants.Companion.PERMISSIONS_REQUEST_ENABLE_GPS
+import com.example.tourapp.commons.Constants.Companion.SERVICE_TAG
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityMainBinding
 import com.example.tourapp.viewModel.CommentListViewModel
 import com.example.tourapp.viewModel.PlaceDataViewModel
 import com.example.tourapp.viewModel.UserViewModel
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_logout.view.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.*
-import kotlinx.android.synthetic.main.dialog_edit_comment.view.btn_edit_cancel
+import kotlinx.android.synthetic.main.dialog_logout.view.*
 import kotlinx.android.synthetic.main.dialog_score_place.view.*
 import kotlinx.android.synthetic.main.nav_header.*
 
@@ -43,6 +55,9 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     lateinit var useredit: User
     //Observador del booleano usuario descargado
     lateinit var observerUser: Observer<User>
+
+    //Booleano que indica si hay permiso localizacion
+    private var mLocationPermissionGranted: Boolean = false
 
     override fun getLayoutResource(): Int = R.layout.activity_main
     override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
@@ -62,20 +77,6 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         setSupportActionBar(toolbar)
 
         user = intent.getSerializableExtra("MyUser") as User
-        /*val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar,
-            R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()*/
-
-        //val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_host) as NavHostFragment
-        //val navController = navHostFragment.navController
-
-        /*observerUser = Observer {user->
-            this.user = user
-        }
-        model.userNotify.observe(this, observerUser)
-        model.getUserData()*/
 
         initNavigation()
     }
@@ -217,7 +218,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
      */
     private fun logout(){
         //SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
-        mFirebaseAuth?.signOut()
+        mFirebaseAuth.signOut()
         Log.v("FIREBASE_LOGOUT", "LOGOUT")
     }
 
@@ -248,11 +249,110 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         b.show()
     }
 
+
     //Eliminamos observer
-   /* override fun onStop() {
-        super.onStop()
-        model.deleteUserListener()
-        model.userNotify.removeObserver(observerUser)
-    }*/
+    /* override fun onStop() {
+         super.onStop()
+         model.deleteUserListener()
+         model.userNotify.removeObserver(observerUser)
+     }*/
+
+
+    private fun checkMapServices(): Boolean {
+        if (isServicesOK()) {
+            if (isMapsEnabled()) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun buildAlertMessageNoGps() {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+                    val enableGpsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivityForResult(enableGpsIntent, PERMISSIONS_REQUEST_ENABLE_GPS)
+                }
+        val alert = builder.create()
+        alert.show()
+    }
+
+    fun isMapsEnabled(): Boolean {
+        val manager = getSystemService(LOCATION_SERVICE) as LocationManager
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            buildAlertMessageNoGps()
+            return false
+        }
+        return true
+    }
+
+    private fun getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.applicationContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true
+            //TODO INVOCAR FUNCION GOOGLE MAPS
+            //getChatrooms()
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+        }
+    }
+
+    fun isServicesOK(): Boolean {
+        Log.d(SERVICE_TAG, "isServicesOK: checking google services version")
+        val available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this@MainActivity)
+        if (available == ConnectionResult.SUCCESS) {
+            //everything is fine and the user can make map requests
+            Log.d(SERVICE_TAG, "isServicesOK: Google Play Services is working")
+            return true
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+            //an error occured but we can resolve it
+            Log.d(SERVICE_TAG, "isServicesOK: an error occured but we can fix it")
+            val dialog: Dialog? = GoogleApiAvailability.getInstance().getErrorDialog(this@MainActivity, available, ERROR_DIALOG_REQUEST)
+            dialog?.show()
+        } else {
+            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show()
+        }
+        return false
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String?>,
+                                            grantResults: IntArray) {
+        mLocationPermissionGranted = false
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mLocationPermissionGranted = true
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(SERVICE_TAG, "onActivityResult: called.")
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ENABLE_GPS -> {
+                if (mLocationPermissionGranted) {
+                    //TODO INVOCAR FUNCION GOOGLE MAPS
+                    //getChatrooms()
+                } else {
+                    getLocationPermission()
+                }
+            }
+        }
+    }
 
 }
