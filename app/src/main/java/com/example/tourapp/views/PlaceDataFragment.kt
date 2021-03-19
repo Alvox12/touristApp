@@ -1,6 +1,9 @@
 package com.example.tourapp.views
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,6 +95,9 @@ class PlaceDataFragment : Fragment() {
             (activity as MainActivity).ratePlace(viewModel)
         }
 
+        btn_map.setOnClickListener {
+            openMap()
+        }
 
         observerImageDownloaded = Observer {
             if(it) {
@@ -115,6 +121,23 @@ class PlaceDataFragment : Fragment() {
         }
 
         return mutableMap
+    }
+
+    private fun openMap() {
+        //val gmmIntentUri = Uri.parse("geo:37.7749,-122.4192?q=" + Uri.encode("1st & Pike, Seattle"))
+        val gmmIntentUri = Uri.parse("geo:37.7749,-122.4194")
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        mapIntent.setPackage("com.google.android.apps.maps")
+        mapIntent.resolveActivity((activity as MainActivity).packageManager)?.let {
+            startActivityForResult(mapIntent, 123)
+            //startActivity(mapIntent)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == requestCode) {
+            //Obtenemos resultados de data
+        }
     }
 
     fun destroyObserver() {

@@ -30,6 +30,9 @@ class Constants {
         const val COMMENTUSERID = "commentUserId"
         const val COMMENTUSERNAME = "commentUserName"
         const val COMMENTID = "commentId"
+        const val PLACELOCATION = "placeLocation"
+        const val PLACELATITUDE = "latitude"
+        const val PLACELONGITUDE = "longitude"
 
         const val MAXPLACEPICS = 2
 

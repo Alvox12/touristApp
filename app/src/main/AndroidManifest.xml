@@ -60,7 +60,8 @@ package="com.example.tourapp">
     </activity>
 
     <activity android:name=".views.MapsActivity"
-        android:theme="@style/Theme.TourappNoBar2"/>
+        android:theme="@style/Theme.TourappNoBar2"
+        android:noHistory="true"/>
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"

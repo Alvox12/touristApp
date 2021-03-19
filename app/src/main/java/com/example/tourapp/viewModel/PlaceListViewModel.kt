@@ -54,6 +54,9 @@ class PlaceListViewModel : ViewModel() {
                     val score = place.child(Constants.PLACESCORE).value as String
                     val pictures = place.child(Constants.PLACEPICTURES).value as String
 
+                    val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
+                    val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
+
                     //COMMENTS
                     /*var placeComments: MutableList<Comment> = mutableListOf()
                     var userid:String = ""
@@ -95,7 +98,7 @@ class PlaceListViewModel : ViewModel() {
                         i++
                     }*/
 
-                    placeAux = Place(id, name, description, creator, Integer.parseInt(score), pictures)
+                    placeAux = Place(id, name, description, creator, Integer.parseInt(score), pictures, latitude, longitude)
                     //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
                     listPlace.add(placeAux)
                     setPlaceList()

@@ -1,11 +1,14 @@
 package com.example.tourapp.views
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +29,7 @@ class MapsFragment : Fragment() {
     }
 
     private lateinit var viewModel: MapsViewModel
+
 
 
     private val callback = OnMapReadyCallback { googleMap ->
@@ -74,6 +78,25 @@ class MapsFragment : Fragment() {
         var latlng = googleMap.cameraPosition.target
         //googleMap.projection.fromScreenLocation()
 
+        val permission = (activity as MapsActivity).mLocationPermissionsGranted
+
+        if(permission) {
+            if (ActivityCompat.checkSelfPermission(
+                    (activity as MapsActivity),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    (activity as MapsActivity),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+                return@OnMapReadyCallback
+            }
+            //googleMap.setMyLocationEnabled(true);
+            googleMap.uiSettings.isMyLocationButtonEnabled = false;
+        }
+
+        (activity as MapsActivity).mMap = googleMap
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
