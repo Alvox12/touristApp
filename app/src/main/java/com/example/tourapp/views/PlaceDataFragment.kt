@@ -124,14 +124,32 @@ class PlaceDataFragment : Fragment() {
     }
 
     private fun openMap() {
+
+        //val permissionGranted = (activity as MainActivity).checkMapServices()
+        //val permissionGranted = (activity as MainActivity).mLocationPermissionGranted
+
         //val gmmIntentUri = Uri.parse("geo:37.7749,-122.4192?q=" + Uri.encode("1st & Pike, Seattle"))
-        val gmmIntentUri = Uri.parse("geo:37.7749,-122.4194")
-        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        mapIntent.setPackage("com.google.android.apps.maps")
+
+
+        val gmmIntentUri = Uri.parse("geo:40.416775,-3.703790")
+        //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+        //mapIntent.setPackage("com.google.android.apps.maps")
+
+        val mapIntent = Intent((context as MainActivity), MapsActivity245::class.java)
+
+        /*mapIntent.putExtra("Place", viewModel.place)
+        mapIntent.putExtra("AddPlace", false)
+        mapIntent.putExtra("MyUser", viewModel.user)*/
+
+        mapIntent.putExtra("AddNewPlace", false)
+        mapIntent.putExtra("Place", viewModel.place)
+        mapIntent.putExtra("MyUser", viewModel.user)
+
         mapIntent.resolveActivity((activity as MainActivity).packageManager)?.let {
-            startActivityForResult(mapIntent, 123)
-            //startActivity(mapIntent)
+            //startActivityForResult(mapIntent, 123)
+            startActivity(mapIntent)
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

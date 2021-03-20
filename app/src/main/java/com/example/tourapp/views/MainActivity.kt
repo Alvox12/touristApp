@@ -57,7 +57,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     lateinit var observerUser: Observer<User>
 
     //Booleano que indica si hay permiso localizacion
-    private var mLocationPermissionGranted: Boolean = false
+    var mLocationPermissionGranted: Boolean = false
 
     override fun getLayoutResource(): Int = R.layout.activity_main
     override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
@@ -258,7 +258,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
      }*/
 
 
-    private fun checkMapServices(): Boolean {
+    fun checkMapServices(): Boolean {
         if (isServicesOK()) {
             if (isMapsEnabled()) {
                 return true

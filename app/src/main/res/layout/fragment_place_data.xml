@@ -42,17 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            app:sliderIndicatorAnimationDuration="600"
-            app:sliderIndicatorEnabled="true"
-            app:sliderIndicatorGravity="center_horizontal|bottom"
-            app:sliderIndicatorMargin="15dp"
-            app:sliderIndicatorOrientation="horizontal"
-            app:sliderIndicatorPadding="3dp"
-            app:sliderIndicatorRadius="2dp"
-            app:sliderIndicatorSelectedColor="#5A5A5A"
-            app:sliderIndicatorUnselectedColor="#FFF"
-            app:sliderScrollTimeInSec="1" >
+            android:layout_marginEnd="24dp">
 
         </com.smarteist.autoimageslider.SliderView>
     </LinearLayout>

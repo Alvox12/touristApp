@@ -54,7 +54,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap = googleMap
 
             if (mLocationPermissionsGranted) {
-                getLastKnownLocation()
 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
@@ -77,6 +76,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 //Restringimos la camara a los limites de la comunidad de madrid
                 mMap.setLatLngBoundsForCameraTarget(comuMadridBounds)
+                getLastKnownLocation()
                 //Centrar mapa en ciudad
                 //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(madridBounds.center, 10f))
 
@@ -106,8 +106,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             ic_gps.isEnabled = false
             ic_gps.isVisible = false
 
-            this.place = intent.getSerializableExtra("AddPlace") as Place
+            this.place = intent.getSerializableExtra("Place") as Place
         }
+
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.mapView) as SupportMapFragment
+
+        mapFragment.getMapAsync(this)
         /*if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, MapsFragment.newInstance())
@@ -144,7 +149,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             getLastKnownLocation()
         }
 
-        hideSoftKeyboard()
+        val focus = LatLng(place.placeLatitude, place.placeLongitude)
+        /*googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
+        //mMap.addMarker(MarkerOptions().position(focus).title(place.placeName))
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(focus))
+        moveCamera(focus, NORMAL_ZOOM, place.placeName)
+        //hideSoftKeyboard()
     }
 
     override fun onBackPressed() {
