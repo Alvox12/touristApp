@@ -34,6 +34,10 @@ class Constants {
         const val PLACELATITUDE = "latitude"
         const val PLACELONGITUDE = "longitude"
 
+        //Etiquetas
+        const val ETIQUETAS = "ETIQUETAS"
+        const val PLACEETIQUETAS = "placeTags"
+
         const val MAXPLACEPICS = 2
 
         const val PROYECT_CODE = "proyectCode"
@@ -55,5 +59,17 @@ class Constants {
         const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9003
 
         const val SERVICE_TAG = "GOOGLE_MAPS_SERVICES"
+
+        //Icono
+        const val ICON_MAX_SIZE = 1024
+
+        //Request read external storage
+        const val MY_PERMISSIONS_REQUEST_READ_STORAGE = 2
+        const val PICK_IMAGE_REQUEST = 1
+        const val PICK_PDF_CODE = 2342
+        const val REQUEST_IMAGE_CAPTURE = 1209
+
+        const val MAX_IMAGES_UPLOAD = 3
+
     }
 }

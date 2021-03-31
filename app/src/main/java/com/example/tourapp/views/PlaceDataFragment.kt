@@ -5,9 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,9 +32,26 @@ class PlaceDataFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        this.setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_place_data, container, false)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.placedata_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.opt_edit_place -> {
+                view?.let {
+                    //Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeAddFragment)
+                }
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -95,6 +110,11 @@ class PlaceDataFragment : Fragment() {
             (activity as MainActivity).ratePlace(viewModel)
         }
 
+        if(viewModel.place.placeLatitude == 0.0 && viewModel.place.placeLongitude == 0.0) {
+            btn_map.isEnabled = false
+            btn_map.visibility = View.GONE
+        }
+        
         btn_map.setOnClickListener {
             openMap()
         }

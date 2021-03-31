@@ -1,20 +1,30 @@
 package com.example.tourapp.views
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.provider.VoicemailContract
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import com.example.tourapp.R
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.dataModel.User
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -24,7 +34,13 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.activity_maps245.*
+import java.io.IOException
 
 
 class MapsActivity245 : AppCompatActivity(), OnMapReadyCallback {
@@ -47,11 +63,27 @@ class MapsActivity245 : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var place: Place
     private lateinit var user: User
 
+    private lateinit var autocompleteFrag: AutocompleteSupportFragment
+
+    //Limite de comunidad de madrid
+    private val comuMadridBounds = LatLngBounds(
+        LatLng(40.227935, -4.515052),   // SW bounds
+        LatLng(41.066457, -3.127167)    // NE bounds
+    )
+
+    //Limite madrid ciudad
+    private val madridBounds = LatLngBounds(
+        LatLng(40.296052, -3.935523),   // SW bounds
+        LatLng(40.543836, -3.552375)    // NE bounds
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps245)
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+        initAutocompleteSupport()
 
         addNewLocation = intent.getSerializableExtra("AddNewPlace") as Boolean
         user = intent.getSerializableExtra("MyUser") as User
@@ -79,23 +111,97 @@ class MapsActivity245 : AppCompatActivity(), OnMapReadyCallback {
         getLocationPermission()
     }
 
-    override fun onBackPressed() {
 
-        val resultIntent = Intent()
-        val bundle = Bundle()
+    private fun initAutocompleteSupport() {
+
+        // Initialize Places.
+        Places.initialize(applicationContext, resources.getString(R.string.google_places_api))
+        var placesClient = Places.createClient(this)
+
+        this.autocompleteFrag = supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
+        autocompleteFrag.setTypeFilter(TypeFilter.GEOCODE)
+        autocompleteFrag.setLocationBias(RectangularBounds.newInstance(madridBounds))
+        autocompleteFrag.setCountry("ES")
+
+        // Specify the types of place data to return.
+        autocompleteFrag.setPlaceFields(listOf
+            (com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME))
+
+    }
+
+
+    private fun init() {
+        Log.d(TAG, "init: initializing")
+
+        // Set up a PlaceSelectionListener to handle the response.
+        autocompleteFrag.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: com.google.android.libraries.places.api.model.Place) {
+                // Get info about the selected place.
+                Log.d(TAG, "Place: ${place.name}, ${place.id}")
+
+                moveCamera(place.latLng!!, NORMAL_ZOOM, place.name!!)
+                hideSoftKeyboard()
+            }
+
+            override fun onError(status: Status) {
+                // Handle the error.
+                Log.i(TAG, "An error occurred: $status")
+                Toast.makeText(this@MapsActivity245, "Error al encontrar localización", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
+        /*input_search.setOnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
+                    || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
+                //execute our method for searching
+                hideSoftKeyboard()
+                geoLocate()
+            }
+            hideSoftKeyboard()
+            false
+        }*/
+    }
+
+    /*private fun geoLocate() {
+        Log.d(TAG, "geoLocate: geolocating")
+
+        if(!input_search.text.isBlank()) {
+
+            val searchString: String = input_search.text.toString()
+            val geocoder = Geocoder(this@MapsActivity245)
+            var list: List<Address> = ArrayList()
+            try {
+                list = geocoder.getFromLocationName(searchString, 1)
+            } catch (e: IOException) {
+                Log.e(TAG, "geoLocate: IOException: " + e.message)
+            }
+            if (!list.isEmpty()) {
+                val address: Address = list[0]
+                Log.d(TAG, "geoLocate: found a location: " + address.toString())
+                moveCamera(LatLng(address.latitude, address.longitude), NORMAL_ZOOM, address.getAddressLine(0))
+                //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }*/
+
+    override fun onBackPressed() {
 
         if(addNewLocation) {
             val latLng = getFocusCameraCoordinates()
+            val resultIntent = Intent()
+            var bundle = Bundle()
+
+            place = Place()
             place.placeLatitude = latLng.latitude
             place.placeLongitude = latLng.longitude
+
+            resultIntent.putExtra("Place", place)
+            resultIntent.putExtra("MyUser", user)
+            resultIntent.putExtra("FromMap", true)
+            setResult(Activity.RESULT_OK, resultIntent)
         }
 
-        bundle.putSerializable("Place", place)
-
-        resultIntent.putExtra("Place", bundle)
-        resultIntent.putExtra("MyUser", user)
-        resultIntent.putExtra("FromMap", true)
-        setResult(123, resultIntent)
         super.onBackPressed()
     }
 
@@ -196,7 +302,10 @@ class MapsActivity245 : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun hideSoftKeyboard() {
-        this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        //this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val view = this.currentFocus
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     /**
@@ -211,18 +320,6 @@ class MapsActivity245 : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         Log.d(TAG, "onMapReady: map is ready");
-
-        //Limite de comunidad de madrid
-        val comuMadridBounds = LatLngBounds(
-                LatLng(40.227935, -4.515052),   // SW bounds
-                LatLng(41.066457, -3.127167)    // NE bounds
-        )
-
-        //Limite madrid ciudad
-        val madridBounds = LatLngBounds(
-                LatLng(40.296052, -3.935523),   // SW bounds
-                LatLng(40.543836, -3.552375)    // NE bounds
-        )
 
         //Restringimos la camara a los limites de la comunidad de madrid
         mMap.setLatLngBoundsForCameraTarget(comuMadridBounds)
@@ -246,6 +343,7 @@ class MapsActivity245 : AppCompatActivity(), OnMapReadyCallback {
             moveCamera(latLng, NORMAL_ZOOM, place.placeName)
         }
 
+        init()
         // Add a marker in Sydney and move the camera
         /*val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))

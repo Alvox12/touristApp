@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerPlaceListAdapter
+import com.example.tourapp.adapter.RecyclerTagListAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.Place
@@ -13,12 +14,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PlaceListViewModel : ViewModel() {
 
     lateinit var myAdapter: RecyclerPlaceListAdapter
+    lateinit var tagsAdapter: RecyclerTagListAdapter
     var listPlace: ArrayList<Place> = ArrayList()
+    var listTags: ArrayList<String> = arrayListOf()
     var myBitmapIcon: MutableMap<Int, Bitmap> = mutableMapOf()
     private lateinit var mListenerPlace : ValueEventListener
 
@@ -29,6 +34,31 @@ class PlaceListViewModel : ViewModel() {
     fun setPlaceList() {
         myAdapter.setPlaceList(listPlace)
         myAdapter.notifyDataSetChanged()
+    }
+
+    private fun setFilteredPlaceList(listFiltered: ArrayList<Place>) {
+        myAdapter.setPlaceList(listFiltered)
+        myAdapter.notifyDataSetChanged()
+    }
+
+    fun filterPlaceList(position: Int) {
+        if(position == 0) {
+            setPlaceList()
+        }
+        else {
+            val listFiltered: ArrayList<Place> = ArrayList()
+            for(aux in listPlace) {
+                if(aux.placeTags.contains(position)) {
+                    listFiltered.add(aux)
+                }
+            }
+
+            setFilteredPlaceList(listFiltered)
+        }
+    }
+
+    fun getTagsSelected(position: Int) {
+
     }
 
     fun getPlaceList() {
@@ -53,6 +83,9 @@ class PlaceListViewModel : ViewModel() {
                     val creator = place.child(Constants.PLACECREATOR).value as String
                     val score = place.child(Constants.PLACESCORE).value as String
                     val pictures = place.child(Constants.PLACEPICTURES).value as String
+                    val tags = place.child(Constants.PLACEETIQUETAS).value as String
+
+                    val arrayTags = getTags(tags)
 
                     val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
                     val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
@@ -98,17 +131,32 @@ class PlaceListViewModel : ViewModel() {
                         i++
                     }*/
 
-                    placeAux = Place(id, name, description, creator, Integer.parseInt(score), pictures, latitude, longitude)
+                    var doubleScore = score.toDoubleOrNull()
+                    if(doubleScore == null) {
+                        doubleScore = 0.0
+                    }
+
+                    placeAux = Place(id, name, description, creator, doubleScore, pictures, latitude, longitude, arrayTags)
                     //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
                     listPlace.add(placeAux)
                     setPlaceList()
-
                 }
             }
 
         }
 
         placeRef.addValueEventListener(mListenerPlace)
+    }
+
+    fun getTags(aux: String): ArrayList<Int> {
+        val list: List<String> = aux.split(",")
+        val listInt: ArrayList<Int> = arrayListOf()
+
+        list.forEach {str ->
+            listInt.add(Integer.parseInt(str))
+        }
+
+        return listInt
     }
 
     fun getFolderImages(folderDir: String) {

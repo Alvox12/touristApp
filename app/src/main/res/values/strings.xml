@@ -2,6 +2,8 @@
     <string name="app_name">tourapp</string>
 
     <string name="google_maps_api_key">AIzaSyB3Y3dTrO2AEFq22lsV5APYFD-qq-RGPP0</string>
+    <!--<string name="google_maps_api_key">AIzaSyB3Y3dTrO2AEFq22lsV5APYFD-qq-RGPP0</string>-->
+    <string name="google_places_api">AIzaSyDMV8RK8SGodntvhe6jztCKqirqOrRICrE</string>
     <!-- LOGIN -->
     <string name="acceder_login">Login</string>
     <string name="password_login">Contraseña</string>
@@ -29,6 +31,9 @@
     <!--Place list fragment-->
     <string name="place_list_label">Lista lugares</string>
 
+    <string name="opt_add_place">Agregar lugar</string>
+    <string name="opt_edit_place">Editar información</string>
+
     <!--Place data fragment-->
     <string name="place_btn_rate_txt">Puntuar</string>
     <string name="place_btn_comment_txt">Comentarios</string>
@@ -52,6 +57,7 @@
     <string name="title_activity_maps245">Map</string>
 
 
+    <string name="editcomment_search_location">Introduce Dirección, Ciudad o Código Postal</string>
     <!--LORE IPSUM TEST-->
 
 </resources>

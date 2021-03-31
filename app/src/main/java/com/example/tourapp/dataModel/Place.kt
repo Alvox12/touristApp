@@ -9,10 +9,11 @@ class Place(
     var placeName: String = "",
     var placeDescription: String = "",
     var placeCreator: String = "",
-    var placeScore: Int = 0,
+    var placeScore: Double = 0.0,
     var placePictures: String = "",
     var placeLatitude: Double = 0.0,
     var placeLongitude: Double = 0.0,
+    var placeTags: ArrayList<Int> = arrayListOf(),
     //var placeComments: MutableList<Comment> = mutableListOf(),
     var placeComments: MutableMap<String, Comment> = mutableMapOf()
 ): Serializable {
@@ -31,6 +32,7 @@ class Place(
         place[Constants.PLACEPICTURES] = this.placePictures
         place[Constants.PLACELATITUDE] = this.placeLatitude
         place[Constants.PLACELONGITUDE] = this.placeLongitude
+        place[Constants.PLACEETIQUETAS] = this.placeTags
 
         return place
     }

@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_placeListFragment_to_placeDataFragment"
             app:destination="@id/placeDataFragment" />
+        <action
+            android:id="@+id/action_placeListFragment_to_placeAddFragment"
+            app:destination="@id/placeAddFragment" />
     </fragment>
     <fragment
         android:id="@+id/placeDataFragment"
@@ -62,6 +65,11 @@
             android:id="@+id/action_commentListFragment_to_placeDataFragment"
             app:destination="@id/placeDataFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/placeAddFragment"
+        android:name="com.example.tourapp.views.PlaceAddFragment"
+        android:label="Dar alta lugar"
+        tools:layout="@layout/fragment_place_add" />
 
 
 </navigation>

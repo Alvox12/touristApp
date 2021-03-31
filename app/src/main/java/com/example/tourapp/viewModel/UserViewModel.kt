@@ -1,10 +1,12 @@
 package com.example.tourapp.viewModel
 
+import android.graphics.Bitmap
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
 import com.google.firebase.auth.EmailAuthCredential
 import com.google.firebase.auth.EmailAuthProvider
@@ -18,12 +20,16 @@ import com.google.firebase.database.ValueEventListener
 class UserViewModel : ViewModel() {
 
     private lateinit var mListenerUser : ValueEventListener
+    //private lateinit var mListenerTags : ValueEventListener
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
     var userEdited: MutableLiveData<Boolean> = MutableLiveData()
     var userNotify: MutableLiveData<User> = MutableLiveData()
         private set
 
     private val mFirebaseAuth = FirebaseAuth.getInstance()
+
+    //var mapTags: MutableMap<Int, String> = mutableMapOf()
+    //var arrayListTags: ArrayList<String> = arrayListOf()
 
     fun getUserData() {
         //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -52,7 +58,7 @@ class UserViewModel : ViewModel() {
 
         userRef.addValueEventListener(mListenerUser)
     }
-    
+
     
     fun uploadUserData(newuser: User, oldPssw: String, currentuser: User) {
 
@@ -116,7 +122,10 @@ class UserViewModel : ViewModel() {
 
     fun deleteUserListener() {
         val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        //val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
+
         userRef.removeEventListener(mListenerUser)
+        //tagsRef.removeEventListener(mListenerTags)
     }
 
 }

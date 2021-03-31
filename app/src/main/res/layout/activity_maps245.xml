@@ -28,7 +28,7 @@
         android:background="@drawable/white_border"
         android:id="@+id/linearLayout1">
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/ic_magnify"
             android:layout_width="25dp"
             android:layout_height="25dp"
@@ -36,9 +36,14 @@
             android:src="@drawable/ic_magnify"
             android:layout_marginLeft="@dimen/margin_16"
             android:layout_marginStart="@dimen/margin_16"
-            app:tint="@color/greyDark" />
+            app:tint="@color/greyDark" />-->
 
-        <EditText
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+        <!--<EditText
             android:id="@+id/input_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -47,10 +52,10 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:textSize="18sp"
             android:background="@null"
-            android:hint="Enter Address, City or Zip Code"
+            android:hint="@string/editcomment_search_location"
             android:imeOptions="actionSearch"
             android:layout_marginLeft="@dimen/margin_10"
-            android:layout_marginStart="@dimen/margin_10" />
+            android:layout_marginStart="@dimen/margin_10" />-->
 
     </LinearLayout>
 
