@@ -1,6 +1,5 @@
 package com.example.tourapp.views
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.tourapp.R
-import com.example.tourapp.adapter.SliderAdapter
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceDataViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -58,7 +56,9 @@ class PlaceDataFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(PlaceDataViewModel::class.java)
 
-        viewModel.place = arguments?.get("Place") as Place
+        val place = arguments?.get("Place") as Place
+        viewModel.place = place
+        viewModel.latLng = viewModel.getLatLng(place.placeCoordinates)
         val previo = arguments?.get("Previous") as String
 
 
@@ -110,7 +110,7 @@ class PlaceDataFragment : Fragment() {
             (activity as MainActivity).ratePlace(viewModel)
         }
 
-        if(viewModel.place.placeLatitude == 0.0 && viewModel.place.placeLongitude == 0.0) {
+        if(viewModel.latLng.latitude == 0.0 && viewModel.latLng.longitude == 0.0) {
             btn_map.isEnabled = false
             btn_map.visibility = View.GONE
         }
@@ -155,14 +155,17 @@ class PlaceDataFragment : Fragment() {
         //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         //mapIntent.setPackage("com.google.android.apps.maps")
 
-        val mapIntent = Intent((context as MainActivity), MapsActivity245::class.java)
+        val mapIntent = Intent((context as MainActivity), MapsActivity::class.java)
 
         /*mapIntent.putExtra("Place", viewModel.place)
         mapIntent.putExtra("AddPlace", false)
         mapIntent.putExtra("MyUser", viewModel.user)*/
 
         mapIntent.putExtra("AddNewPlace", false)
-        mapIntent.putExtra("Place", viewModel.place)
+        //mapIntent.putExtra("Place", viewModel.place)
+        mapIntent.putExtra("Name", viewModel.place.placeName)
+        mapIntent.putExtra("Lat", viewModel.latLng.latitude)
+        mapIntent.putExtra("Lng", viewModel.latLng.longitude)
         mapIntent.putExtra("MyUser", viewModel.user)
 
         mapIntent.resolveActivity((activity as MainActivity).packageManager)?.let {
@@ -172,11 +175,11 @@ class PlaceDataFragment : Fragment() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == requestCode) {
             //Obtenemos resultados de data
         }
-    }
+    }*/
 
     fun destroyObserver() {
         viewModel.imagesDownloaded.removeObserver(this.observerImageDownloaded)
@@ -186,4 +189,5 @@ class PlaceDataFragment : Fragment() {
         super.onDestroyView()
         viewModel.deleteCommentListener()
     }
+
 }

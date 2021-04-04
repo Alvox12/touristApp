@@ -50,8 +50,14 @@ class PlaceAddViewModel : ViewModel() {
         val refPlace: DatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
         refPlace.child(place.placeId).setValue(place).addOnCompleteListener {
             if(it.isSuccessful) {
-                myMapPlaceImg.iterator().forEach { entry ->
-                    uploadImage(entry.value, myMapImgExtension[entry.key], entry.key, place.placeName)
+                if(myMapPlaceImg.isEmpty()) {
+                    //Pongo observer a true
+                    placeUploaded.value = true
+                }
+                else {
+                    myMapPlaceImg.iterator().forEach { entry ->
+                        uploadImage(entry.value, myMapImgExtension[entry.key], entry.key, place.placeName)
+                    }
                 }
             }
         }
@@ -67,7 +73,7 @@ class PlaceAddViewModel : ViewModel() {
             val fileName = "img_${index}_${place_name}.$fileExtension"
 
             val mStorage = FirebaseStorage.getInstance().reference
-            val fileReference = mStorage.child("Lugares/${id_lugar}/")
+            val fileReference = mStorage.child("Lugares/${id_lugar}/${fileName}")
             //val fileReference = mStorage.child("${user.clientName.toLowerCase()}_logo.$fileExtension")
 
             mUploadTask = fileReference.putFile(imagePath).addOnCompleteListener {

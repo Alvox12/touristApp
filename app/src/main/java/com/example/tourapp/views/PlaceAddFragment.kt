@@ -2,14 +2,11 @@ package com.example.tourapp.views
 
 import android.app.ActionBar
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
-import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -25,12 +22,8 @@ import com.example.tourapp.commons.Utils
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceAddViewModel
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.dialog_tags_place.*
-import kotlinx.android.synthetic.main.dialog_tags_place.view.*
-import kotlinx.android.synthetic.main.dialog_tags_place.view.rv_tags_list
 import kotlinx.android.synthetic.main.fragment_place_add.*
 import kotlinx.android.synthetic.main.fragment_place_add.btn_map
-import kotlinx.android.synthetic.main.fragment_place_data.*
 
 
 class PlaceAddFragment : Fragment() {
@@ -42,7 +35,6 @@ class PlaceAddFragment : Fragment() {
     private lateinit var viewModel: PlaceAddViewModel
 
     private val PICK_IMAGE_REQUEST: Int = 1
-    private val OPEN_MAP_REQUEST : Int = 123
     private var imagePath: Uri? = null
     private var imageExtension: String? = null
 
@@ -64,6 +56,7 @@ class PlaceAddFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PlaceAddViewModel::class.java)
+
         val arrayListTags = (activity as MainActivity).arrayListTags.clone() as ArrayList<String>
         arrayListTags.removeAt(0)
         viewModel.initData(arrayListTags)
@@ -73,7 +66,13 @@ class PlaceAddFragment : Fragment() {
         initSetup()
     }
 
+
     private fun initSetup() {
+
+        if(this.cnt_images == 0) {
+            tv_img_counter.visibility = View.GONE
+        }
+
         btn_tags.setOnClickListener {
             showDialogTags()
         }
@@ -105,8 +104,19 @@ class PlaceAddFragment : Fragment() {
             darAltaLugar()
         }
 
+        btn_clear_images.setOnClickListener {
+            viewModel.myMapPlaceImg.clear()
+            viewModel.myMapImgExtension.clear()
+
+            btn_clear_images.isEnabled = false
+            this.cnt_images = 0
+
+            tv_img_counter.visibility = View.GONE
+        }
+
         observerPlaceUploaded = Observer {
             if(it) {
+                Toast.makeText((context as MainActivity), "Lugar dado de alta", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).onBackPressed()
             }
         }
@@ -121,21 +131,30 @@ class PlaceAddFragment : Fragment() {
             Toast.makeText((context as MainActivity), "Has de seleccionar al menos una etiqueta", Toast.LENGTH_SHORT).show()
         }
         else {
-            val name = et_place_name.text as String
-            val info = et_place_info.text as String
+            val name: String = et_place_name.text.toString()
+            val info: String = et_place_info.text.toString()
             val latitude = this.latLng.latitude
             val longitude = this.latLng.longitude
 
-            val myPlace = Place(viewModel.id_lugar, name, info, viewModel.user.userId, 5.0, this.pathImage, latitude, longitude,  getIntTags(tags))
+            if(this.cnt_images > 0)
+                this.pathImage = "Lugares/${viewModel.id_lugar}/"
+
+            val myPlace = Place(viewModel.id_lugar, name, info, viewModel.user.userId, 5.0, this.pathImage, "${latitude},${longitude}",  tags)
             viewModel.uploadPlace(myPlace)
         }
     }
 
     private fun getStringTags(): String {
         var msg = ""
+        var first = true
         for((index, aux) in viewModel.listTagsSelected!!.withIndex()) {
             if(aux) {
-                msg += "," + (index+1)
+                if(first) {
+                    msg += (index+1)
+                    first = false
+                }
+                else
+                    msg += "," + (index+1)
             }
         }
         return msg
@@ -164,13 +183,13 @@ class PlaceAddFragment : Fragment() {
         //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         //mapIntent.setPackage("com.google.android.apps.maps")
 
-        val mapIntent = Intent((context as MainActivity), MapsActivity245::class.java)
+        val mapIntent = Intent((context as MainActivity), MapsActivity::class.java)
 
         mapIntent.putExtra("AddNewPlace", true)
         mapIntent.putExtra("MyUser", viewModel.user)
 
         mapIntent.resolveActivity((activity as MainActivity).packageManager)?.let {
-            startActivityForResult(mapIntent, OPEN_MAP_REQUEST)
+            startActivityForResult(mapIntent, Constants.OPEN_MAP_REQUEST)
         }
 
     }
@@ -232,15 +251,23 @@ class PlaceAddFragment : Fragment() {
                 viewModel.myMapImgExtension[cnt_images] = imageExtension
                 cnt_images++
 
+                if(cnt_images > 0) {
+                    tv_img_counter.text = "Imágenes seleccionadas: $cnt_images"
+                    tv_img_counter.visibility = View.VISIBLE
+                    btn_clear_images.isEnabled = true
+                }
+
                 //Introducimos en el text view nombre imagen a subir
                 //tv_logo.text = autotv_userClient.text.toString().toLowerCase() + "_logo." + imageExtension
             }
 
         }
-        else if(requestCode == OPEN_MAP_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+        else if(requestCode == Constants.OPEN_MAP_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             //Obtenemos resultados de data
-            var select_place = data.getSerializableExtra("Place") as Place
-            this.latLng = LatLng(select_place.placeLatitude, select_place.placeLongitude)
+            //val select_place = data.getSerializableExtra("Place") as Place
+            val latitude = data.getSerializableExtra("Lat") as Double
+            val longitude = data.getSerializableExtra("Lng") as Double
+            this.latLng = LatLng(latitude, longitude)
         }
     }
 

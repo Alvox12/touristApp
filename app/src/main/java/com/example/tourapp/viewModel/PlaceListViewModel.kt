@@ -9,6 +9,7 @@ import com.example.tourapp.adapter.RecyclerTagListAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.Place
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -48,7 +49,7 @@ class PlaceListViewModel : ViewModel() {
         else {
             val listFiltered: ArrayList<Place> = ArrayList()
             for(aux in listPlace) {
-                if(aux.placeTags.contains(position)) {
+                if(aux.arrayTags.contains(position)) {
                     listFiltered.add(aux)
                 }
             }
@@ -81,14 +82,17 @@ class PlaceListViewModel : ViewModel() {
                     val description = place.child(Constants.PLACEDESCRIPTION).value as String
                     val id = place.child(Constants.PLACEID).value as String
                     val creator = place.child(Constants.PLACECREATOR).value as String
-                    val score = place.child(Constants.PLACESCORE).value as String
+                    val score = place.child(Constants.PLACESCORE).value
                     val pictures = place.child(Constants.PLACEPICTURES).value as String
                     val tags = place.child(Constants.PLACEETIQUETAS).value as String
 
+                    val coordinates = place.child(Constants.PLACECOORDINATES).value as String
+
+                    //val latlng = getLatLng(coordinates)
                     val arrayTags = getTags(tags)
 
-                    val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
-                    val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
+                    //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
+                    //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
 
                     //COMMENTS
                     /*var placeComments: MutableList<Comment> = mutableListOf()
@@ -131,12 +135,15 @@ class PlaceListViewModel : ViewModel() {
                         i++
                     }*/
 
-                    var doubleScore = score.toDoubleOrNull()
-                    if(doubleScore == null) {
-                        doubleScore = 0.0
+                    val doubleScore = score.toString()
+                    var scoreDouble = doubleScore.toDoubleOrNull()
+                    if(scoreDouble == null) {
+                        scoreDouble = 0.0
                     }
 
-                    placeAux = Place(id, name, description, creator, doubleScore, pictures, latitude, longitude, arrayTags)
+
+                    placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
+                    placeAux.arrayTags = arrayTags
                     //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
                     listPlace.add(placeAux)
                     setPlaceList()
@@ -149,14 +156,33 @@ class PlaceListViewModel : ViewModel() {
     }
 
     fun getTags(aux: String): ArrayList<Int> {
-        val list: List<String> = aux.split(",")
+
         val listInt: ArrayList<Int> = arrayListOf()
 
-        list.forEach {str ->
-            listInt.add(Integer.parseInt(str))
+        if(aux != "") {
+            val list: List<String> = aux.split(",")
+
+            list.forEach { str ->
+                listInt.add(Integer.parseInt(str))
+            }
         }
 
         return listInt
+    }
+
+    fun getLatLng(aux: String): LatLng {
+
+        if(aux != "") {
+            val list: List<String> = aux.split(",")
+            val lat = list.first().toDoubleOrNull()
+            val lng = list.last().toDoubleOrNull()
+
+            if(lat != null && lng != null) {
+                return LatLng(lat, lng)
+            }
+        }
+
+        return LatLng(0.0, 0.0)
     }
 
     fun getFolderImages(folderDir: String) {

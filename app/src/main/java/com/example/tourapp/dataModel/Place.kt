@@ -11,12 +11,15 @@ class Place(
     var placeCreator: String = "",
     var placeScore: Double = 0.0,
     var placePictures: String = "",
-    var placeLatitude: Double = 0.0,
-    var placeLongitude: Double = 0.0,
-    var placeTags: ArrayList<Int> = arrayListOf(),
+    //var placeLocation: MyLocation = MyLocation(),
+    var placeCoordinates: String = "0.0,0.0",
+    var placeTags: String = "",
     //var placeComments: MutableList<Comment> = mutableListOf(),
     var placeComments: MutableMap<String, Comment> = mutableMapOf()
 ): Serializable {
+
+    var arrayTags: ArrayList<Int> = arrayListOf()
+
 
     override fun toString(): String =
         "Nombre lugar: $placeName\nDescripcion lugar: $placeDescription\nPuntuación: $placeScore\n"
@@ -30,8 +33,7 @@ class Place(
         place[Constants.PLACESCORE] = this.placeScore
         place[Constants.PLACECOMMENTS] = this.placeComments
         place[Constants.PLACEPICTURES] = this.placePictures
-        place[Constants.PLACELATITUDE] = this.placeLatitude
-        place[Constants.PLACELONGITUDE] = this.placeLongitude
+        place[Constants.PLACECOORDINATES] = this.placeCoordinates
         place[Constants.PLACEETIQUETAS] = this.placeTags
 
         return place

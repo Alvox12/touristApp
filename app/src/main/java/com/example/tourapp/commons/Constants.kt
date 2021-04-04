@@ -25,6 +25,7 @@ class Constants {
         const val PLACESCORE = "placeScore"
         const val PLACEPICTURES = "placePictures"
         const val PLACECOMMENTS = "placeComments"
+        const val PLACECOORDINATES = "placeCoordinates"
         const val USERPLACESCORE = "userPlaceScore"
         const val COMMENTTXT = "commentTxt"
         const val COMMENTUSERID = "commentUserId"
@@ -71,5 +72,6 @@ class Constants {
 
         const val MAX_IMAGES_UPLOAD = 3
 
+        const val OPEN_MAP_REQUEST = 123
     }
 }

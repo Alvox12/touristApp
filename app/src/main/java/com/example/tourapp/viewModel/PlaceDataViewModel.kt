@@ -10,6 +10,7 @@ import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.dataModel.User
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -20,6 +21,7 @@ import com.google.firebase.storage.FirebaseStorage
 class PlaceDataViewModel : ViewModel() {
 
     lateinit var place:Place
+    lateinit var latLng: LatLng
     lateinit var user: User
     private lateinit var mListenerComment : ValueEventListener
 
@@ -115,6 +117,20 @@ class PlaceDataViewModel : ViewModel() {
         }
     }
 
+    fun getLatLng(aux: String): LatLng {
+
+        if(aux != "") {
+            val list: List<String> = aux.split(",")
+            val lat = list.first().toDoubleOrNull()
+            val lng = list.last().toDoubleOrNull()
+
+            if(lat != null && lng != null) {
+                return LatLng(lat, lng)
+            }
+        }
+
+        return LatLng(0.0, 0.0)
+    }
 
     fun deleteCommentListener() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(place.placeId).child(

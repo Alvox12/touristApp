@@ -1,6 +1,7 @@
 package com.example.tourapp.adapter
 
 import android.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,14 @@ class RecyclerTagListAdapter(val list: ArrayList<String>): RecyclerView.Adapter<
     private var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
     private var parent: ViewGroup? = null
 
+    private var arrayRadioBtn: ArrayList<RadioButton> = arrayListOf()
+
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
         fun bind(tag: String, parent: ViewGroup){
             val radioButton = view.findViewById<RadioButton>(R.id.radioButton)
             radioButton.text = tag
+
             /*val tvname = view.findViewById<TextView>(R.id.tv_place_name)
             val tvdescription = view.findViewById<TextView>(R.id.tv_place_description)
             val tvscore = view.findViewById<TextView>(R.id.tv_place_score)
@@ -47,13 +51,19 @@ class RecyclerTagListAdapter(val list: ArrayList<String>): RecyclerView.Adapter<
 
         listTags?.get(position)?.let {
             this.parent?.let { parent ->
-                holder.bind(it, parent)
 
+                holder.bind(it, parent)
                 val radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
+                radioBtn.isChecked = listTagsSelected?.get(position) == true
+                arrayRadioBtn.add(radioBtn)
 
                 radioBtn.setOnClickListener {
                     listTagsSelected!![position] = !listTagsSelected?.get(position)!!
+                    Log.d("TAGS_CLICKED", "Ha sido pulsado ${radioBtn.text}")
+                    arrayRadioBtn[position].isChecked = listTagsSelected?.get(position) == true
+                    notifyItemChanged(position)
                 }
+
             }
         }
     }
@@ -63,7 +73,7 @@ class RecyclerTagListAdapter(val list: ArrayList<String>): RecyclerView.Adapter<
         this.listTags?.clear()
         this.listTags = list_aux.clone() as ArrayList<String>
 
-        //this.listTagsSelected = ArrayList(Collections.nCopies(list_aux.size, false))
+        this.listTagsSelected = ArrayList(Collections.nCopies(list_aux.size, false))
     }
 
     fun getTagsSelected(): ArrayList<Boolean>? {
