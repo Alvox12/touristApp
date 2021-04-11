@@ -31,7 +31,7 @@ class RecyclerPlaceListAdapter():
     }
 
     fun setPlaceList(places: ArrayList<Place>) {
-        this.listPlace = places
+        this.listPlace = places.clone() as ArrayList<Place>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

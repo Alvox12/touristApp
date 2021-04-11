@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceListViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
@@ -75,7 +76,17 @@ class PlaceListFragment : Fragment() {
         }*/
         configSpinner()
 
-        viewModel.getPlaceList()
+        val customList = arguments?.get("CustomList") as Boolean
+
+        if(!customList)
+            viewModel.getPlaceList(arrayListOf())
+        else {
+            val nameBar = arguments?.get("nombre") as String
+            (activity as MainActivity).supportActionBar?.title = nameBar
+
+            val listCodes = arguments?.get("ListCodes") as ArrayList<String>
+            viewModel.getPlaceList(listCodes)
+        }
     }
 
 

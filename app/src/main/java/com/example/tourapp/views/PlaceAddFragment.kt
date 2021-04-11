@@ -6,6 +6,8 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +25,6 @@ import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceAddViewModel
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.fragment_place_add.*
-import kotlinx.android.synthetic.main.fragment_place_add.btn_map
 
 
 class PlaceAddFragment : Fragment() {
@@ -40,6 +41,9 @@ class PlaceAddFragment : Fragment() {
 
     private var cnt_images = 0
     private var latLng: LatLng = LatLng(0.0, 0.0)
+
+    private lateinit var et_name_watcher: TextWatcher
+    private lateinit var et_info_watcher: TextWatcher
 
     private lateinit var dialogBox: Dialog
     private lateinit var animalAdapter: RecyclerTagListAdapter
@@ -77,18 +81,33 @@ class PlaceAddFragment : Fragment() {
             showDialogTags()
         }
 
-        /*btnUpload.setOnClickListener {
-            //Solo puede subir una imagen cuando se crea un usuario de tipo Cliente.
-            if(sp_userLevel.selectedItem.toString().toUpperCase() != Constants.CLIENTE) {
-                Toast.makeText(activity?.applicationContext, "Solo puedes subir imagen si creas un usuario tipo Cliente", Toast.LENGTH_SHORT).show()
+        et_name_watcher = object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                if (et_place_name.text.isBlank()) {
+                    et_place_name.error = "Tienes que escribir un nombre"
+                } else {
+                    et_place_name.error = null
+                }
             }
-            else {
-                if (!Utils.checkPermission(activity as MainActivity))
-                    Utils.askforPermission(view!!)
-                else
-                    openFileChooser()
+        }
+        et_place_name.addTextChangedListener(et_name_watcher)
+
+
+        et_info_watcher = object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                if (et_place_info.text.isBlank()) {
+                    et_place_info.error = "Tienes que dar una descripción"
+                } else {
+                    et_place_info.error = null
+                }
             }
-        }*/
+        }
+        et_place_info.addTextChangedListener(et_info_watcher)
+
         btn_images.setOnClickListener {
             if (!Utils.checkPermission(activity as MainActivity))
                 view?.let { it1 -> Utils.askforPermission(it1) }
@@ -136,11 +155,24 @@ class PlaceAddFragment : Fragment() {
             val latitude = this.latLng.latitude
             val longitude = this.latLng.longitude
 
-            if(this.cnt_images > 0)
-                this.pathImage = "Lugares/${viewModel.id_lugar}/"
+            if(name.isBlank()) {
+                et_place_name.error = "Tienes que escribir un nombre"
+            }
+            if(info.isBlank()) {
+                et_place_info.error = "Tienes que dar una descripción"
+            }
 
-            val myPlace = Place(viewModel.id_lugar, name, info, viewModel.user.userId, 5.0, this.pathImage, "${latitude},${longitude}",  tags)
-            viewModel.uploadPlace(myPlace)
+            if(!name.isBlank() && !info.isBlank()) {
+
+                et_place_name.error = null
+                et_place_info.error = null
+
+                if (this.cnt_images > 0)
+                    this.pathImage = "Lugares/${viewModel.id_lugar}/"
+
+                val myPlace = Place(viewModel.id_lugar, name, info, viewModel.user.userId, 5.0, this.pathImage, "${latitude},${longitude}", tags)
+                viewModel.uploadPlace(myPlace)
+            }
         }
     }
 
@@ -164,7 +196,7 @@ class PlaceAddFragment : Fragment() {
         val list: List<String> = aux.split(",")
         val listInt: ArrayList<Int> = arrayListOf()
 
-        list.forEach {str ->
+        list.forEach { str ->
             listInt.add(Integer.parseInt(str))
         }
 
@@ -273,6 +305,8 @@ class PlaceAddFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        et_place_name.removeTextChangedListener(et_name_watcher)
+        et_place_info.removeTextChangedListener(et_info_watcher)
         viewModel.placeUploaded.removeObserver(observerPlaceUploaded)
     }
 

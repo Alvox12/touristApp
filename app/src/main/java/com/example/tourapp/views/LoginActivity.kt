@@ -17,6 +17,9 @@ import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityLoginBinding
 import com.example.tourapp.viewModel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.dialog_error_login.view.*
+import kotlinx.android.synthetic.main.dialog_score_place.view.*
+import kotlinx.android.synthetic.main.dialog_score_place.view.btn_score_cancel
 
 class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
@@ -43,11 +46,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         linkRegister = findViewById(R.id.link_register)
 
         observerLogin = Observer {
-            if(model.loginNotify.value!!) {
+            //if(model.loginNotify.value!!) {
                 //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
                 getUserData(it)
                 //loginFinished(it)
-            }
+           // }
         }
 
         model.loginNotify.observe(this, observerLogin)
@@ -95,7 +98,19 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
         } else {//Si no hace login
 
-            val dialogBuilder = AlertDialog.Builder(this)//Mostramos alerta de error en los datos introducidos
+            val dialogBuilder = AlertDialog.Builder(this)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_error_login, null)
+            val b = dialogBuilder.setView(dialogView).create()
+
+            dialogView.btnAceptarDialog.setOnClickListener {
+                b.dismiss()
+            }
+
+            b.setCancelable(false)
+            b.show()
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            /*val dialogBuilder = AlertDialog.Builder(this)//Mostramos alerta de error en los datos introducidos
             val inflater = this.layoutInflater
             val dialogView = inflater.inflate(R.layout.dialog_error_login, null)
             dialogBuilder.setView(dialogView)
@@ -108,17 +123,21 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                 b.dismiss()
                 //cl_loading_user.visibility = View.GONE
             }
-
+            */
         }
     }
 
     private fun getUserData(loginSuccess: Boolean) {
-        observerUser = Observer {user->
-            this.user = user
+        if(!loginSuccess)
             loginFinished(loginSuccess)
+        else {
+            observerUser = Observer { user ->
+                this.user = user
+                loginFinished(loginSuccess)
+            }
+            model.userNotify.observe(this, observerUser)
+            model.getUserData()
         }
-        model.userNotify.observe(this, observerUser)
-        model.getUserData()
     }
 
     //Ocultar teclado

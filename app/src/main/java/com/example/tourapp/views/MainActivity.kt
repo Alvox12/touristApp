@@ -37,6 +37,7 @@ import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityMainBinding
 import com.example.tourapp.viewModel.CommentListViewModel
+import com.example.tourapp.viewModel.PlaceCreateListViewModel
 import com.example.tourapp.viewModel.PlaceDataViewModel
 import com.example.tourapp.viewModel.UserViewModel
 import com.google.android.gms.common.ConnectionResult
@@ -51,6 +52,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.*
 import kotlinx.android.synthetic.main.dialog_logout.view.*
+import kotlinx.android.synthetic.main.dialog_name_list.view.*
 import kotlinx.android.synthetic.main.dialog_score_place.view.*
 import kotlinx.android.synthetic.main.nav_header.*
 import java.io.InputStream
@@ -176,6 +178,37 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     }
 
 
+    fun addCustomListName(list_model: PlaceCreateListViewModel) {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_name_list, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btn_name_list_cancel.setOnClickListener {
+            dialogView.btn_name_list_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_name_list_accept.setOnClickListener {
+            dialogView.btn_name_list_cancel.isEnabled = false
+            dialogView.et_name_list.isEnabled = false
+            val name: String = dialogView.et_name_list.text.toString()
+
+            if(name.isNotBlank() && list_model.listPlacesSelected?.isNotEmpty()!!) {
+                list_model.uploadListPlace(name)
+            }
+            else {
+                Toast.makeText(this, "No hay ningún nombre escrito", Toast.LENGTH_SHORT).show()
+            }
+
+            //list_model.uploadScoreUser(rating)
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
+
     fun editCommentPopup(comment: Comment, comment_model: CommentListViewModel) {
 
         val dialogBuilder = AlertDialog.Builder(this)
@@ -217,7 +250,9 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
             }
             R.id.nav_placelist -> {
                 nav_host_fragment.view?.let { view ->
-                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_placeListFragment)
+                    val bundle = Bundle()
+                    bundle.putBoolean("CustomList", false) //Descargamos toda la lista de lugares
+                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_placeListFragment, bundle)
                 }
             }
             R.id.opt_edituser -> {
@@ -227,6 +262,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
             }
             R.id.opt_deleteuser -> {
                 model.deleteUserData(useredit, useredit.userPassword, user)
+            }
+            R.id.nav_user_custom_lists -> {
+                nav_host_fragment.view?.let { view ->
+                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_userListOfListsFragment)
+                }
             }
             R.id.nav_logout -> showDialogLogout(item)
         }

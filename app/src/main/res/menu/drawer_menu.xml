@@ -21,6 +21,12 @@
             android:title="@string/userlist_menu" />
 
         <item
+            android:id="@+id/nav_user_custom_lists"
+            android:title="@string/usercustomlists_menu"
+            android:icon="@drawable/ic_list_icon_33"
+            />
+
+        <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_logout"
             android:title="@string/logout_menu" />

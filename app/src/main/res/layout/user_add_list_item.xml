@@ -7,6 +7,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/margin_8"
+    android:layout_marginVertical="@dimen/margin_8"
+    android:elevation="4dp"
     android:background="@drawable/blackborder"
     android:paddingStart="@dimen/margin_10"
     android:paddingBottom="@dimen/margin_16"
@@ -62,7 +65,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_24" />
+        android:src="@drawable/ic_add_list_icon" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,10 @@ class Constants {
         const val CLIENTNAME = "clientName"
         const val USERNAME = "userName"
         const val USERID = "userId"
+        const val USERLISTS = "userLists"
+
+        const val LISTNAME = "listName"
+        const val LISTID = "listId"
 
         const val PLACES = "LUGARES"
         const val PLACEID = "placeId"

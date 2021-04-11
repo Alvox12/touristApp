@@ -100,6 +100,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
 
+        btn_save_location.isEnabled = false
         btn_save_location.setOnClickListener {
             onBackPressed()
         }
@@ -162,6 +163,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         .position(latlng)
                         //.title("You are here")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)))
+
+               btn_save_location.isEnabled = true
             }
         }
 
@@ -295,10 +298,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
         if (title != "My Location") {
+
+            if(this.firstMarker)
+                this.firstMarker = false
+            else
+                marker.remove()
+
             val options = MarkerOptions()
                 .position(latLng)
                 .title(title)
-            mMap.addMarker(options)
+
+            marker = mMap.addMarker(options)
+            btn_save_location.isEnabled = true
         }
         else {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)

@@ -24,6 +24,7 @@
     <string name="deleteuser_menu">Eliminar usuario</string>
     <string name="userlist_menu">Lista usuarios</string>
     <string name="placeList_menu">Lista lugares</string>
+    <string name="usercustomlists_menu">Tus listas personales</string>
 
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>

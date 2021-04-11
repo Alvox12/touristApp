@@ -9,6 +9,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/blackborder"
     android:orientation="vertical"
+    android:layout_marginVertical="@dimen/margin_8"
+    android:layout_marginHorizontal="@dimen/margin_8"
+    android:elevation="4dp"
     android:paddingStart="@dimen/margin_10"
     android:paddingBottom="@dimen/margin_16"
     android:paddingLeft="@dimen/margin_10">

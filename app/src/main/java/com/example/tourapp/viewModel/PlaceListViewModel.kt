@@ -62,11 +62,15 @@ class PlaceListViewModel : ViewModel() {
 
     }
 
-    fun getPlaceList() {
+    fun getPlaceList(listCodes: ArrayList<String>) {
 
         listPlace.clear()
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
         var placeAux: Place
+
+        var customList = false
+        if(!listCodes.isEmpty())
+            customList = true
 
         mListenerPlace = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -78,75 +82,106 @@ class PlaceListViewModel : ViewModel() {
                 snapshot.children.forEachIndexed { index, place ->
 
                     Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
-                    val name = place.child(Constants.PLACENAME).value as String
-                    val description = place.child(Constants.PLACEDESCRIPTION).value as String
-                    val id = place.child(Constants.PLACEID).value as String
-                    val creator = place.child(Constants.PLACECREATOR).value as String
-                    val score = place.child(Constants.PLACESCORE).value
-                    val pictures = place.child(Constants.PLACEPICTURES).value as String
-                    val tags = place.child(Constants.PLACEETIQUETAS).value as String
 
-                    val coordinates = place.child(Constants.PLACECOORDINATES).value as String
+                    if (customList && listCodes.contains(place.key)) {
+                        
+                        val name = place.child(Constants.PLACENAME).value as String
+                        val description = place.child(Constants.PLACEDESCRIPTION).value as String
+                        val id = place.child(Constants.PLACEID).value as String
+                        val creator = place.child(Constants.PLACECREATOR).value as String
+                        val score = place.child(Constants.PLACESCORE).value
+                        val pictures = place.child(Constants.PLACEPICTURES).value as String
+                        val tags = place.child(Constants.PLACEETIQUETAS).value as String
 
-                    //val latlng = getLatLng(coordinates)
-                    val arrayTags = getTags(tags)
+                        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
 
-                    //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
-                    //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
+                        //val latlng = getLatLng(coordinates)
+                        val arrayTags = getTags(tags)
 
-                    //COMMENTS
-                    /*var placeComments: MutableList<Comment> = mutableListOf()
-                    var userid:String = ""
-                    var commenttxt:String = ""
-                    var comentario: Comment
-
-                    place.child(Constants.PLACECOMMENTS).children.forEach {
-
-                        userid = it.child(Constants.COMMENTUSER).value as String
-                        commenttxt = it.child(Constants.COMMENTTXT).value as String
-
-                        comentario = Comment(commenttxt, userid)
-                        placeComments.add(comentario)
-                    }*/
-                    
+                        val doubleScore = score.toString()
+                        var scoreDouble = doubleScore.toDoubleOrNull()
+                        if (scoreDouble == null) {
+                            scoreDouble = 0.0
+                        }
 
 
-                    /*var aux = place.child(Constants.PLACECOMMENTS).value
-
-                    var comentario = Comment()
-                    var placeComments: MutableList<Comment> = mutableListOf()
-                    var coment: MutableList<Comment>? = mutableListOf()
-
-                    var i = 0
-
-                    for (comment in aux) {
-                        Log.d("onChildAdded()","i: " + i)
-
-                        var listaComent = (aux as ArrayList<*>).get(i)
-                        Log.d("onChildAdded()","listaComent: " + listaComent)
-
-                        comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
-                            listaComent["nameUser"] as String,
-                            listaComent["date"] as String,
-                            listaComent["time"] as String)
-
-                        placeComments.add(comentario)
-
-                        i++
-                    }*/
-
-                    val doubleScore = score.toString()
-                    var scoreDouble = doubleScore.toDoubleOrNull()
-                    if(scoreDouble == null) {
-                        scoreDouble = 0.0
+                        placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
+                        placeAux.arrayTags = arrayTags
+                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
+                        listPlace.add(placeAux)
+                        setPlaceList()
                     }
+                    else {
+
+                        val name = place.child(Constants.PLACENAME).value as String
+                        val description = place.child(Constants.PLACEDESCRIPTION).value as String
+                        val id = place.child(Constants.PLACEID).value as String
+                        val creator = place.child(Constants.PLACECREATOR).value as String
+                        val score = place.child(Constants.PLACESCORE).value
+                        val pictures = place.child(Constants.PLACEPICTURES).value as String
+                        val tags = place.child(Constants.PLACEETIQUETAS).value as String
+
+                        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
+
+                        //val latlng = getLatLng(coordinates)
+                        val arrayTags = getTags(tags)
+
+                        //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
+                        //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
+
+                        //COMMENTS
+                        /*var placeComments: MutableList<Comment> = mutableListOf()
+                        var userid:String = ""
+                        var commenttxt:String = ""
+                        var comentario: Comment
+
+                        place.child(Constants.PLACECOMMENTS).children.forEach {
+
+                            userid = it.child(Constants.COMMENTUSER).value as String
+                            commenttxt = it.child(Constants.COMMENTTXT).value as String
+
+                            comentario = Comment(commenttxt, userid)
+                            placeComments.add(comentario)
+                        }*/
 
 
-                    placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
-                    placeAux.arrayTags = arrayTags
-                    //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
-                    listPlace.add(placeAux)
-                    setPlaceList()
+                        /*var aux = place.child(Constants.PLACECOMMENTS).value
+
+                        var comentario = Comment()
+                        var placeComments: MutableList<Comment> = mutableListOf()
+                        var coment: MutableList<Comment>? = mutableListOf()
+
+                        var i = 0
+
+                        for (comment in aux) {
+                            Log.d("onChildAdded()","i: " + i)
+
+                            var listaComent = (aux as ArrayList<*>).get(i)
+                            Log.d("onChildAdded()","listaComent: " + listaComent)
+
+                            comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
+                                listaComent["nameUser"] as String,
+                                listaComent["date"] as String,
+                                listaComent["time"] as String)
+
+                            placeComments.add(comentario)
+
+                            i++
+                        }*/
+
+                        val doubleScore = score.toString()
+                        var scoreDouble = doubleScore.toDoubleOrNull()
+                        if (scoreDouble == null) {
+                            scoreDouble = 0.0
+                        }
+
+
+                        placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
+                        placeAux.arrayTags = arrayTags
+                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
+                        listPlace.add(placeAux)
+                        setPlaceList()
+                    }
                 }
             }
 
