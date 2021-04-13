@@ -1,24 +1,26 @@
 package com.example.tourapp.views
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.adapter.RecyclerCreateListAdapter
 import com.example.tourapp.viewModel.PlaceCreateListViewModel
-import com.example.tourapp.viewModel.PlaceModifyViewModel
 import kotlinx.android.synthetic.main.fragment_place_create_list.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
 import kotlinx.android.synthetic.main.fragment_place_list.recycler_place_view
 import kotlinx.android.synthetic.main.fragment_place_list.spinner_places_filter
+
 
 class PlaceCreateListFragment : Fragment() {
 
@@ -87,7 +89,7 @@ class PlaceCreateListFragment : Fragment() {
                                         pos: Int, arg3: Long) {
 
                 val msupplier: String = spinner_places_filter.selectedItem.toString()
-                if(positionSpinner != pos) {
+                if (positionSpinner != pos) {
                     if (pos >= 0 && pos < arrayListTags.size) {
                         positionSpinner = pos
                         viewModel.filterPlaceList(pos)

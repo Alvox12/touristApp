@@ -1,10 +1,11 @@
 package com.example.tourapp.adapter
 
 import android.os.Bundle
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.Navigation
@@ -13,9 +14,10 @@ import com.example.tourapp.R
 import com.example.tourapp.dataModel.Place
 
 class RecyclerPlaceListAdapter():
-    RecyclerView.Adapter<RecyclerPlaceListAdapter.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerPlaceListAdapter.ViewHolder>(), Filterable {
 
-    private var listPlace: ArrayList<Place>? = null
+    private var listPlace: ArrayList<Place>? = arrayListOf()
+    private var listFiltered: ArrayList<Place>? = arrayListOf()
     private var parent: ViewGroup? = null
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
@@ -30,18 +32,55 @@ class RecyclerPlaceListAdapter():
         }
     }
 
+    private var myFilter: Filter = object : Filter() {
+
+        //Automatic on background thread
+        override fun performFiltering(charSequence: CharSequence): FilterResults {
+
+            val filteredList: ArrayList<Place> = arrayListOf()
+            if (charSequence == null || charSequence.isEmpty()) {
+                for(place in listPlace!!.iterator()) {
+                    filteredList.add(place)
+                }
+            } else {
+                for (place in listPlace!!.iterator()) {
+                    if (place.placeName.toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        filteredList.add(place)
+                    }
+                }
+            }
+            val filterResults = FilterResults()
+            filterResults.values = filteredList
+            return filterResults
+        }
+
+        //Automatic on UI thread
+        override fun publishResults(charSequence: CharSequence, filterResults: FilterResults) {
+            listFiltered?.clear()
+
+            val listRes = filterResults.values as List<Place?>
+            for (elem in listRes.iterator()) {
+                if (elem != null) {
+                    listFiltered?.add(elem)
+                }
+            }
+            notifyDataSetChanged()
+        }
+    }
+
     fun setPlaceList(places: ArrayList<Place>) {
         this.listPlace = places.clone() as ArrayList<Place>
+        this.listFiltered = places.clone() as ArrayList<Place>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val vh = LayoutInflater.from(parent.context).inflate(R.layout.place_list_item, parent,false)
+        val vh = LayoutInflater.from(parent.context).inflate(R.layout.place_list_item, parent, false)
         this.parent = parent
         return ViewHolder(vh)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        listPlace?.get(position)?.let {
+        listFiltered?.get(position)?.let {
             this.parent?.let { parent ->
                 holder.bind(it, parent)
 
@@ -65,6 +104,10 @@ class RecyclerPlaceListAdapter():
         view.let { Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeDataFragment, bundle)}
     }
 
-    override fun getItemCount() = this.listPlace?.size ?: 0
+    override fun getItemCount() = this.listFiltered?.size ?: 0
+
+    override fun getFilter(): Filter {
+        return myFilter
+    }
 
 }

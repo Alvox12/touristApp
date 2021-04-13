@@ -4,6 +4,7 @@ import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.tourapp.adapter.RecyclerRegisterTagsAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +18,10 @@ class RegisterViewModel : ViewModel() {
     lateinit var user: User
     var userClient: MutableLiveData<User> = MutableLiveData()
     var flagCreate: MutableLiveData<Boolean> = MutableLiveData()
+
+    var arrayTags: ArrayList<String> = arrayListOf()
+
+    lateinit var myAdapter: RecyclerRegisterTagsAdapter
 
     private  var refUser: DatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.USERS)
 
@@ -57,6 +62,11 @@ class RegisterViewModel : ViewModel() {
         )
     }
 
+    fun configAdapter() {
+        myAdapter = RecyclerRegisterTagsAdapter(arrayTags)
+        myAdapter.notifyDataSetChanged()
+    }
+
     /**
      * Funcion para autenticar al usuario y añadirlo en DB
      */
@@ -83,7 +93,8 @@ class RegisterViewModel : ViewModel() {
 
                                     if (result.isSuccessful) {
                                         Log.v("FIREBASE_BBDD", "SUCCESS_UPLOAD")
-                                        loginAfterSignUp(usrPassAux)
+                                        loadUserPrefs(usrPassAux)
+                                        //loginAfterSignUp(usrPassAux)
                                     }
                                 }
                             }
@@ -97,6 +108,37 @@ class RegisterViewModel : ViewModel() {
             //mFirebaseAuth.signInWithEmailAndPassword(userMail,userPassword)
         }
 
+    }
+
+    private fun loadUserPrefs(userPass: String) {
+        val prefRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(user.userId).child(Constants.USERPREFS)
+
+        val msg = getMsg()
+        prefRef.setValue(msg).addOnCompleteListener {
+            if(it.isSuccessful) {
+                Log.v("FIREBASE_BBDD", "SUCCESS_TAGS_UPLOAD")
+                loginAfterSignUp(userPass)
+            }
+        }
+    }
+
+    private fun getMsg(): String {
+        val selected = myAdapter.getTagsSelected()
+        var msg = ""
+        var firstTag = true
+        for((index, elem) in arrayTags.withIndex()) {
+            if(selected?.get(index) == true) {
+                if(firstTag) {
+                    firstTag = false
+                    msg += elem
+                }
+                else {
+                    msg += ",${elem}"
+                }
+            }
+        }
+
+        return msg
     }
 
     /**

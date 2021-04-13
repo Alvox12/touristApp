@@ -29,6 +29,9 @@ class UserListOfListsViewModel : ViewModel() {
 
     fun getLists() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
+        listNames.clear()
+        listElems.clear()
+        listCodes.clear()
 
         mListenerLists = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {

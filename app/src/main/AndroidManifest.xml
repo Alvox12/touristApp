@@ -76,6 +76,7 @@
             android:theme="@style/Theme.TourappNoBar2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
 

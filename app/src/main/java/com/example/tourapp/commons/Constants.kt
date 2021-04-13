@@ -17,6 +17,7 @@ class Constants {
         const val USERNAME = "userName"
         const val USERID = "userId"
         const val USERLISTS = "userLists"
+        const val USERPREFS = "userPrefs"
 
         const val LISTNAME = "listName"
         const val LISTID = "listId"

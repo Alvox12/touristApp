@@ -4,18 +4,23 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityRegisterBinding
-import com.example.tourapp.viewModel.LoginViewModel
 import com.example.tourapp.viewModel.RegisterViewModel
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_register.*
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>() {
@@ -30,6 +35,10 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     //Observador del booleano registerNotify
     lateinit var observerRegister: Observer<Boolean>
 
+    private lateinit var mListenerTags : ValueEventListener
+    private var tagsDownloaded: MutableLiveData<Boolean> = MutableLiveData()
+    var arrayListTags: ArrayList<String> = arrayListOf()
+
     override fun getLayoutResource(): Int = R.layout.activity_register
     override fun getViewModel(): Class<RegisterViewModel> = RegisterViewModel::class.java
 
@@ -40,6 +49,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         nameuser = findViewById(R.id.input_name)
         backLogin = findViewById(R.id.backToLogin)
 
+
+        getTags()
 
         observerRegister = Observer {
             if(model.flagCreate.value!!) {
@@ -55,6 +66,10 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     override fun onStart() {
         super.onStart()
 
+        btn_tags_select.setOnClickListener {
+            showTagFragment()
+        }
+
         backLogin.setOnClickListener {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
@@ -62,13 +77,13 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         }
     }
 
-    fun onRegisterClick(v: View) {
+    fun onRegisterClick() {
 
         model.addNewUser(
-                userName = input_name.text.toString(),
-                userType = Constants.NORMAL,
-                userMail = input_email.text.toString(),
-                userPassword = input_password.text.toString()
+            userName = input_name.text.toString(),
+            userType = Constants.NORMAL,
+            userMail = input_email.text.toString(),
+            userPassword = input_password.text.toString()
         )
 
     }
@@ -103,6 +118,45 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     }
 
+    private fun getTags() {
+        arrayListTags.clear()
+        val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
+
+        btn_tags_select.isEnabled = false
+
+        mListenerTags = object : ValueEventListener {
+            override fun onCancelled(error: DatabaseError) {
+                Log.v("FIREBASE_BBDD_TAGS", "ERROR AL DESCARGAR INFO")
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.v("FIREBASE_BBDD_TAGS", "EXITO AL DESCARGAR INFO")
+
+                snapshot.children.forEach {
+                    //arrayListTags[it.key!!.toInt()] = it.value.toString()
+                    arrayListTags.add(it.value.toString())
+                }
+
+                btn_tags_select.isEnabled = true
+                tagsDownloaded.value = true
+            }
+
+        }
+
+        tagsRef.addValueEventListener(mListenerTags)
+    }
+
+    fun showTagFragment() {
+        supportFragmentManager.beginTransaction()
+            .add(RegisterTagsFragment.newInstance(), "Register_Tags_Fragment")
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun getCurrentViewModel(): RegisterViewModel {
+        return model
+    }
+
     //Ocultar teclado
     private fun View.hideKeyboard() {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -114,5 +168,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         super.onStop()
         model.flagCreate.removeObserver(observerRegister)
         model.flagCreate.value = false
+
+        val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
+        tagsRef.removeEventListener(mListenerTags)
     }
 }

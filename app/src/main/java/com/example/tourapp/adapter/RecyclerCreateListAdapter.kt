@@ -13,7 +13,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class RecyclerCreateListAdapter(var model: PlaceCreateListViewModel):
-        RecyclerView.Adapter<RecyclerPlaceListAdapter.ViewHolder>()  {
+        RecyclerView.Adapter<RecyclerCreateListAdapter.ViewHolder>()  {
 
     private var listPlace: ArrayList<Place>? = arrayListOf()
     private var mapPlaceSelected: MutableMap<Int, Place> = mutableMapOf()
@@ -41,30 +41,33 @@ class RecyclerCreateListAdapter(var model: PlaceCreateListViewModel):
         this.arrayListSelected = ArrayList(Collections.nCopies(listPlace!!.size, false))
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerPlaceListAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerCreateListAdapter.ViewHolder {
         val vh = LayoutInflater.from(parent.context).inflate(R.layout.user_add_list_item, parent,false)
         this.parent = parent
-        return RecyclerPlaceListAdapter.ViewHolder(vh)
+        return RecyclerCreateListAdapter.ViewHolder(vh)
     }
 
-    override fun onBindViewHolder(holder: RecyclerPlaceListAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerCreateListAdapter.ViewHolder, position: Int) {
         listPlace?.get(position)?.let {
             this.parent?.let { parent ->
                 holder.bind(it, parent)
-
+                //holder.setIsRecyclable(false)
+                
                 var imageButton = holder.view.findViewById<ImageButton>(R.id.imb_add_list)
                 mapImageButton[position] = imageButton
 
-                mapImageButton[position]?.setOnClickListener {
+                imageButton?.setOnClickListener {
                     arrayListSelected[position] = !arrayListSelected[position]
 
-                    if(!arrayListSelected[position])
-                        mapImageButton[position]?.setImageResource(R.drawable.ic_add_list_icon)
-                    else
+                    if(arrayListSelected[position]) {
                         mapImageButton[position]?.setImageResource(R.drawable.ic_cancel_icon)
+                    }
+                    else {
+                        mapImageButton[position]?.setImageResource(R.drawable.ic_add_list_icon)
+                    }
 
                     addElement(position, arrayListSelected[position])
-                    notifyItemChanged(position)
+                    notifyDataSetChanged()
                 }
 
             }

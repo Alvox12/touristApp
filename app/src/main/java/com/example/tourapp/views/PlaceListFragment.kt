@@ -1,18 +1,17 @@
 package com.example.tourapp.views
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
-import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceListViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
@@ -32,16 +31,41 @@ class PlaceListFragment : Fragment() {
     var arrayListTags: ArrayList<String> = arrayListOf()
     var positionSpinner: Int = 0
 
+    private var customList = false
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         (activity as MainActivity).setDrawerEnabled(false)
+
+        customList = arguments?.get("CustomList") as Boolean ?: false
+
         this.setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_place_list, container, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.placelist_menu, menu)
+
+        if(customList) {
+            val addItem = menu.findItem(R.id.opt_add_place)
+            addItem.isEnabled = false
+            addItem.isVisible = false
+        }
+
+        val searchItem = menu.findItem(R.id.opt_search_place).actionView as SearchView
+        searchItem.maxWidth = Int.MAX_VALUE
+        searchItem.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                viewModel.myAdapter.filter.filter(newText)
+                return false
+            }
+        })
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -76,7 +100,7 @@ class PlaceListFragment : Fragment() {
         }*/
         configSpinner()
 
-        val customList = arguments?.get("CustomList") as Boolean
+        //val customList = arguments?.get("CustomList") as Boolean
 
         if(!customList)
             viewModel.getPlaceList(arrayListOf())
@@ -101,7 +125,7 @@ class PlaceListFragment : Fragment() {
                                         pos: Int, arg3: Long) {
 
                 val msupplier: String = spinner_places_filter.selectedItem.toString()
-                if(positionSpinner != pos) {
+                if (positionSpinner != pos) {
                     if (pos >= 0 && pos < arrayListTags.size) {
                         positionSpinner = pos
                         viewModel.filterPlaceList(pos)

@@ -33,6 +33,7 @@
     <string name="place_list_label">Lista lugares</string>
 
     <string name="opt_add_place">Agregar lugar</string>
+    <string name="opt_search_place">Buscar</string>
     <string name="opt_edit_place">Editar información</string>
 
     <!--Place data fragment-->
