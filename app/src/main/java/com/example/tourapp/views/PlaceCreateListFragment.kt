@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.adapter.RecyclerCreateListAdapter
+import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceCreateListViewModel
 import kotlinx.android.synthetic.main.fragment_place_create_list.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
@@ -51,6 +52,8 @@ class PlaceCreateListFragment : Fragment() {
         this.arrayListTags = (activity as MainActivity).arrayListTags
         val user = (activity as MainActivity).user
         viewModel.user = user
+
+        viewModel.listCodes = arguments?.get("listCodes") as ArrayList<String>
 
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()

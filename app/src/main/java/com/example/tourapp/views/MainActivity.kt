@@ -215,6 +215,8 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_comment, null)
         val b = dialogBuilder.setView(dialogView).create()
 
+        dialogView.et_edit_comment.setText(comment.commentTxt)
+
         dialogView.btn_edit_cancel.setOnClickListener {
             dialogView.btn_edit_accept.isEnabled = false
             b.dismiss()
@@ -358,12 +360,27 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         val input: InputStream? = uri?.let { contentResolver?.openInputStream(it) }
         val bitmap = BitmapFactory.decodeStream(input)
 
-        if(bitmap.height <= Constants.ICON_MAX_SIZE && bitmap.width <= Constants.ICON_MAX_SIZE)
+        if(bitmap.height <= Constants.ICON_MAX_SIZE2 && bitmap.width <= Constants.ICON_MAX_SIZE2)
             valido = true
 
         input?.close()
 
         return valido
     }
+
+    private fun darDeBaja() {
+
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
+        mFirebaseAuth.currentUser?.let { fuser ->
+            userRef.child(fuser.uid).removeValue().addOnCompleteListener {it1->
+                if(it1.isSuccessful) {
+                    mFirebaseAuth.currentUser!!.delete().addOnSuccessListener {
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        finish()
+                    }
+                }
+        } }
+    }
+
 
 }

@@ -60,6 +60,8 @@ class PlaceAddFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PlaceAddViewModel::class.java)
+        viewModel.listCodes = arguments?.get("listCodes") as ArrayList<String>
+
 
         val arrayListTags = (activity as MainActivity).arrayListTags.clone() as ArrayList<String>
         arrayListTags.removeAt(0)
@@ -273,7 +275,7 @@ class PlaceAddFragment : Fragment() {
             imagePath = data.data
 
             if(!(activity as MainActivity).validPicture(imagePath))
-                Toast.makeText((context as MainActivity), "tam. maximo es ${Constants.ICON_MAX_SIZE}x${Constants.ICON_MAX_SIZE}px", Toast.LENGTH_SHORT).show()
+                Toast.makeText((context as MainActivity), "tam. maximo es ${Constants.ICON_MAX_SIZE2}x${Constants.ICON_MAX_SIZE2}px", Toast.LENGTH_SHORT).show()
             else {
                 val type = imagePath?.let { activity?.contentResolver?.getType(it) }
                 imageExtension = type?.substring(type.lastIndexOf('/') + 1)
@@ -303,10 +305,14 @@ class PlaceAddFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         et_place_name.removeTextChangedListener(et_name_watcher)
         et_place_info.removeTextChangedListener(et_info_watcher)
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         viewModel.placeUploaded.removeObserver(observerPlaceUploaded)
     }
 

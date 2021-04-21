@@ -9,6 +9,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
@@ -34,6 +35,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     //Observador del booleano registerNotify
     lateinit var observerRegister: Observer<Boolean>
+    //Avisa de si se puede introducir los tags
+    lateinit var observerTags: Observer<Boolean>
 
     private lateinit var mListenerTags : ValueEventListener
     private var tagsDownloaded: MutableLiveData<Boolean> = MutableLiveData()
@@ -52,6 +55,14 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
         getTags()
 
+        observerTags = Observer {
+            if(model.tagLiveData.value!!) {
+                showTagFragment()
+            }
+        }
+
+        model.tagLiveData.observe(this, observerTags)
+
         observerRegister = Observer {
             if(model.flagCreate.value!!) {
                 //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
@@ -67,7 +78,8 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         super.onStart()
 
         btn_tags_select.setOnClickListener {
-            showTagFragment()
+            //showTagFragment()
+            onRegisterClick()
         }
 
         backLogin.setOnClickListener {
@@ -122,8 +134,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         arrayListTags.clear()
         val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
 
-        btn_tags_select.isEnabled = false
-
         mListenerTags = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 Log.v("FIREBASE_BBDD_TAGS", "ERROR AL DESCARGAR INFO")
@@ -137,7 +147,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                     arrayListTags.add(it.value.toString())
                 }
 
-                btn_tags_select.isEnabled = true
                 tagsDownloaded.value = true
             }
 
@@ -147,10 +156,15 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     }
 
     fun showTagFragment() {
-        supportFragmentManager.beginTransaction()
+        /*supportFragmentManager.beginTransaction()
             .add(RegisterTagsFragment.newInstance(), "Register_Tags_Fragment")
             .addToBackStack(null)
-            .commit()
+            .commit()*/
+        ll_register.isVisible = false
+        supportFragmentManager.beginTransaction()
+                .add(R.id.frame_layout_register, RegisterTagsFragment())
+                .addToBackStack(null)
+                .commit()
     }
 
     fun getCurrentViewModel(): RegisterViewModel {
@@ -166,6 +180,9 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     //Eliminamos observer de loginNotify y lo ponemos a false para evitar probelmas en login
     override fun onStop() {
         super.onStop()
+        model.tagLiveData.removeObserver(observerTags)
+        model.tagLiveData.value = false
+
         model.flagCreate.removeObserver(observerRegister)
         model.flagCreate.value = false
 

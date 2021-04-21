@@ -58,6 +58,7 @@ class Constants {
 
         //Variables
         const val MAX_LENGTH_USER = 6
+        const val MAX_DATABASE_ITEMS = 30
 
         //Permisos
         const val ERROR_DIALOG_REQUEST = 9001
@@ -68,6 +69,7 @@ class Constants {
 
         //Icono
         const val ICON_MAX_SIZE = 1024
+        const val ICON_MAX_SIZE2 = 2048
 
         //Request read external storage
         const val MY_PERMISSIONS_REQUEST_READ_STORAGE = 2

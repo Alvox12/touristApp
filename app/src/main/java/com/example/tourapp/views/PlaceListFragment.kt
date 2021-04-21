@@ -6,12 +6,14 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.viewModel.PlaceListViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
@@ -73,7 +75,9 @@ class PlaceListFragment : Fragment() {
         when (item.itemId) {
             R.id.opt_add_place -> {
                 view?.let {
-                    Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeAddFragment)
+                    val bundle: Bundle = Bundle()
+                    bundle.putStringArrayList("listCodes", viewModel.listCodes)
+                    Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeAddFragment, bundle)
                 }
             }
         }
@@ -86,6 +90,7 @@ class PlaceListFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(PlaceListViewModel::class.java)
 
         this.arrayListTags = (activity as MainActivity).arrayListTags
+        viewModel.user = (activity as MainActivity).user
 
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
@@ -94,16 +99,33 @@ class PlaceListFragment : Fragment() {
             layoutManager = manager
             adapter =  viewModel.myAdapter
         }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //direction integers: -1 for up, 1 for down, 0 will always return false
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
+                        viewModel.loadNewData()
+                    }
+                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
         /*recyclerView = recycler_user_view.apply {
             layoutManager = manager
             adapter =  viewModel.myAdapter
         }*/
-        configSpinner()
+        //configSpinner()
 
         //val customList = arguments?.get("CustomList") as Boolean
 
-        if(!customList)
+        viewModel.placeIndex = 0
+        viewModel.descargas = 0
+
+        if(!customList) {
             viewModel.getPlaceList(arrayListOf())
+        }
         else {
             val nameBar = arguments?.get("nombre") as String
             (activity as MainActivity).supportActionBar?.title = nameBar
@@ -113,6 +135,10 @@ class PlaceListFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        configSpinner()
+    }
 
     private fun configSpinner() {
 
@@ -120,6 +146,8 @@ class PlaceListFragment : Fragment() {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         spinner_places_filter.adapter = arrayAdapter
+        spinner_places_filter.setSelection(0)
+        positionSpinner = 0
         spinner_places_filter.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(arg0: AdapterView<*>?, arg1: View?,
                                         pos: Int, arg3: Long) {

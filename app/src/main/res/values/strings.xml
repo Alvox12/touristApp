@@ -13,6 +13,8 @@
     <string name="reintentar">Reintentar</string>
     <string name="registrate">¿No tienes cuenta todavía? Crea una</string>
     <string name="btn_crear_cuenta">Crear cuenta</string>
+    <string name="btn_select_tags">Siguiente</string>
+    <string name="tv_select_tags">Selecciona tus preferencias</string>
 
     <string name="ob_campo">Campo obligatorio</string>
     <string name="max_length">El contenido debe de ser de almenos</string>
@@ -35,13 +37,20 @@
     <string name="opt_add_place">Agregar lugar</string>
     <string name="opt_search_place">Buscar</string>
     <string name="opt_edit_place">Editar información</string>
+    <string name="opt_delete_place">Eliminar lugar</string>
 
     <!--Place data fragment-->
     <string name="place_btn_rate_txt">Puntuar</string>
     <string name="place_btn_comment_txt">Comentarios</string>
 
+    <!--Place delete dialog-->
+    <string name="place_tv_delete">¿Desea eliminar este lugar y toda su información?</string>
+    <string name="place_delete_accept">Eliminar</string>
+    <string name="place_delete_cancel">Cancelar</string>
+
     <!--Comment List fragment-->
     <string name="comment_txt_hint">Escribe un comentario</string>
+    <string name="hint_edit_comment">Introduce comentario</string>
 
     <!--User data fragment-->
     <string name="user_data_name">Nombre:</string>
@@ -57,6 +66,9 @@
     <string name="editcomment_btn">Editar</string>
     <string name="deletecomment_menu">Eliminar comentario</string>
     <string name="title_activity_maps245">Map</string>
+
+    <!--User list of lists item menu-->
+    <string name="eliminar_lista_lugares">Eliminar lista</string>
 
 
     <string name="editcomment_search_location">Introduce Dirección, Ciudad o Código Postal</string>

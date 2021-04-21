@@ -13,7 +13,7 @@ import com.example.tourapp.viewModel.PlaceListViewModel
 import java.util.*
 import kotlin.collections.ArrayList
 
-class RecyclerTagListAdapter(val list: ArrayList<String>): RecyclerView.Adapter<RecyclerTagListAdapter.ViewHolder>() {
+class RecyclerTagListAdapter(val list: ArrayList<String>, selected: ArrayList<Boolean>): RecyclerView.Adapter<RecyclerTagListAdapter.ViewHolder>() {
 
     private var listTags: ArrayList<String>? = arrayListOf()
     private var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
@@ -38,7 +38,7 @@ class RecyclerTagListAdapter(val list: ArrayList<String>): RecyclerView.Adapter<
 
     init {
         this.listTags = list.clone() as ArrayList<String>
-        this.listTagsSelected = ArrayList(Collections.nCopies(list.size, false))
+        this.listTagsSelected = selected.clone() as ArrayList<Boolean>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

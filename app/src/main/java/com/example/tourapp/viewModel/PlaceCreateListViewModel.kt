@@ -21,6 +21,8 @@ class PlaceCreateListViewModel : ViewModel() {
     var listPlacesSelected: ArrayList<Place>? = arrayListOf()
     private lateinit var mListenerPlace : ValueEventListener
 
+    var listCodes : ArrayList<String> = arrayListOf()
+
     lateinit var user: User
     var listUploaded = MutableLiveData <Boolean>()
 
@@ -123,7 +125,11 @@ class PlaceCreateListViewModel : ViewModel() {
 
     fun uploadListPlace(namePlace: String) {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
-        val id = ListPlaces().generateId()
+        var id = ListPlaces().generateId()
+        while (listCodes.contains(id)) {
+            id = ListPlaces().generateId()
+        }
+
         val arrayCodes: ArrayList<String> = arrayListOf()
         if(listPlacesSelected != null) {
             for(elem in listPlacesSelected!!.iterator()) {

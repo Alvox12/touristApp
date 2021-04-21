@@ -21,6 +21,9 @@ class CommentListViewModel : ViewModel() {
     lateinit var userId: String
     var mapComments: MutableMap<String, Comment> = mutableMapOf()
 
+    var commentIndex = 0
+    var descargas = 0
+
     //Guardamos las imagenes de PlaceDataFragment
     var arrayLIstBitmap: ArrayList<Bitmap> = arrayListOf()
 
@@ -88,19 +91,33 @@ class CommentListViewModel : ViewModel() {
     }
 
 
+    fun loadNewData() {
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        placeRef.removeEventListener(childListener)
+
+        descargas = 0
+        loadChildEventListener()
+    }
+
     fun loadChildEventListener() {
 
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
 
         childListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+
                 if (snapshot.key!= Constants.USERPLACESCORE) {
 
-                    var comment = getCommentData(snapshot)
-                    mapComments[comment.commentId] = comment
+                    if(descargas < Constants.MAX_DATABASE_ITEMS && commentIndex < snapshot.childrenCount) {
+                        val comment = getCommentData(snapshot)
+                        mapComments[comment.commentId] = comment
 
-                    setCommentList()
-                    Log.d("childFirebase", "Added Success")
+                        commentIndex++
+                        descargas++
+
+                        setCommentList()
+                        Log.d("childFirebase", "Added Success")
+                    }
                 }
             }
 
@@ -108,6 +125,7 @@ class CommentListViewModel : ViewModel() {
 
                 if (snapshot.key!= Constants.USERPLACESCORE) {
                     val comment = getCommentData(snapshot)
+                    commentIndex++
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                         mapComments.replace(comment.commentId, comment)
                     } else {
@@ -125,6 +143,8 @@ class CommentListViewModel : ViewModel() {
                 if (snapshot.key!= Constants.USERPLACESCORE) {
                     val comment = getCommentData(snapshot)
                     mapComments.remove(comment.commentId)
+                    commentIndex--
+                    descargas--
 
                     setCommentList()
                     Log.d("childFirebase", "Removed Success")

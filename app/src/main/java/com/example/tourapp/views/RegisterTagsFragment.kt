@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.viewModel.RegisterViewModel
@@ -33,16 +34,19 @@ class RegisterTagsFragment : Fragment() {
         viewModel = (activity as RegisterActivity).getCurrentViewModel()
         viewModel.arrayTags = (activity as RegisterActivity).arrayListTags
 
-        btn_register.setOnClickListener {
-            registerUser()
-        }
+        manager = LinearLayoutManager(this.activity)
+        viewModel.configAdapter()
 
-        recyclerView = recycler_comment_view.apply {
+        recyclerView = rv_register_tags.apply {
             layoutManager = manager
             adapter =  viewModel.myAdapter
         }
 
-        viewModel.configAdapter()
+        btn_register.setOnClickListener {
+            rv_register_tags.isEnabled = false
+            registerUser()
+        }
+
     }
 
     private fun registerUser() {
@@ -50,9 +54,10 @@ class RegisterTagsFragment : Fragment() {
         if (list != null) {
             if(!list.contains(true)) {
                 Toast.makeText((activity as RegisterActivity), "Selecciona preferencias", Toast.LENGTH_SHORT).show()
+                rv_register_tags.isEnabled = true
             }
             else {
-                (activity as RegisterActivity).onRegisterClick()
+                viewModel.uploadUserData(viewModel.user.userPassword)
             }
         }
     }

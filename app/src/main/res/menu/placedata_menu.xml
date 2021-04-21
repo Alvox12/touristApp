@@ -8,6 +8,10 @@
             android:id="@+id/opt_edit_place"
             android:title="@string/opt_edit_place" />
 
+        <item
+            android:id="@+id/opt_delete_place"
+            android:title="@string/opt_delete_place" />
+
     </group>
 
 </menu>

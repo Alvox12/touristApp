@@ -58,6 +58,9 @@
         <action
             android:id="@+id/action_placeDataFragment_to_commentListFragment"
             app:destination="@id/commentListFragment" />
+        <action
+            android:id="@+id/action_placeDataFragment_to_placeModifyFragment"
+            app:destination="@id/placeModifyFragment" />
     </fragment>
     <fragment
         android:id="@+id/commentListFragment"
@@ -90,6 +93,11 @@
             android:id="@+id/action_userListOfListsFragment_to_placeListFragment"
             app:destination="@id/placeListFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/placeModifyFragment"
+        android:name="com.example.tourapp.views.PlaceModifyFragment"
+        android:label="Modificar datos"
+        tools:layout="@layout/fragment_place_modify" />
 
 
 </navigation>

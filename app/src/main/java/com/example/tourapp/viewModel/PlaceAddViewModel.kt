@@ -13,12 +13,16 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageTask
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PlaceAddViewModel : ViewModel() {
 
     var arrayListTags: ArrayList<String> = arrayListOf()
     var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
     lateinit var tagsAdapter: RecyclerTagListAdapter
+
+    var listCodes: ArrayList<String> = arrayListOf()
 
     var myMapPlaceImg: MutableMap<Int, Uri?> = mutableMapOf()
     var myMapImgExtension: MutableMap<Int, String?> = mutableMapOf()
@@ -33,7 +37,8 @@ class PlaceAddViewModel : ViewModel() {
 
     fun initData(list: ArrayList<String>) {
         arrayListTags = list.clone() as ArrayList<String>
-        this.tagsAdapter = RecyclerTagListAdapter(arrayListTags)
+        val selected: ArrayList<Boolean> = ArrayList(Collections.nCopies(arrayListTags.size, false))
+        this.tagsAdapter = RecyclerTagListAdapter(arrayListTags, selected)
         this.id_lugar = getCodePlace()
     }
 
@@ -95,7 +100,13 @@ class PlaceAddViewModel : ViewModel() {
 
     private fun getCodePlace(): String {
         val place = Place()
-        return place.generateId()
+        var id = place.generateId()
+
+        while(listCodes.contains(id)) {
+            id = place.generateId()
+        }
+
+        return  id
     }
 
 }

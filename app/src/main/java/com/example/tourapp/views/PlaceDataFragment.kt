@@ -1,18 +1,28 @@
 package com.example.tourapp.views
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.Navigation
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceDataViewModel
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_delete_place.view.*
+import kotlinx.android.synthetic.main.dialog_logout.view.*
 import kotlinx.android.synthetic.main.fragment_place_data.*
 
 
@@ -43,8 +53,14 @@ class PlaceDataFragment : Fragment() {
         when (item.itemId) {
             R.id.opt_edit_place -> {
                 view?.let {
-                    //Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeAddFragment)
+                    val bundle = Bundle()
+                    bundle.putSerializable("Place", viewModel.place)
+                    Navigation.findNavController(it).navigate(R.id.action_placeDataFragment_to_placeModifyFragment, bundle)
                 }
+            }
+            R.id.opt_delete_place -> {
+                //Dialog eliminar lugar
+                showDialogDelete()
             }
         }
 
@@ -78,15 +94,33 @@ class PlaceDataFragment : Fragment() {
 
         initSetup()
 
-        if(previo == "Comments") {
+        /*if(previo == "Comments") {
             val arrayBitmap =arguments?.get("ImagesMap") as ArrayList<Bitmap>
             viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
             viewModel.imagesDownloaded.value = true
         }
-        else
-            viewModel.getImages(viewModel.place.placePictures)
+        else*/
+        viewModel.getImages(viewModel.place.placePictures)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.let {
+            if (it != null) {
+                val navController = Navigation.findNavController(it)
+                // Instead of String any types of data can be used
+                navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("key")?.observe(viewLifecycleOwner) { bundle ->
+                    val previo = bundle.get("Previous") as String
+                    if(previo == "Comments") {
+                        val arrayBitmap = bundle.get("ImagesMap") as ArrayList<Bitmap>
+                        viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
+                        viewModel.imagesDownloaded.value = true
+                    }
+                }
+            }
+        }
+    }
 
     private fun initSetup() {
 
@@ -180,6 +214,40 @@ class PlaceDataFragment : Fragment() {
             //Obtenemos resultados de data
         }
     }*/
+
+    fun deletePlace() {
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(viewModel.place.placeId)
+        placeRef.removeValue().addOnCompleteListener {
+            if(it.isSuccessful) {
+                val storageRef = FirebaseStorage.getInstance().getReference(viewModel.place.placePictures)
+                storageRef.delete().addOnCompleteListener { it2->
+                    if(it2.isSuccessful) {
+                        Toast.makeText((activity as MainActivity), "Lugar eliminado correctamente", Toast.LENGTH_SHORT).show()
+                        (activity as MainActivity).onBackPressed()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showDialogDelete() {
+        val dialogBuilder = AlertDialog.Builder((activity as MainActivity))
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_place, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btn_delete_cancel.setOnClickListener{
+            b.dismiss()
+        }
+
+        dialogView.btn_delete_accept.setOnClickListener{
+            deletePlace()
+            b.dismiss()
+            (activity as MainActivity).onBackPressed()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
 
     fun destroyObserver() {
         viewModel.imagesDownloaded.removeObserver(this.observerImageDownloaded)

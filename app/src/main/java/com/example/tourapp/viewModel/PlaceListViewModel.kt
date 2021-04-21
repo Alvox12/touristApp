@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerPlaceListAdapter
 import com.example.tourapp.adapter.RecyclerTagListAdapter
 import com.example.tourapp.commons.Constants
-import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.Place
+import com.example.tourapp.dataModel.User
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -27,6 +27,13 @@ class PlaceListViewModel : ViewModel() {
     var listTags: ArrayList<String> = arrayListOf()
     var myBitmapIcon: MutableMap<Int, Bitmap> = mutableMapOf()
     private lateinit var mListenerPlace : ValueEventListener
+
+    var listCodes: ArrayList<String> = arrayListOf()
+
+    lateinit var user: User
+
+    var placeIndex = 0
+    var descargas = 0
 
     fun configAdapter() {
         myAdapter = RecyclerPlaceListAdapter()
@@ -62,10 +69,94 @@ class PlaceListViewModel : ViewModel() {
 
     }
 
+    fun loadNewData() {
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
+        placeRef.removeEventListener(mListenerPlace)
+
+        descargas = 0
+        getPlaceList(arrayListOf())
+    }
+
+    private fun getPlaceData(place: DataSnapshot): Place {
+
+        var placeAux: Place
+
+        val name = place.child(Constants.PLACENAME).value as String
+        val description = place.child(Constants.PLACEDESCRIPTION).value as String
+        val id = place.child(Constants.PLACEID).value as String
+        val creator = place.child(Constants.PLACECREATOR).value as String
+        val score = place.child(Constants.PLACESCORE).value
+        val pictures = place.child(Constants.PLACEPICTURES).value as String
+        val tags = place.child(Constants.PLACEETIQUETAS).value as String
+
+        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
+
+        //val latlng = getLatLng(coordinates)
+        val arrayTags = getTags(tags)
+
+        //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
+        //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
+
+        //COMMENTS
+        /*var placeComments: MutableList<Comment> = mutableListOf()
+        var userid:String = ""
+        var commenttxt:String = ""
+        var comentario: Comment
+
+        place.child(Constants.PLACECOMMENTS).children.forEach {
+
+            userid = it.child(Constants.COMMENTUSER).value as String
+            commenttxt = it.child(Constants.COMMENTTXT).value as String
+
+            comentario = Comment(commenttxt, userid)
+            placeComments.add(comentario)
+        }*/
+
+
+        /*var aux = place.child(Constants.PLACECOMMENTS).value
+
+        var comentario = Comment()
+        var placeComments: MutableList<Comment> = mutableListOf()
+        var coment: MutableList<Comment>? = mutableListOf()
+
+        var i = 0
+
+        for (comment in aux) {
+            Log.d("onChildAdded()","i: " + i)
+
+            var listaComent = (aux as ArrayList<*>).get(i)
+            Log.d("onChildAdded()","listaComent: " + listaComent)
+
+            comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
+                listaComent["nameUser"] as String,
+                listaComent["date"] as String,
+                listaComent["time"] as String)
+
+            placeComments.add(comentario)
+
+            i++
+        }*/
+
+        val doubleScore = score.toString()
+        var scoreDouble = doubleScore.toDoubleOrNull()
+        if (scoreDouble == null) {
+            scoreDouble = 0.0
+        }
+
+
+        placeAux =  Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
+        placeAux.arrayTags = arrayTags
+
+        return placeAux
+    }
+
+
     fun getPlaceList(listCodes: ArrayList<String>) {
 
         listPlace.clear()
+        listCodes.clear()
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         var placeAux: Place
 
         var customList = false
@@ -79,11 +170,22 @@ class PlaceListViewModel : ViewModel() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                snapshot.children.forEachIndexed { index, place ->
+                while(placeIndex < snapshot.childrenCount && descargas < Constants.MAX_DATABASE_ITEMS) {
+
+                    //Descargamos el lugar
+                    placeAux = getPlaceData(snapshot.children.elementAt(placeIndex))
+                    listPlace.add(placeAux)
+
+                    placeIndex++
+                    descargas++
+
+                    setPlaceList()
+                }
+                /*snapshot.children.forEachIndexed { index, place ->
 
                     Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
 
-                    if (customList && listCodes.contains(place.key)) {
+                   /* if (customList && listCodes.contains(place.key)) {
                         
                         val name = place.child(Constants.PLACENAME).value as String
                         val description = place.child(Constants.PLACEDESCRIPTION).value as String
@@ -98,76 +200,7 @@ class PlaceListViewModel : ViewModel() {
                         //val latlng = getLatLng(coordinates)
                         val arrayTags = getTags(tags)
 
-                        val doubleScore = score.toString()
-                        var scoreDouble = doubleScore.toDoubleOrNull()
-                        if (scoreDouble == null) {
-                            scoreDouble = 0.0
-                        }
-
-
-                        placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
-                        placeAux.arrayTags = arrayTags
-                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
-                        listPlace.add(placeAux)
-                        setPlaceList()
-                    }
-                    else {
-
-                        val name = place.child(Constants.PLACENAME).value as String
-                        val description = place.child(Constants.PLACEDESCRIPTION).value as String
-                        val id = place.child(Constants.PLACEID).value as String
-                        val creator = place.child(Constants.PLACECREATOR).value as String
-                        val score = place.child(Constants.PLACESCORE).value
-                        val pictures = place.child(Constants.PLACEPICTURES).value as String
-                        val tags = place.child(Constants.PLACEETIQUETAS).value as String
-
-                        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
-
-                        //val latlng = getLatLng(coordinates)
-                        val arrayTags = getTags(tags)
-
-                        //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
-                        //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
-
-                        //COMMENTS
-                        /*var placeComments: MutableList<Comment> = mutableListOf()
-                        var userid:String = ""
-                        var commenttxt:String = ""
-                        var comentario: Comment
-
-                        place.child(Constants.PLACECOMMENTS).children.forEach {
-
-                            userid = it.child(Constants.COMMENTUSER).value as String
-                            commenttxt = it.child(Constants.COMMENTTXT).value as String
-
-                            comentario = Comment(commenttxt, userid)
-                            placeComments.add(comentario)
-                        }*/
-
-
-                        /*var aux = place.child(Constants.PLACECOMMENTS).value
-
-                        var comentario = Comment()
-                        var placeComments: MutableList<Comment> = mutableListOf()
-                        var coment: MutableList<Comment>? = mutableListOf()
-
-                        var i = 0
-
-                        for (comment in aux) {
-                            Log.d("onChildAdded()","i: " + i)
-
-                            var listaComent = (aux as ArrayList<*>).get(i)
-                            Log.d("onChildAdded()","listaComent: " + listaComent)
-
-                            comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
-                                listaComent["nameUser"] as String,
-                                listaComent["date"] as String,
-                                listaComent["time"] as String)
-
-                            placeComments.add(comentario)
-
-                            i++
-                        }*/
+                        listCodes.add(id)
 
                         val doubleScore = score.toString()
                         var scoreDouble = doubleScore.toDoubleOrNull()
@@ -181,8 +214,15 @@ class PlaceListViewModel : ViewModel() {
                         //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
                         listPlace.add(placeAux)
                         setPlaceList()
-                    }
-                }
+                    }*/
+                    //else {
+
+                        placeAux = getPlaceData(place)
+                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
+                        listPlace.add(placeAux)
+                        setPlaceList()
+                    //}
+                }*/
             }
 
         }
@@ -227,7 +267,7 @@ class PlaceListViewModel : ViewModel() {
             val pictureRef = mStorage.child(folderDir)
             val maxDownloadBytes: Long = 1024 * 1024
 
-            pictureRef.listAll().addOnSuccessListener {result ->
+            pictureRef.listAll().addOnSuccessListener { result ->
                 for (fileRef in result.items) {
                     //Download the file using its reference (fileRef)
                     fileRef.getBytes(maxDownloadBytes).addOnSuccessListener { bytes ->
@@ -238,6 +278,27 @@ class PlaceListViewModel : ViewModel() {
             }
 
         }
+    }
+
+    private fun checkUserHasAccount(userId: String, placeId: String, place: DataSnapshot) {
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
+
+        userRef.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.hasChild(Constants.USERID) && snapshot.exists()) {
+                    //Descargamos el lugar
+                }
+                else {
+                    //Eliminamos el lugar
+                    placeRef.child(placeId).removeValue()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                //
+            }
+        })
     }
 
     fun deletePlaceListener() {

@@ -62,7 +62,9 @@ class UserListOfListsFragment : Fragment() {
         fab_add_list.setOnClickListener { btnView ->
             view.let {
                 if (it != null) {
-                    Navigation.findNavController(it).navigate(R.id.action_userListOfListsFragment_to_placeCreateListFragment2)
+                    val bundle = Bundle()
+                    bundle.putStringArrayList("listCodes", viewModel.listCodes)
+                    Navigation.findNavController(it).navigate(R.id.action_userListOfListsFragment_to_placeCreateListFragment2, bundle)
                 }
             }
         }
@@ -73,6 +75,7 @@ class UserListOfListsFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.deleteListener()
+        (activity as MainActivity).setDrawerEnabled(true)
     }
 
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -14,6 +15,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.dataModel.User
@@ -68,8 +70,24 @@ class CommentListFragment : Fragment()  {
             adapter =  viewModel.myAdapter
         }
 
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //direction integers: -1 for up, 1 for down, 0 will always return false
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
+                        viewModel.loadNewData()
+                    }
+                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+
         viewModel.setCommentList()
 
+        viewModel.commentIndex = 0
+        viewModel.descargas = 0
+        
         viewModel.loadChildEventListener()
     }
 
@@ -82,19 +100,23 @@ class CommentListFragment : Fragment()  {
         bundle.putSerializable("Place", this.place)
         bundle.putString("Previous", "Comments")
 
-        val manager: FragmentManager = (activity as MainActivity).supportFragmentManager
+        /*val manager: FragmentManager = (activity as MainActivity).supportFragmentManager
         val trans: FragmentTransaction = manager.beginTransaction()
 
-        val fragment: Fragment? = manager.findFragmentById(R.id.placeDataFragment)
-        if (fragment != null) {
-            trans.remove(fragment)
-        }
+       val fragment: Fragment = PlaceDataFragment()
+        fragment.arguments = bundle
+        manager.popBackStack()*/
+
+
         //manager.popBackStack(R.id.commentListFragment, 0)
        // manager.popBackStackImmediate()
 
         view.let {
             if (it != null) {
-                Navigation.findNavController(it).navigate(R.id.action_commentListFragment_to_placeDataFragment, bundle)
+                //Navigation.findNavController(it).navigate(R.id.action_commentListFragment_to_placeDataFragment, bundle)
+                val navController = Navigation.findNavController(it)
+                navController.previousBackStackEntry?.savedStateHandle?.set("key", bundle)
+                navController.popBackStack()
             }
         }
     }
@@ -114,7 +136,10 @@ class CommentListFragment : Fragment()  {
 
         if(!txt.isBlank()) {
             et_message_comment.setText("")
-            val idComment = Comment().generateId()
+            var idComment = Comment().generateId()
+            while (viewModel.mapComments.containsKey(idComment)) {
+                idComment = Comment().generateId()
+            }
             val idUser = this.user.userId
             val nameUser = this.user.userName
 

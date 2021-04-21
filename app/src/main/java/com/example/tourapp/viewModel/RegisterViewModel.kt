@@ -18,6 +18,7 @@ class RegisterViewModel : ViewModel() {
     lateinit var user: User
     var userClient: MutableLiveData<User> = MutableLiveData()
     var flagCreate: MutableLiveData<Boolean> = MutableLiveData()
+    var tagLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     var arrayTags: ArrayList<String> = arrayListOf()
 
@@ -83,21 +84,8 @@ class RegisterViewModel : ViewModel() {
 
                         if(result.isSuccessful) {
                             Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
-
-                            user.userPassword =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
-                            mFirebaseAuth.uid?.let { uid ->
-
-                                user.userId = uid
-                                //Damos de alta el usuraio en el nodo User
-                                refUser.child(uid).setValue(user).addOnCompleteListener { result ->
-
-                                    if (result.isSuccessful) {
-                                        Log.v("FIREBASE_BBDD", "SUCCESS_UPLOAD")
-                                        loadUserPrefs(usrPassAux)
-                                        //loginAfterSignUp(usrPassAux)
-                                    }
-                                }
-                            }
+                            //uploadUserData(usrPassAux)
+                            loginAfterSignUp(usrPassAux)
                         }
                         else {
                             flagCreate.value = false
@@ -110,14 +98,31 @@ class RegisterViewModel : ViewModel() {
 
     }
 
-    private fun loadUserPrefs(userPass: String) {
+    fun uploadUserData(userPass: String) {
+        user.userPassword =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
+        mFirebaseAuth.uid?.let { uid ->
+
+            user.userId = uid
+            //Damos de alta el usuraio en el nodo User
+            refUser.child(uid).setValue(user).addOnCompleteListener { result ->
+
+                if (result.isSuccessful) {
+                    Log.v("FIREBASE_BBDD", "SUCCESS_UPLOAD")
+                    uploadUserPrefs(userPass)
+                }
+            }
+        }
+    }
+
+    private fun uploadUserPrefs(userPass: String) {
         val prefRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(user.userId).child(Constants.USERPREFS)
 
         val msg = getMsg()
         prefRef.setValue(msg).addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_TAGS_UPLOAD")
-                loginAfterSignUp(userPass)
+                flagCreate.value = true
+                //loginAfterSignUp(userPass)
             }
         }
     }
@@ -151,7 +156,8 @@ class RegisterViewModel : ViewModel() {
                     if(it.isSuccessful) {
                         //loadClient(mFirebaseAuth.uid.toString())
                         Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
-                        flagCreate.value = true
+                        tagLiveData.value = true
+                        //flagCreate.value = true
                         //loginNotify.value = true
                     }
                     else {
