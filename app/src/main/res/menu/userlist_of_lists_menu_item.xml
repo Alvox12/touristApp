@@ -7,6 +7,10 @@
             android:id="@+id/opt_eliminar_lista_lugares"
             android:title="@string/eliminar_lista_lugares" />
 
+        <item
+            android:id="@+id/opt_cambiar_nom_lista_lugares"
+            android:title="@string/cambiar_nombre_lista_lugares" />
+
     </group>
 
 </menu>

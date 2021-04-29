@@ -21,6 +21,7 @@ class Constants {
 
         const val LISTNAME = "listName"
         const val LISTID = "listId"
+        const val FAVLIST = "Favoritos"
 
         const val PLACES = "LUGARES"
         const val PLACEID = "placeId"

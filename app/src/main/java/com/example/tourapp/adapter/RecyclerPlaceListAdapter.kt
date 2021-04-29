@@ -4,21 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.dataModel.Place
+import com.example.tourapp.viewModel.CustomPlaceListViewModel
+import kotlinx.android.synthetic.main.custom_place_list_item.view.*
 
-class RecyclerPlaceListAdapter():
+
+class RecyclerPlaceListAdapter(customList: Boolean = false):
     RecyclerView.Adapter<RecyclerPlaceListAdapter.ViewHolder>(), Filterable {
 
     private var listPlace: ArrayList<Place>? = arrayListOf()
     private var listFiltered: ArrayList<Place>? = arrayListOf()
     private var parent: ViewGroup? = null
+    private var customList: Boolean = false
+
+    lateinit var model: CustomPlaceListViewModel
+
+    init {
+        this.customList = customList
+    }
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
@@ -31,6 +38,7 @@ class RecyclerPlaceListAdapter():
             tvscore.text = place.placeScore.toString()
         }
     }
+
 
     private var myFilter: Filter = object : Filter() {
 
@@ -68,13 +76,22 @@ class RecyclerPlaceListAdapter():
         }
     }
 
+    fun setCustomPlaceModel(model: CustomPlaceListViewModel) {
+        this.model = model
+    }
+
     fun setPlaceList(places: ArrayList<Place>) {
         this.listPlace = places.clone() as ArrayList<Place>
         this.listFiltered = places.clone() as ArrayList<Place>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val vh = LayoutInflater.from(parent.context).inflate(R.layout.place_list_item, parent, false)
+        val vh: View
+        if(!customList)
+            vh = LayoutInflater.from(parent.context).inflate(R.layout.place_list_item, parent, false)
+        else
+            vh = LayoutInflater.from(parent.context).inflate(R.layout.custom_place_list_item, parent, false)
+
         this.parent = parent
         return ViewHolder(vh)
     }
@@ -87,6 +104,30 @@ class RecyclerPlaceListAdapter():
                 val item_layout = holder.view.findViewById<LinearLayout>(R.id.ll_place_layout)
                 item_layout.setOnClickListener { view->
                     detailIncidence(position, view)
+                }
+
+                if(customList) {
+                    val popupMenu = PopupMenu(holder.view.context, holder.view.iv_button_opt)
+                    popupMenu.inflate(R.menu.custom_list_item_menu)
+
+                    popupMenu.setOnMenuItemClickListener { item->
+                        when(item.itemId) {
+                            R.id.opt_delete_list_elem -> {
+                                popupMenu.dismiss()
+                                listPlace?.get(position)?.let { place -> model.deleteListElem(position, place.placeId) }
+                                Toast.makeText(parent.context, "Elemento eliminado de lista", Toast.LENGTH_SHORT).show()
+                                true
+                            }
+                            else -> {
+                                popupMenu.dismiss();
+                                false
+                            }
+                        }
+                    }
+
+                    holder.view.iv_button_opt.setOnClickListener {
+                        popupMenu.show()
+                    }
                 }
             }
         }

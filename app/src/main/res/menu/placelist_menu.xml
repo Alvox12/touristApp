@@ -13,6 +13,25 @@
             app:actionViewClass="android.widget.SearchView" />
 
         <item
+            android:id="@+id/opt_filter_place"
+            android:title="@string/opt_filter_place"
+            android:icon="@drawable/ic_baseline_filter_list_24"
+            app:showAsAction="always">
+
+            <!-- "filter" submenu -->
+            <menu>
+
+                <item android:id="@+id/none_filter"
+                    android:title="Quitar filtros" />
+
+                <item android:id="@+id/filter_by_current_user"
+                    android:title="Creados por usuario" />
+
+            </menu>
+
+        </item>
+
+        <item
             android:id="@+id/opt_add_place"
             android:title="@string/opt_add_place"
             android:visible="true"/>

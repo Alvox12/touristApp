@@ -1,6 +1,7 @@
 package com.example.tourapp.viewModel
 
 import android.app.SyncNotedAppOp
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerCustomListsAdapter
 import com.example.tourapp.commons.Constants
@@ -12,7 +13,7 @@ import com.google.firebase.database.ValueEventListener
 
 class UserListOfListsViewModel : ViewModel() {
 
-    var adapter: RecyclerCustomListsAdapter = RecyclerCustomListsAdapter()
+    var adapter: RecyclerCustomListsAdapter = RecyclerCustomListsAdapter(this)
 
     var listNames: ArrayList<String> = arrayListOf()
     var listElems: ArrayList<Int> = arrayListOf()
@@ -40,6 +41,10 @@ class UserListOfListsViewModel : ViewModel() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
+                listNames.clear()
+                listElems.clear()
+                listCodes.clear()
+
                 snapshot.children.forEach { snap1->
                     val nplaces = (snap1.childrenCount-1).toInt()
                     val key = snap1.key as String
@@ -55,6 +60,37 @@ class UserListOfListsViewModel : ViewModel() {
         }
 
         ref.addValueEventListener(mListenerLists)
+    }
+
+    fun deleteList(listId: String, position: Int) {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}").child(listId)
+        ref.removeValue().addOnCompleteListener {
+            if(it.isSuccessful) {
+                Log.v("FIREBASE_BBDD", "SUCCESS_DEL_CUSTOM_USER_LIST")
+                listCodes.removeAt(position)
+                listNames.removeAt(position)
+                listElems.removeAt(position)
+
+                setLists()
+            }
+            else {
+                Log.v("FIREBASE_BBDD", "ERROR_DEL_CUSTOM_USER_LIST")
+            }
+        }
+    }
+
+    fun changeListName(listId: String, name: String, position: Int) {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}").child(listId)
+        ref.child(Constants.LISTNAME).setValue(name).addOnCompleteListener {
+            if(it.isSuccessful) {
+                Log.v("FIREBASE_BBDD", "SUCCESS_CHANGE_NAME_CUSTOM_USER_LIST")
+                listNames[position] = name
+                setLists()
+            }
+            else {
+                Log.v("FIREBASE_BBDD", "ERROR_CHANGE_NAME_CUSTOM_USER_LIST")
+            }
+        }
     }
 
 

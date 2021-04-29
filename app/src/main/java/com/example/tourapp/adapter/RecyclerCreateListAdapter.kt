@@ -41,6 +41,16 @@ class RecyclerCreateListAdapter(var model: PlaceCreateListViewModel):
         this.arrayListSelected = ArrayList(Collections.nCopies(listPlace!!.size, false))
     }
 
+    fun setSelectedPlaces() {
+        if(!model.newList && listPlace != null) {
+           for((index, elem) in listPlace!!.iterator().withIndex()) {
+               if(model.listSelected.contains(elem.placeId)) {
+                   arrayListSelected[index] = true
+               }
+           }
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerCreateListAdapter.ViewHolder {
         val vh = LayoutInflater.from(parent.context).inflate(R.layout.user_add_list_item, parent,false)
         this.parent = parent

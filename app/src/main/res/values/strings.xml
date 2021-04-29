@@ -36,8 +36,10 @@
 
     <string name="opt_add_place">Agregar lugar</string>
     <string name="opt_search_place">Buscar</string>
+    <string name="opt_filter_place">Filtrar</string>
     <string name="opt_edit_place">Editar información</string>
     <string name="opt_delete_place">Eliminar lugar</string>
+    <string name="opt_fav_place">Favorito</string>
 
     <!--Place data fragment-->
     <string name="place_btn_rate_txt">Puntuar</string>
@@ -69,6 +71,9 @@
 
     <!--User list of lists item menu-->
     <string name="eliminar_lista_lugares">Eliminar lista</string>
+    <string name="cambiar_nombre_lista_lugares">Cambiar nombre</string>
+    <string name="hint_change_list_name">Introduce nombre</string>
+    <string name="delete_list_item">Eliminar elemento</string>
 
 
     <string name="editcomment_search_location">Introduce Dirección, Ciudad o Código Postal</string>

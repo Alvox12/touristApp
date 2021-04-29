@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -34,6 +35,10 @@ class PlaceDataFragment : Fragment() {
 
     private lateinit var viewModel: PlaceDataViewModel
     private lateinit var observerImageDownloaded : Observer<Boolean>
+    private lateinit var observerFavPlace : Observer<Boolean>
+    private var favInitialSetup = false
+
+    private lateinit var menu: Menu
 
 
     override fun onCreateView(
@@ -47,6 +52,7 @@ class PlaceDataFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.placedata_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -61,6 +67,15 @@ class PlaceDataFragment : Fragment() {
             R.id.opt_delete_place -> {
                 //Dialog eliminar lugar
                 showDialogDelete()
+            }
+            R.id.opt_fav_place -> {
+                //Dependiendo del valor del booleanoo favoritePlace Eliminaremos o Subiremos un elemento a la lista
+                if(!viewModel.favoritePlace) { //Si no esta en la lista SUBIMOS ELEMENTO
+                    viewModel.favUploadDelete(true)
+                }
+                else { //Si esta ELIMINAMOS ELEMENTO
+                    viewModel.favUploadDelete(false)
+                }
             }
         }
 
@@ -90,6 +105,7 @@ class PlaceDataFragment : Fragment() {
 
         sliderView.setSliderAdapter(viewModel.sliderAdapter)
 
+        viewModel.getFavListId()
         viewModel.getCommentList()
 
         initSetup()
@@ -152,6 +168,27 @@ class PlaceDataFragment : Fragment() {
         btn_map.setOnClickListener {
             openMap()
         }
+
+        observerFavPlace = Observer {
+            if(it) {
+                //Cambiamos icono de favoritos
+                this.menu.findItem(R.id.opt_fav_place).icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_checked_24)
+                if(favInitialSetup)
+                    Toast.makeText((activity as MainActivity), "Lugar añadido a favoritos", Toast.LENGTH_SHORT).show()
+                else
+                    favInitialSetup = true
+            }
+            else {
+                //Cambiamos icono de favoritos
+                this.menu.findItem(R.id.opt_fav_place).icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_unchecked_24)
+                if(favInitialSetup)
+                    Toast.makeText((activity as MainActivity), "Lugar eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                else
+                    favInitialSetup = true
+            }
+        }
+
+        viewModel.favPlaceLiveData.observe(viewLifecycleOwner, observerFavPlace)
 
         observerImageDownloaded = Observer {
             if(it) {
@@ -249,12 +286,13 @@ class PlaceDataFragment : Fragment() {
         b.show()
     }
 
-    fun destroyObserver() {
+    private fun destroyObserver() {
         viewModel.imagesDownloaded.removeObserver(this.observerImageDownloaded)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.favPlaceLiveData.removeObserver(this.observerFavPlace)
         viewModel.deleteCommentListener()
     }
 

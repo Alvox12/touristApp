@@ -15,32 +15,28 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import java.util.*
-import kotlin.collections.ArrayList
 
-
-class PlaceListViewModel : ViewModel() {
+class CustomPlaceListViewModel : ViewModel() {
 
     lateinit var myAdapter: RecyclerPlaceListAdapter
     lateinit var tagsAdapter: RecyclerTagListAdapter
     var listPlace: ArrayList<Place> = ArrayList()
+    var keysPlaces: ArrayList<String> = arrayListOf()
     var listTags: ArrayList<String> = arrayListOf()
     var myBitmapIcon: MutableMap<Int, Bitmap> = mutableMapOf()
     private lateinit var mListenerPlace : ValueEventListener
+    private lateinit var mListenerCustomList : ValueEventListener
 
-    var listCodes: ArrayList<String> = arrayListOf()
+    lateinit var listCode: String
 
     lateinit var user: User
 
     var placeIndex = 0
     var descargas = 0
 
-    enum class FilterCategory {
-        NONE, USERID, HIGHRATE, LOWRATE, EAST
-    }
-
     fun configAdapter() {
-        myAdapter = RecyclerPlaceListAdapter()
+        myAdapter = RecyclerPlaceListAdapter(true)
+        myAdapter.setCustomPlaceModel(this)
     }
 
     fun setPlaceList() {
@@ -53,13 +49,13 @@ class PlaceListViewModel : ViewModel() {
         myAdapter.notifyDataSetChanged()
     }
 
-    fun filterPlaceList(listAux: ArrayList<Place>, position: Int) {
+    fun filterPlaceList(position: Int) {
         if(position == 0) {
-            setFilteredPlaceList(listAux)
+            setPlaceList()
         }
         else {
             val listFiltered: ArrayList<Place> = ArrayList()
-            for(aux in listAux) {
+            for(aux in listPlace) {
                 if(aux.arrayTags.contains(position)) {
                     listFiltered.add(aux)
                 }
@@ -69,28 +65,28 @@ class PlaceListViewModel : ViewModel() {
         }
     }
 
-    fun filterByCategory(position: Int, category: FilterCategory) {
-
-        val listFiltered: ArrayList<Place> = arrayListOf()
-
-        when(category) {
-            FilterCategory.NONE -> {
-                filterPlaceList(listPlace, position)
-            }
-            FilterCategory.USERID -> {
-                for(aux in listPlace) {
-                    if(aux.placeCreator == user.userId)
-                        listFiltered.add(aux)
-                }
-
-                filterPlaceList(listFiltered, position)
-            }
-        }
+    fun getTagsSelected(position: Int) {
 
     }
 
-    fun getTagsSelected(position: Int) {
+    fun getCustomListCodes() {
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}/${listCode}")
+        mListenerCustomList = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+               snapshot.children.forEach { code->
+                   Log.v("FIREBASE_BBDD_USER", "KEY_OBTENIDA")
+                   keysPlaces.add(code.value as String)
+               }
 
+                getPlaceList()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
+            }
+        }
+
+        userRef.addValueEventListener(mListenerCustomList)
     }
 
     fun loadNewData() {
@@ -98,7 +94,7 @@ class PlaceListViewModel : ViewModel() {
         placeRef.removeEventListener(mListenerPlace)
 
         descargas = 0
-        getPlaceList(arrayListOf())
+        getPlaceList()
     }
 
     private fun getPlaceData(place: DataSnapshot): Place {
@@ -115,51 +111,7 @@ class PlaceListViewModel : ViewModel() {
 
         val coordinates = place.child(Constants.PLACECOORDINATES).value as String
 
-        //val latlng = getLatLng(coordinates)
         val arrayTags = getTags(tags)
-
-        //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
-        //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
-
-        //COMMENTS
-        /*var placeComments: MutableList<Comment> = mutableListOf()
-        var userid:String = ""
-        var commenttxt:String = ""
-        var comentario: Comment
-
-        place.child(Constants.PLACECOMMENTS).children.forEach {
-
-            userid = it.child(Constants.COMMENTUSER).value as String
-            commenttxt = it.child(Constants.COMMENTTXT).value as String
-
-            comentario = Comment(commenttxt, userid)
-            placeComments.add(comentario)
-        }*/
-
-
-        /*var aux = place.child(Constants.PLACECOMMENTS).value
-
-        var comentario = Comment()
-        var placeComments: MutableList<Comment> = mutableListOf()
-        var coment: MutableList<Comment>? = mutableListOf()
-
-        var i = 0
-
-        for (comment in aux) {
-            Log.d("onChildAdded()","i: " + i)
-
-            var listaComent = (aux as ArrayList<*>).get(i)
-            Log.d("onChildAdded()","listaComent: " + listaComent)
-
-            comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
-                listaComent["nameUser"] as String,
-                listaComent["date"] as String,
-                listaComent["time"] as String)
-
-            placeComments.add(comentario)
-
-            i++
-        }*/
 
         val doubleScore = score.toString()
         var scoreDouble = doubleScore.toDoubleOrNull()
@@ -175,17 +127,13 @@ class PlaceListViewModel : ViewModel() {
     }
 
 
-    fun getPlaceList(listCodes: ArrayList<String>) {
+    fun getPlaceList() {
 
         listPlace.clear()
-        listCodes.clear()
+
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
         val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         var placeAux: Place
-
-        var customList = false
-        if(!listCodes.isEmpty())
-            customList = true
 
         mListenerPlace = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -194,59 +142,21 @@ class PlaceListViewModel : ViewModel() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                while(placeIndex < snapshot.childrenCount && descargas < Constants.MAX_DATABASE_ITEMS) {
+                while(placeIndex < keysPlaces.size && descargas < Constants.MAX_DATABASE_ITEMS) {
 
-                    //Descargamos el lugar
-                    placeAux = getPlaceData(snapshot.children.elementAt(placeIndex))
-                    listPlace.add(placeAux)
+                    val key = keysPlaces[placeIndex]
+                    if (snapshot.hasChild(key)) {
 
+                        //Descargamos el lugar
+                        placeAux = getPlaceData(snapshot.child(key))
+                        listPlace.add(placeAux)
+
+                        descargas++
+
+                        setPlaceList()
+                    }
                     placeIndex++
-                    descargas++
-
-                    setPlaceList()
                 }
-                /*snapshot.children.forEachIndexed { index, place ->
-
-                    Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
-
-                   /* if (customList && listCodes.contains(place.key)) {
-                        
-                        val name = place.child(Constants.PLACENAME).value as String
-                        val description = place.child(Constants.PLACEDESCRIPTION).value as String
-                        val id = place.child(Constants.PLACEID).value as String
-                        val creator = place.child(Constants.PLACECREATOR).value as String
-                        val score = place.child(Constants.PLACESCORE).value
-                        val pictures = place.child(Constants.PLACEPICTURES).value as String
-                        val tags = place.child(Constants.PLACEETIQUETAS).value as String
-
-                        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
-
-                        //val latlng = getLatLng(coordinates)
-                        val arrayTags = getTags(tags)
-
-                        listCodes.add(id)
-
-                        val doubleScore = score.toString()
-                        var scoreDouble = doubleScore.toDoubleOrNull()
-                        if (scoreDouble == null) {
-                            scoreDouble = 0.0
-                        }
-
-
-                        placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
-                        placeAux.arrayTags = arrayTags
-                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
-                        listPlace.add(placeAux)
-                        setPlaceList()
-                    }*/
-                    //else {
-
-                        placeAux = getPlaceData(place)
-                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
-                        listPlace.add(placeAux)
-                        setPlaceList()
-                    //}
-                }*/
             }
 
         }
@@ -267,6 +177,20 @@ class PlaceListViewModel : ViewModel() {
         }
 
         return listInt
+    }
+
+
+    fun deleteListElem(position: Int, placeId: String) {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}/${listCode}")
+        ref.child(placeId).removeValue().addOnCompleteListener {
+            if(it.isSuccessful) {
+                listPlace.removeAt(position)
+                Log.v("FIREBASE_BBDD_USER", "EXITO AL ELIMINAR ELEMENTO")
+                setPlaceList()
+            }
+            else
+                Log.v("FIREBASE_BBDD_USER", "ERROR AL ELIMINAR ELEMENTO")
+        }
     }
 
     fun getLatLng(aux: String): LatLng {
@@ -327,7 +251,8 @@ class PlaceListViewModel : ViewModel() {
 
     fun deletePlaceListener() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}/${listCode}")
         placeRef.removeEventListener(mListenerPlace)
+        userRef.removeEventListener(mListenerCustomList)
     }
-
 }

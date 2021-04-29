@@ -90,14 +90,23 @@
             android:id="@+id/action_userListOfListsFragment_to_placeCreateListFragment2"
             app:destination="@id/placeCreateListFragment2" />
         <action
-            android:id="@+id/action_userListOfListsFragment_to_placeListFragment"
-            app:destination="@id/placeListFragment" />
+            android:id="@+id/action_userListOfListsFragment_to_customPlaceListFragment"
+            app:destination="@id/customPlaceListFragment" />
     </fragment>
     <fragment
         android:id="@+id/placeModifyFragment"
         android:name="com.example.tourapp.views.PlaceModifyFragment"
         android:label="Modificar datos"
         tools:layout="@layout/fragment_place_modify" />
+    <fragment
+        android:id="@+id/customPlaceListFragment"
+        android:name="com.example.tourapp.views.CustomPlaceListFragment"
+        android:label="fragment_custom_place_list"
+        tools:layout="@layout/fragment_custom_place_list" >
+        <action
+            android:id="@+id/action_customPlaceListFragment_to_placeCreateListFragment2"
+            app:destination="@id/placeCreateListFragment2" />
+    </fragment>
 
 
 </navigation>

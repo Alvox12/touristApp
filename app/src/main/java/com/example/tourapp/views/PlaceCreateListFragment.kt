@@ -53,7 +53,14 @@ class PlaceCreateListFragment : Fragment() {
         val user = (activity as MainActivity).user
         viewModel.user = user
 
+        viewModel.newList = arguments?.get("newList") as Boolean
         viewModel.listCodes = arguments?.get("listCodes") as ArrayList<String>
+
+        if(!viewModel.newList) {
+            viewModel.listSelected = arguments?.get("listSelected") as ArrayList<String>
+            viewModel.listName = arguments?.get("listName") as String
+            viewModel.listId = arguments?.get("listId") as String
+        }
 
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
@@ -64,7 +71,10 @@ class PlaceCreateListFragment : Fragment() {
         }
 
         btn_add_list.setOnClickListener {
-            (activity as MainActivity).addCustomListName(viewModel)
+            if(viewModel.newList)
+                    (activity as MainActivity).addCustomListName(viewModel)
+            else
+                viewModel.uploadListPlace(viewModel.listName)
         }
 
 

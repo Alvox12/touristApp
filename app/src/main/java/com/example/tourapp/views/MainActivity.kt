@@ -1,23 +1,16 @@
 package com.example.tourapp.views
 
-import android.Manifest
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
@@ -29,18 +22,10 @@ import androidx.navigation.ui.NavigationUI
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
 import com.example.tourapp.commons.Constants
-import com.example.tourapp.commons.Constants.Companion.ERROR_DIALOG_REQUEST
-import com.example.tourapp.commons.Constants.Companion.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
-import com.example.tourapp.commons.Constants.Companion.PERMISSIONS_REQUEST_ENABLE_GPS
-import com.example.tourapp.commons.Constants.Companion.SERVICE_TAG
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityMainBinding
-import com.example.tourapp.viewModel.CommentListViewModel
-import com.example.tourapp.viewModel.PlaceCreateListViewModel
-import com.example.tourapp.viewModel.PlaceDataViewModel
-import com.example.tourapp.viewModel.UserViewModel
-import com.google.android.gms.common.ConnectionResult
+import com.example.tourapp.viewModel.*
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -51,6 +36,9 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.*
+import kotlinx.android.synthetic.main.dialog_edit_comment.view.btn_edit_accept
+import kotlinx.android.synthetic.main.dialog_edit_comment.view.btn_edit_cancel
+import kotlinx.android.synthetic.main.dialog_edit_list_name.view.*
 import kotlinx.android.synthetic.main.dialog_logout.view.*
 import kotlinx.android.synthetic.main.dialog_name_list.view.*
 import kotlinx.android.synthetic.main.dialog_score_place.view.*
@@ -228,6 +216,32 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
             if(!textComment.isBlank())
                 comment_model.editComment(comment.commentId, textComment)
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
+
+    fun editListNamePopup(listId: String, position: Int, oldName: String ,model: UserListOfListsViewModel) {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_list_name, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.et_edit_list_name.setText(oldName)
+
+        dialogView.btn_edit_cancel.setOnClickListener {
+            dialogView.btn_edit_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_edit_accept.setOnClickListener {
+            dialogView.btn_edit_cancel.isEnabled = false
+            val textName = dialogView.et_edit_list_name.text.toString()
+
+            if(!textName.isBlank())
+                model.changeListName(listId, textName, position)
 
             b.dismiss()
         }

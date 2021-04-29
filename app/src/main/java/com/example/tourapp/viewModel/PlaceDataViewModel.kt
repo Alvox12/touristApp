@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.SliderAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
+import com.example.tourapp.dataModel.ListPlaces
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.dataModel.User
 import com.google.android.gms.maps.model.LatLng
@@ -24,10 +25,15 @@ class PlaceDataViewModel : ViewModel() {
     lateinit var latLng: LatLng
     lateinit var user: User
     private lateinit var mListenerComment : ValueEventListener
+    private lateinit var mListenerFav : ValueEventListener
 
     var myBitmapPlaceImg: MutableMap<Int, Bitmap> = mutableMapOf()
     var sliderAdapter: SliderAdapter = SliderAdapter()
     var imagesDownloaded = MutableLiveData <Boolean>()
+
+    private lateinit var keyFavList: String
+    var favPlaceLiveData = MutableLiveData <Boolean>()
+    var favoritePlace: Boolean = false
 
 
     fun setImagesSlider() {
@@ -132,10 +138,71 @@ class PlaceDataViewModel : ViewModel() {
         return LatLng(0.0, 0.0)
     }
 
+    fun getFavListId() {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
+        mListenerFav = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var favFound = false
+                snapshot.children.forEach {
+                    var key = it.key
+                    if (key != null) {
+                        val aux = key.take(3)
+                        if(aux == "FAV") {
+                            //Guardamos codigo id lista
+                            favFound = true
+                            keyFavList = key
+                        }
+                    }
+                }
+
+                if(favFound) {
+                    //Buscamos si el lugar está en favoritos
+                    favoritePlace = snapshot.child(keyFavList).hasChild(place.placeId)
+                    if(favoritePlace) {
+                        favPlaceLiveData.value = true
+                    }
+                }
+                else {
+                    //Generamos id lista
+                    val aux: ListPlaces = ListPlaces()
+                    val auxid = aux.generateId()
+                    keyFavList = "FAV${auxid}"
+
+                    //Creamos lista
+                    ref.child(keyFavList).setValue(ListPlaces(Constants.FAVLIST, keyFavList)).addOnSuccessListener { favFound = true }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+
+        ref.addValueEventListener(mListenerFav)
+    }
+
+    fun favUploadDelete(upload: Boolean) {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
+
+        if (upload) { //Subimos a favoritos
+            //val arrayPlace: ArrayList<String> = arrayListOf()
+            //arrayPlace.add(place.placeId)
+            ref.child("${keyFavList}/${place.placeId}").setValue(place.placeId).addOnSuccessListener {
+                favPlaceLiveData.value = true
+            }
+        }
+        else { //Eliminamos
+            ref.child("${keyFavList}/${place.placeId}").removeValue().addOnSuccessListener {
+                favPlaceLiveData.value = false
+            }
+        }
+    }
+
     fun deleteCommentListener() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(place.placeId).child(
             Constants.PLACECOMMENTS
         )
+        val favRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
         placeRef.removeEventListener(mListenerComment)
+        favRef.removeEventListener(mListenerFav)
     }
 }
