@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.CustomPlaceListViewModel
 import kotlinx.android.synthetic.main.custom_place_list_item.view.*
@@ -107,27 +109,35 @@ class RecyclerPlaceListAdapter(customList: Boolean = false):
                 }
 
                 if(customList) {
-                    val popupMenu = PopupMenu(holder.view.context, holder.view.iv_button_opt)
-                    popupMenu.inflate(R.menu.custom_list_item_menu)
+                    if ((model.user.userType == Constants.NORMAL) && (model.user.userId != listPlace?.get(position)?.placeCreator)) {
+                        //Si es usuario MORMAL y no ha creado el lugar no perminimos opciones
+                        holder.view.iv_button_opt.isEnabled = false
+                        holder.view.iv_button_opt.isVisible = false
+                    }
+                    else { //Si es ADMIN o es el creador del lugar
+                        val popupMenu = PopupMenu(holder.view.context, holder.view.iv_button_opt)
+                        popupMenu.inflate(R.menu.custom_list_item_menu)
 
-                    popupMenu.setOnMenuItemClickListener { item->
-                        when(item.itemId) {
-                            R.id.opt_delete_list_elem -> {
-                                popupMenu.dismiss()
-                                listPlace?.get(position)?.let { place -> model.deleteListElem(position, place.placeId) }
-                                Toast.makeText(parent.context, "Elemento eliminado de lista", Toast.LENGTH_SHORT).show()
-                                true
+                        popupMenu.setOnMenuItemClickListener { item ->
+                            when (item.itemId) {
+                                R.id.opt_delete_list_elem -> {
+                                    popupMenu.dismiss()
+                                    listPlace?.get(position)?.let { place -> model.deleteListElem(position, place.placeId) }
+                                    Toast.makeText(parent.context, "Elemento eliminado de lista", Toast.LENGTH_SHORT).show()
+                                    true
+                                }
+                                else -> {
+                                    popupMenu.dismiss();
+                                    false
+                                }
                             }
-                            else -> {
-                                popupMenu.dismiss();
-                                false
-                            }
+                        }
+
+                        holder.view.iv_button_opt.setOnClickListener {
+                            popupMenu.show()
                         }
                     }
 
-                    holder.view.iv_button_opt.setOnClickListener {
-                        popupMenu.show()
-                    }
                 }
             }
         }
@@ -142,7 +152,11 @@ class RecyclerPlaceListAdapter(customList: Boolean = false):
         bundle.putSerializable("Place", auxPlace)
         bundle.putString("Previous", "")
 
-        view.let { Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeDataFragment, bundle)}
+        if(customList)
+            view.let { Navigation.findNavController(it).navigate(R.id.action_customPlaceListFragment_to_placeDataFragment, bundle)}
+        else
+            view.let { Navigation.findNavController(it).navigate(R.id.action_placeListFragment_to_placeDataFragment, bundle)}
+
     }
 
     override fun getItemCount() = this.listFiltered?.size ?: 0

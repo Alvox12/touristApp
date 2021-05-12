@@ -46,7 +46,7 @@ class UserListOfListsViewModel : ViewModel() {
                 listCodes.clear()
 
                 snapshot.children.forEach { snap1->
-                    val nplaces = (snap1.childrenCount-1).toInt()
+                    val nplaces = (snap1.childrenCount-2).toInt()
                     val key = snap1.key as String
                     val name = snap1.child(Constants.LISTNAME).value as String
 
@@ -67,9 +67,9 @@ class UserListOfListsViewModel : ViewModel() {
         ref.removeValue().addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_DEL_CUSTOM_USER_LIST")
-                listCodes.removeAt(position)
-                listNames.removeAt(position)
-                listElems.removeAt(position)
+                //listCodes.removeAt(position)
+                //listNames.removeAt(position)
+                //listElems.removeAt(position)
 
                 setLists()
             }
@@ -84,7 +84,7 @@ class UserListOfListsViewModel : ViewModel() {
         ref.child(Constants.LISTNAME).setValue(name).addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_CHANGE_NAME_CUSTOM_USER_LIST")
-                listNames[position] = name
+                //listNames[position] = name
                 setLists()
             }
             else {

@@ -118,6 +118,9 @@ class RegisterViewModel : ViewModel() {
         val prefRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(user.userId).child(Constants.USERPREFS)
 
         val msg = getMsg()
+        user.userPrefs = msg
+        user.arrayPrefs = getPrefs(msg)
+
         prefRef.setValue(msg).addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_TAGS_UPLOAD")
@@ -125,6 +128,18 @@ class RegisterViewModel : ViewModel() {
                 //loginAfterSignUp(userPass)
             }
         }
+    }
+
+    private fun getPrefs(prefs: String): ArrayList<Int> {
+        val listInt: ArrayList<Int> = arrayListOf()
+
+        if(prefs != "") {
+            val list: List<String> = prefs.split(",")
+            list.forEach { str ->
+                listInt.add(Integer.parseInt(str))
+            }
+        }
+        return listInt
     }
 
     private fun getMsg(): String {

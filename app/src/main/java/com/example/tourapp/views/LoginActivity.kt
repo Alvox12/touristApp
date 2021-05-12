@@ -156,7 +156,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         if(this::observerUser.isInitialized)
             model.userNotify.removeObserver(observerUser)
 
-        model.loginNotify.value = false
+        //model.loginNotify.value = false
     }
 
 }

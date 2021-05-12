@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_delete_account.view.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.*
 import kotlinx.android.synthetic.main.dialog_edit_comment.view.btn_edit_accept
@@ -382,8 +383,29 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         return valido
     }
 
-    private fun darDeBaja() {
+    fun deleteAccountPopup() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_account, null)
+        val b = dialogBuilder.setView(dialogView).create()
 
+
+        dialogView.btn_delete_cancel.setOnClickListener {
+            dialogView.btn_delete_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_delete_accept.setOnClickListener {
+            dialogView.btn_delete_cancel.isEnabled = false
+            darDeBaja()
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
+
+    private fun darDeBaja() {
         val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         mFirebaseAuth.currentUser?.let { fuser ->
             userRef.child(fuser.uid).removeValue().addOnCompleteListener {it1->

@@ -28,6 +28,10 @@
     <string name="placeList_menu">Lista lugares</string>
     <string name="usercustomlists_menu">Tus listas personales</string>
 
+    <!--Dar de baja-->
+    <string name="del_account_msg">¿Desea eliminar su cuenta? Una vez hecho tendrá que crear
+        una nueva para acceder a los servicios de la aplicación.</string>
+
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
 
@@ -77,6 +81,7 @@
 
 
     <string name="editcomment_search_location">Introduce Dirección, Ciudad o Código Postal</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--LORE IPSUM TEST-->
 
 </resources>

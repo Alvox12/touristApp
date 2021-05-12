@@ -51,7 +51,7 @@ class CommentListFragment : Fragment()  {
         viewModel.mapComments = place.placeComments
 
         this.user = (activity as MainActivity).user
-        viewModel.userId = this.user.userId
+        viewModel.user = this.user
 
         // This callback will only be called when MyFragment is at least Started.
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {

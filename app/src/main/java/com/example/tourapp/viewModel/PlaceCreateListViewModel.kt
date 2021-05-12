@@ -30,8 +30,19 @@ class PlaceCreateListViewModel : ViewModel() {
     lateinit var user: User
     var listUploaded = MutableLiveData <Boolean>()
 
+    var placeIndex = 0
+    var descargas = 0
+
     fun configAdapter() {
         myAdapter = RecyclerCreateListAdapter(this)
+    }
+
+    fun loadNewData() {
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
+        placeRef.removeEventListener(mListenerPlace)
+
+        descargas = 0
+        getPlaceList()
     }
 
     fun setPlaceList() {
@@ -60,6 +71,36 @@ class PlaceCreateListViewModel : ViewModel() {
         }
     }
 
+    private fun getPlaceData(place: DataSnapshot): Place {
+
+        var placeAux: Place
+
+        val name = place.child(Constants.PLACENAME).value as String
+        val description = place.child(Constants.PLACEDESCRIPTION).value as String
+        val id = place.child(Constants.PLACEID).value as String
+        val creator = place.child(Constants.PLACECREATOR).value as String
+        val score = place.child(Constants.PLACESCORE).value
+        val pictures = place.child(Constants.PLACEPICTURES).value as String
+        val tags = place.child(Constants.PLACEETIQUETAS).value as String
+
+        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
+
+        val arrayTags = getTags(tags)
+
+        val doubleScore = score.toString()
+        var scoreDouble = doubleScore.toDoubleOrNull()
+        if (scoreDouble == null) {
+            scoreDouble = 0.0
+        }
+
+
+        placeAux =  Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
+        placeAux.arrayTags = arrayTags
+
+        return placeAux
+    }
+
+
     fun getPlaceList() {
 
         arrayListPlaces.clear()
@@ -73,7 +114,18 @@ class PlaceCreateListViewModel : ViewModel() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                snapshot.children.forEachIndexed { index, place ->
+                while(placeIndex < snapshot.childrenCount && descargas < Constants.MAX_DATABASE_ITEMS) {
+
+                    //Descargamos el lugar
+                    placeAux = getPlaceData(snapshot.children.elementAt(placeIndex))
+                    arrayListPlaces.add(placeAux)
+
+                    placeIndex++
+                    descargas++
+
+                    setPlaceList()
+                }
+                /*snapshot.children.forEachIndexed { index, place ->
 
                     Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
                     val name = place.child(Constants.PLACENAME).value as String
@@ -104,10 +156,11 @@ class PlaceCreateListViewModel : ViewModel() {
                     arrayListPlaces.add(placeAux)
 
                     setPlaceList()
-                }
+                }*/
 
                 if(!newList) {
                     myAdapter.setSelectedPlaces()
+                    myAdapter.notifyDataSetChanged()
                 }
             }
 

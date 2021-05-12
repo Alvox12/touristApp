@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.viewModel.CommentListViewModel
 import com.example.tourapp.views.MainActivity
@@ -42,36 +44,44 @@ class RecyclerCommentListAdapter(var model: CommentListViewModel):
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         listComments[position].let {
 
-            val popupMenu = PopupMenu(holder.view.context, holder.view.iv_button_comment)
-            popupMenu.inflate(R.menu.comment_itemlist_menu)
-
-            popupMenu.setOnMenuItemClickListener { item->
-               when(item.itemId) {
-                   R.id.opt_deletecomment -> {
-                       popupMenu.dismiss();
-                       model.delComment(listComments[position].commentId);
-                       true
-                   }
-                   R.id.opt_editcomment -> {
-                       popupMenu.dismiss();
-                       (parent?.context as MainActivity).editCommentPopup(listComments[position] ,model);
-                       true
-                   }
-                   else -> {
-                       popupMenu.dismiss();
-                       false
-                   }
-               }
-            }
-
             this.parent?.let { parent ->
                 holder.bind(it, parent)
             }
 
-            holder.view.iv_button_comment.setOnClickListener {
-                popupMenu.show()
+            if ((model.user.userType == Constants.NORMAL) && (model.user.userId != listComments[position].commentUserId)) {
+                //Si es usuario NORMAL y no es creador del comentario
+                holder.view.iv_button_comment.isEnabled = false
+                holder.view.iv_button_comment.isVisible = false
             }
-            //popupMenu.show()
+            else {
+                //Si es ADMIN o es el creador del comentario
+                val popupMenu = PopupMenu(holder.view.context, holder.view.iv_button_comment)
+                popupMenu.inflate(R.menu.comment_itemlist_menu)
+
+                popupMenu.setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.opt_deletecomment -> {
+                            popupMenu.dismiss();
+                            model.delComment(listComments[position].commentId);
+                            true
+                        }
+                        R.id.opt_editcomment -> {
+                            popupMenu.dismiss();
+                            (parent?.context as MainActivity).editCommentPopup(listComments[position], model);
+                            true
+                        }
+                        else -> {
+                            popupMenu.dismiss();
+                            false
+                        }
+                    }
+                }
+
+                holder.view.iv_button_comment.setOnClickListener {
+                    popupMenu.show()
+                }
+            }
+
         }
     }
 

@@ -86,6 +86,18 @@ class PlaceListFragment : Fragment() {
                 categoryFilter = PlaceListViewModel.FilterCategory.USERID
                 viewModel.filterByCategory(positionSpinner, categoryFilter)
             }
+            R.id.filter_high_rate->{
+                categoryFilter = PlaceListViewModel.FilterCategory.HIGHRATE
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+            R.id.filter_low_rate->{
+                categoryFilter = PlaceListViewModel.FilterCategory.LOWRATE
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+            R.id.filter_by_prefs->{
+                categoryFilter = PlaceListViewModel.FilterCategory.USERPREFS
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
             R.id.none_filter-> {
                 categoryFilter = PlaceListViewModel.FilterCategory.NONE
                 viewModel.filterByCategory(positionSpinner, categoryFilter)

@@ -24,8 +24,17 @@
                 <item android:id="@+id/none_filter"
                     android:title="Quitar filtros" />
 
+                <item android:id="@+id/filter_by_prefs"
+                    android:title="Tus preferencias" />
+
                 <item android:id="@+id/filter_by_current_user"
                     android:title="Creados por usuario" />
+
+                <item android:id="@+id/filter_high_rate"
+                    android:title="Puntuación alta" />
+
+                <item android:id="@+id/filter_low_rate"
+                    android:title="Puntuacion baja" />
 
             </menu>
 

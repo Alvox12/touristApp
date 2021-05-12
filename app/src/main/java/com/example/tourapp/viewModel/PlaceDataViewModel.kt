@@ -114,12 +114,17 @@ class PlaceDataViewModel : ViewModel() {
             Constants.PLACECOMMENTS
         ).child(user.userId)
 
+        val scoreRef = FirebaseDatabase.getInstance().getReference(Constants.PLACESCORES).child(place.placeId).child(user.userId)
+
         placeRef.child(Constants.USERPLACESCORE).setValue(score).addOnCompleteListener {
             if(it.isSuccessful) {
-                Log.v("FIREBASE_BBDD", "SUCCESS_ADD_PASSWORD")
+                Log.v("FIREBASE_BBDD", "SUCCESS_ADD_SCORE")
+                scoreRef.setValue(score).addOnSuccessListener {
+                    Log.v("FIREBASE_BBDD", "SUCCESS_ADD_SCORE")
+                }
             }
             else
-                Log.v("FIREBASE_BBDD", "ERROR_ADD_PASSWORD")
+                Log.v("FIREBASE_BBDD", "ERROR_ADD_SCORE")
         }
     }
 

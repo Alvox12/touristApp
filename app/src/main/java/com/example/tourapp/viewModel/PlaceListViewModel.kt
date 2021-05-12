@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import java.util.*
+import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 
@@ -27,6 +28,7 @@ class PlaceListViewModel : ViewModel() {
     var listTags: ArrayList<String> = arrayListOf()
     var myBitmapIcon: MutableMap<Int, Bitmap> = mutableMapOf()
     private lateinit var mListenerPlace : ValueEventListener
+    private lateinit var mListenerScores: ValueEventListener
 
     var listCodes: ArrayList<String> = arrayListOf()
 
@@ -36,7 +38,52 @@ class PlaceListViewModel : ViewModel() {
     var descargas = 0
 
     enum class FilterCategory {
-        NONE, USERID, HIGHRATE, LOWRATE, EAST
+        NONE, USERID, HIGHRATE, LOWRATE, USERPREFS
+    }
+
+    private var numScores: MutableMap<String, Int> = mutableMapOf()
+
+    private class ScoreClass(var id: String = "",
+                             var score: Double = 0.0,
+                             var num: Int? = 0): Comparator<ScoreClass>, Comparable<ScoreClass> {
+
+        override fun compare(a: ScoreClass, b: ScoreClass): Int {
+            if (a != null && b != null) {
+                return a.compareTo(b)
+            }
+            return 0
+        }
+
+        override fun compareTo(other: ScoreClass): Int {
+            if(this.num!! > other.num!!)
+                return 1
+            else if(this.num!! < other.num!!)
+                return -1
+            else
+                return 0
+        }
+    }
+
+    private class PrefsClass(var place: Place, var common: Int): Comparator<PrefsClass>, Comparable<PrefsClass> {
+        override fun compare(a: PrefsClass, b: PrefsClass): Int {
+            if (a != null && b != null) {
+                return a.compareTo(b)
+            }
+            return 0
+        }
+
+        override fun compareTo(other: PrefsClass): Int {
+            if(this.common!! > other.common!!)
+                return 1
+            else if(this.common!! < other.common!!)
+                return -1
+            else
+                return 0
+        }
+    }
+
+    init {
+        getNumScores()
     }
 
     fun configAdapter() {
@@ -71,7 +118,7 @@ class PlaceListViewModel : ViewModel() {
 
     fun filterByCategory(position: Int, category: FilterCategory) {
 
-        val listFiltered: ArrayList<Place> = arrayListOf()
+        var listFiltered: ArrayList<Place> = arrayListOf()
 
         when(category) {
             FilterCategory.NONE -> {
@@ -85,12 +132,116 @@ class PlaceListViewModel : ViewModel() {
 
                 filterPlaceList(listFiltered, position)
             }
+            FilterCategory.HIGHRATE-> {
+                listFiltered = filterByRate(FilterCategory.HIGHRATE)
+                filterPlaceList(listFiltered, position)
+            }
+            FilterCategory.LOWRATE-> {
+                listFiltered = filterByRate(FilterCategory.LOWRATE)
+                filterPlaceList(listFiltered, position)
+            }
+            FilterCategory.USERPREFS-> {
+                listFiltered = filterByPrefs()
+                filterPlaceList(listFiltered, position)
+            }
         }
 
     }
 
+    private fun filterByRate(category: FilterCategory): ArrayList<Place> {
+        var listFiltered: ArrayList<Place> = orderList()
+        if(category == FilterCategory.LOWRATE) {
+            listFiltered = listFiltered.reversed() as ArrayList<Place>
+        }
+
+        return listFiltered
+    }
+
+    private fun orderList(): ArrayList<Place> {
+        val mapPlacesScores: MutableMap<String, Double> = mutableMapOf()
+        for(place in listPlace.iterator()) {
+            mapPlacesScores[place.placeId] = place.placeScore
+        }
+
+        val sortedScores = mapPlacesScores.toList().sortedBy {(_, score)-> score}.reversed().toMap()
+
+        val aux1: MutableMap<Double, PriorityQueue<ScoreClass>> = mutableMapOf()
+        var currentScore: Double = sortedScores.values.first() //Le damos el valor mas alto
+        var priorityQueue: PriorityQueue<ScoreClass> = PriorityQueue<ScoreClass>()
+        for((id, score) in sortedScores) {
+            if(numScores[id] == null)
+                numScores[id] = 1
+
+            if(score != currentScore) {
+                if(priorityQueue.isNotEmpty()) {
+                    aux1[currentScore] = priorityQueue
+                    currentScore = score
+                    priorityQueue = PriorityQueue<ScoreClass>()
+                }
+            }
+
+            priorityQueue.add(ScoreClass(id, score, numScores[id]))
+        }
+        aux1[currentScore] = priorityQueue
+
+        val listFiltered: ArrayList<Place> = arrayListOf()
+        for((score, pq) in aux1) {
+            pq.forEach { scoreClass ->
+                // Con scoreClass.id obtenemos el lugar y lo añadimos a listFiltered.
+                val place = getPlaceById(scoreClass.id)
+                if(place != null)
+                    listFiltered.add(place)
+            }
+        }
+
+        return listFiltered
+    }
+
+    private fun getPlaceById(id: String): Place? {
+        listPlace.forEach { place ->
+            if(place.placeId == id)
+                return place
+        }
+        return null
+    }
+
+    private fun filterByPrefs(): ArrayList<Place> {
+        val userPrefs = user.arrayPrefs
+        var priorityQueue: PriorityQueue<PrefsClass> = PriorityQueue<PrefsClass>()
+        listPlace.forEach { place ->
+            val common = place.arrayTags.intersect(userPrefs)
+            priorityQueue.add(PrefsClass(place, common.size))
+        }
+
+        val listFiltered: ArrayList<Place> = arrayListOf()
+        priorityQueue.forEach { prefClass ->
+            listFiltered.add(prefClass.place)
+        }
+
+        return listFiltered
+    }
+
     fun getTagsSelected(position: Int) {
 
+    }
+
+    private fun getNumScores() {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.PLACESCORES)
+        numScores.clear()
+
+        mListenerScores = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { idSnap->
+                    if(idSnap.exists())
+                        numScores[idSnap.key!!] = idSnap.childrenCount.toInt()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        }
+
+        ref.addValueEventListener(mListenerScores)
     }
 
     fun loadNewData() {
@@ -115,51 +266,7 @@ class PlaceListViewModel : ViewModel() {
 
         val coordinates = place.child(Constants.PLACECOORDINATES).value as String
 
-        //val latlng = getLatLng(coordinates)
         val arrayTags = getTags(tags)
-
-        //val latitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELATITUDE).value as Double
-        //val longitude = place.child(Constants.PLACELOCATION + "/" + Constants.PLACELONGITUDE).value as Double
-
-        //COMMENTS
-        /*var placeComments: MutableList<Comment> = mutableListOf()
-        var userid:String = ""
-        var commenttxt:String = ""
-        var comentario: Comment
-
-        place.child(Constants.PLACECOMMENTS).children.forEach {
-
-            userid = it.child(Constants.COMMENTUSER).value as String
-            commenttxt = it.child(Constants.COMMENTTXT).value as String
-
-            comentario = Comment(commenttxt, userid)
-            placeComments.add(comentario)
-        }*/
-
-
-        /*var aux = place.child(Constants.PLACECOMMENTS).value
-
-        var comentario = Comment()
-        var placeComments: MutableList<Comment> = mutableListOf()
-        var coment: MutableList<Comment>? = mutableListOf()
-
-        var i = 0
-
-        for (comment in aux) {
-            Log.d("onChildAdded()","i: " + i)
-
-            var listaComent = (aux as ArrayList<*>).get(i)
-            Log.d("onChildAdded()","listaComent: " + listaComent)
-
-            comentario = Comment((listaComent as Map<*, *>)["comment"] as String,
-                listaComent["nameUser"] as String,
-                listaComent["date"] as String,
-                listaComent["time"] as String)
-
-            placeComments.add(comentario)
-
-            i++
-        }*/
 
         val doubleScore = score.toString()
         var scoreDouble = doubleScore.toDoubleOrNull()
@@ -328,6 +435,9 @@ class PlaceListViewModel : ViewModel() {
     fun deletePlaceListener() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
         placeRef.removeEventListener(mListenerPlace)
+
+        val refScores = FirebaseDatabase.getInstance().getReference(Constants.PLACESCORES)
+        refScores.removeEventListener(mListenerScores)
     }
 
 }

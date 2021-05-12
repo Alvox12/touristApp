@@ -41,6 +41,8 @@ class Constants {
         const val PLACELATITUDE = "latitude"
         const val PLACELONGITUDE = "longitude"
 
+        const val PLACESCORES = "LUGARESPUNTACION"
+
         //Etiquetas
         const val ETIQUETAS = "ETIQUETAS"
         const val PLACEETIQUETAS = "placeTags"

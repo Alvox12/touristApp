@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.viewModel.CustomPlaceListViewModel
+import com.example.tourapp.viewModel.PlaceListViewModel
 import kotlinx.android.synthetic.main.fragment_custom_place_list.*
 import kotlinx.android.synthetic.main.fragment_place_list.*
 import kotlinx.android.synthetic.main.fragment_place_list.recycler_place_view
@@ -31,8 +32,9 @@ class CustomPlaceListFragment : Fragment() {
 
     lateinit var arrayAdapter: ArrayAdapter<String>
     var arrayListTags: ArrayList<String> = arrayListOf()
-    var positionSpinner: Int = 0
 
+    var positionSpinner: Int = 0
+    private var categoryFilter: CustomPlaceListViewModel.FilterCategory = CustomPlaceListViewModel.FilterCategory.NONE
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +69,31 @@ class CustomPlaceListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.filter_by_current_user-> {
+                categoryFilter = CustomPlaceListViewModel.FilterCategory.USERID
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+            R.id.filter_high_rate->{
+                categoryFilter = CustomPlaceListViewModel.FilterCategory.HIGHRATE
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+            R.id.filter_low_rate->{
+                categoryFilter = CustomPlaceListViewModel.FilterCategory.LOWRATE
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+            R.id.filter_by_prefs->{
+                categoryFilter = CustomPlaceListViewModel.FilterCategory.USERPREFS
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+            R.id.none_filter-> {
+                categoryFilter = CustomPlaceListViewModel.FilterCategory.NONE
+                viewModel.filterByCategory(positionSpinner, categoryFilter)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -109,12 +136,13 @@ class CustomPlaceListFragment : Fragment() {
         fab_add_place.setOnClickListener {
             view.let {
                 if (it != null) {
+                    viewModel.initialDownload = true
                     val bundle = Bundle()
                     bundle.putBoolean("newList", false)
                     bundle.putString("listId", viewModel.listCode)
                     bundle.putString("listName", nameBar)
                     bundle.putStringArrayList("listSelected", viewModel.keysPlaces)
-                    //bundle.putStringArrayList("listCodes", viewModel.listCodes)
+                    bundle.putStringArrayList("listCodes", arrayListOf())
                     Navigation.findNavController(it).navigate(R.id.action_customPlaceListFragment_to_placeCreateListFragment2, bundle)
                 }
             }
@@ -143,7 +171,7 @@ class CustomPlaceListFragment : Fragment() {
                 if (positionSpinner != pos) {
                     if (pos >= 0 && pos < arrayListTags.size) {
                         positionSpinner = pos
-                        viewModel.filterPlaceList(pos)
+                        viewModel.filterByCategory(pos, categoryFilter)
                     }
                 }
             }

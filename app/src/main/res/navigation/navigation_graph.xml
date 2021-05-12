@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_userDataFragment_to_userListOfListsFragment"
             app:destination="@id/userListOfListsFragment" />
+        <action
+            android:id="@+id/action_userDataFragment_to_userOptionsFragment"
+            app:destination="@id/userOptionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/listAuxFragment"
@@ -106,6 +109,18 @@
         <action
             android:id="@+id/action_customPlaceListFragment_to_placeCreateListFragment2"
             app:destination="@id/placeCreateListFragment2" />
+        <action
+            android:id="@+id/action_customPlaceListFragment_to_placeDataFragment"
+            app:destination="@id/placeDataFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userOptionsFragment"
+        android:name="com.example.tourapp.views.UserOptionsFragment"
+        android:label="fragment_user_options"
+        tools:layout="@layout/fragment_user_options" >
+        <action
+            android:id="@+id/action_userOptionsFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
     </fragment>
 
 

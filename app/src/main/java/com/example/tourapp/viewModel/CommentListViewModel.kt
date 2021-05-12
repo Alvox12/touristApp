@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerCommentListAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Comment
+import com.example.tourapp.dataModel.User
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,8 +19,8 @@ class CommentListViewModel : ViewModel() {
     private lateinit var childListener : ChildEventListener
 
     lateinit var placeId: String
-    lateinit var userId: String
     var mapComments: MutableMap<String, Comment> = mutableMapOf()
+    lateinit var user: User
 
     var commentIndex = 0
     var descargas = 0
@@ -51,7 +52,7 @@ class CommentListViewModel : ViewModel() {
 
     fun addComment(comment: Comment) {
 
-        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
         var aux = comment.toAnyObject()
 
         placeRef.child(comment.commentId).setValue(aux).addOnCompleteListener {
@@ -66,7 +67,7 @@ class CommentListViewModel : ViewModel() {
 
     fun delComment(commentId: String) {
 
-        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
         placeRef.child(commentId).removeValue().addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_DEL_COMMENT")
@@ -79,7 +80,7 @@ class CommentListViewModel : ViewModel() {
 
     fun editComment(commentId: String, commentTxt: String) {
 
-        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
         
         placeRef.child(commentId).child(Constants.COMMENTTXT).setValue(commentTxt).addOnCompleteListener {
             if(it.isSuccessful) {
@@ -92,7 +93,7 @@ class CommentListViewModel : ViewModel() {
 
 
     fun loadNewData() {
-        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
         placeRef.removeEventListener(childListener)
 
         descargas = 0
@@ -101,7 +102,7 @@ class CommentListViewModel : ViewModel() {
 
     fun loadChildEventListener() {
 
-        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
 
         childListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -166,7 +167,7 @@ class CommentListViewModel : ViewModel() {
 
 
     fun removeChildListener() {
-        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(userId)
+        val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
         placeRef.removeEventListener(childListener)
     }
 

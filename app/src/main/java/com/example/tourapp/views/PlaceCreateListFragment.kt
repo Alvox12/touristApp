@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.adapter.RecyclerCreateListAdapter
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.viewModel.PlaceCreateListViewModel
 import kotlinx.android.synthetic.main.fragment_place_create_list.*
@@ -53,6 +54,9 @@ class PlaceCreateListFragment : Fragment() {
         val user = (activity as MainActivity).user
         viewModel.user = user
 
+        viewModel.placeIndex = 0
+        viewModel.descargas = 0
+
         viewModel.newList = arguments?.get("newList") as Boolean
         viewModel.listCodes = arguments?.get("listCodes") as ArrayList<String>
 
@@ -69,6 +73,19 @@ class PlaceCreateListFragment : Fragment() {
             layoutManager = manager
             adapter = viewModel.myAdapter
         }
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //direction integers: -1 for up, 1 for down, 0 will always return false
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
+                        viewModel.loadNewData()
+                    }
+                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
 
         btn_add_list.setOnClickListener {
             if(viewModel.newList)

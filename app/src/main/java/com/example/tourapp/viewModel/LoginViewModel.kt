@@ -70,7 +70,7 @@ class LoginViewModel : ViewModel() {
     fun getUserData() {
         //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
-        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        val userRef = FirebaseDatabase.getInstance().getReference("${Constants.USERS}/$currentUser")
 
         mListenerUser = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -81,12 +81,16 @@ class LoginViewModel : ViewModel() {
                 if(snapshot.key == currentUser) {
                     Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
                     //val user: User? = snapshot.getValue(User::class.java)
-                    val email = snapshot.child("userMail").value as String
-                    val name = snapshot.child("userName").value as String
-                    val password = snapshot.child("userPassword").value as String
-                    val type = snapshot.child("userType").value as String
-                    val id = snapshot.child("userId").value as String
-                    userNotify.value = User(name, password, type, email, id)
+                    val email = snapshot.child(Constants.USERMAIL).value as String
+                    val name = snapshot.child(Constants.USERNAME).value as String
+                    val password = snapshot.child(Constants.USERPASSWORD).value as String
+                    val type = snapshot.child(Constants.USERTYPE).value as String
+                    val id = snapshot.child(Constants.USERID).value as String
+                    val prefs = snapshot.child(Constants.USERPREFS).value as String
+
+                    val userAux = User(name, password, type, email, id, prefs)
+                    userAux.arrayPrefs = getPrefs(prefs)
+                    userNotify.value = userAux
                 }
                 else Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
             }
@@ -96,9 +100,21 @@ class LoginViewModel : ViewModel() {
         userRef.addValueEventListener(mListenerUser)
     }
 
+    private fun getPrefs(prefs: String): ArrayList<Int> {
+        val listInt: ArrayList<Int> = arrayListOf()
+
+        if(prefs != "") {
+            val list: List<String> = prefs.split(",")
+            list.forEach { str ->
+                listInt.add(Integer.parseInt(str))
+            }
+        }
+        return listInt
+    }
+
     fun deleteUserListener() {
         val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
-        val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
+        val userRef = FirebaseDatabase.getInstance().getReference("${Constants.USERS}/$currentUser")
         if(this::mListenerUser.isInitialized)
             userRef.removeEventListener(mListenerUser)
     }

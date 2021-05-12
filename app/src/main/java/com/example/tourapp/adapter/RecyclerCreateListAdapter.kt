@@ -61,10 +61,17 @@ class RecyclerCreateListAdapter(var model: PlaceCreateListViewModel):
         listPlace?.get(position)?.let {
             this.parent?.let { parent ->
                 holder.bind(it, parent)
-                //holder.setIsRecyclable(false)
                 
                 var imageButton = holder.view.findViewById<ImageButton>(R.id.imb_add_list)
                 mapImageButton[position] = imageButton
+
+                if(arrayListSelected[position]) {
+                    mapImageButton[position]?.setImageResource(R.drawable.ic_cancel_icon)
+                }
+                else {
+                    mapImageButton[position]?.setImageResource(R.drawable.ic_add_list_icon)
+                }
+                addElement(position, arrayListSelected[position])
 
                 imageButton?.setOnClickListener {
                     arrayListSelected[position] = !arrayListSelected[position]

@@ -11,8 +11,11 @@ class User(
     var userPassword: String = "",
     var userType: String = "",
     var userMail: String = "",
-    var userId: String = ""
+    var userId: String = "",
+    var userPrefs: String = ""
 ) : Serializable {
+
+    var arrayPrefs: ArrayList<Int> = arrayListOf()
 
     override fun toString(): String =
         //"Id Cliente: $clientId\n" +
@@ -29,6 +32,7 @@ class User(
         //user[Constants.USERPHONE] = this.userPhone
         user[Constants.USERMAIL] = this.userMail
         user[Constants.USERID] = this.userId
+        user[Constants.USERPREFS] = this.userPrefs
         //user[Constants.CLIENTNAME] = this.clientName
         //user[Constants.PROYECT_CODE] = this.userProyectCode
 
