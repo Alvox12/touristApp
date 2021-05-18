@@ -32,6 +32,12 @@ class UserOptionsFragment : Fragment() {
             }
         }
 
+        btn_edit_prefs.setOnClickListener {
+            nav_host_fragment.view?.let { view ->
+                Navigation.findNavController(view).navigate(R.id.action_userOptionsFragment_to_editTagsFragment)
+            }
+        }
+
         btn_delete_account.setOnClickListener {
             (activity as MainActivity).deleteAccountPopup()
         }

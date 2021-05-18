@@ -121,7 +121,14 @@
         <action
             android:id="@+id/action_userOptionsFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_userOptionsFragment_to_editTagsFragment"
+            app:destination="@id/editTagsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editTagsFragment"
+        android:name="com.example.tourapp.views.EditTagsFragment"
+        android:label="EditTagsFragment" />
 
 
 </navigation>

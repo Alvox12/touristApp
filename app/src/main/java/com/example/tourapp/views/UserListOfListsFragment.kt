@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.viewModel.UserListOfListsViewModel
 import kotlinx.android.synthetic.main.fragment_place_list.*
 import kotlinx.android.synthetic.main.fragment_user_list_of_lists.*
@@ -45,6 +47,7 @@ class UserListOfListsFragment : Fragment() {
             adapter = viewModel.adapter
         }
 
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy > 0 || dy < 0 && fab_add_list.isShown)
@@ -54,7 +57,16 @@ class UserListOfListsFragment : Fragment() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE)
                     fab_add_list.show()
-                
+
+                if(user.userType == Constants.ADMIN) {
+                    //direction integers: -1 for up, 1 for down, 0 will always return false
+                    if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
+                            viewModel.loadNewData()
+                        }
+                        Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
@@ -70,7 +82,14 @@ class UserListOfListsFragment : Fragment() {
             }
         }
 
-        viewModel.getLists()
+        if(user.userType == Constants.ADMIN) {
+            viewModel.listIndex = 0
+            viewModel.descargas = 0
+            viewModel.getAllLists()
+        }
+        else
+            viewModel.getLists()
+
     }
 
     override fun onDestroy() {

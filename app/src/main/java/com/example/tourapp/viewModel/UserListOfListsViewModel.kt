@@ -6,10 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerCustomListsAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class UserListOfListsViewModel : ViewModel() {
 
@@ -19,13 +16,65 @@ class UserListOfListsViewModel : ViewModel() {
     var listElems: ArrayList<Int> = arrayListOf()
     var listCodes: ArrayList<String> = arrayListOf()
 
+    //Solo se utilizara si se esta en modo ADMIN
+    var listCreators: ArrayList<String> = arrayListOf()
+
     lateinit var user: User
+
+    var listIndex = 0
+    var descargas = 0
 
     private lateinit var mListenerLists : ValueEventListener
 
     private fun setLists() {
         adapter.setLists(listNames, listCodes, listElems)
         adapter.notifyDataSetChanged()
+    }
+
+    fun loadNewData() {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS)
+        ref.removeEventListener(mListenerLists)
+
+        descargas = 0
+        getAllLists()
+    }
+
+    //Solo si se es ADMIN
+    fun getAllLists() {
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS)
+
+        mListenerLists = object : ValueEventListener {
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { userSnapshot ->
+
+                    var uid = userSnapshot.key as String
+
+                    userSnapshot.child(Constants.USERLISTS).children.forEach { listSnapshot ->
+                        while(listIndex < listSnapshot.childrenCount && descargas < Constants.MAX_DATABASE_ITEMS) {
+                            val nplaces = (listSnapshot.children.elementAt(listIndex).childrenCount-2).toInt()
+                            val key = listSnapshot.children.elementAt(listIndex).key as String
+                            val name = listSnapshot.children.elementAt(listIndex).child(Constants.LISTNAME).value as String
+
+                            listIndex++
+                            descargas++
+
+                            listNames.add(name)
+                            listCodes.add(key)
+                            listElems.add(nplaces)
+                            listCreators.add(uid)
+                        }
+
+                        setLists()
+                    }
+                }
+            }
+        }
+
+        ref.addValueEventListener(mListenerLists)
     }
 
     fun getLists() {
@@ -63,7 +112,14 @@ class UserListOfListsViewModel : ViewModel() {
     }
 
     fun deleteList(listId: String, position: Int) {
-        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}").child(listId)
+        val ref: DatabaseReference
+        if(user.userType == Constants.ADMIN) {
+            val uid = listCreators[position]
+            ref = FirebaseDatabase.getInstance().getReference("${Constants.USERS}/$uid").child(Constants.USERLISTS).child(listId)
+        }
+        else
+            ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}").child(listId)
+
         ref.removeValue().addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_DEL_CUSTOM_USER_LIST")
@@ -79,8 +135,16 @@ class UserListOfListsViewModel : ViewModel() {
         }
     }
 
+
     fun changeListName(listId: String, name: String, position: Int) {
-        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}").child(listId)
+        val ref: DatabaseReference
+        if(user.userType == Constants.ADMIN) {
+            val uid = listCreators[position]
+            ref = FirebaseDatabase.getInstance().getReference("${Constants.USERS}/$uid").child(Constants.USERLISTS).child(listId)
+        }
+        else
+            ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}").child(listId)
+
         ref.child(Constants.LISTNAME).setValue(name).addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_CHANGE_NAME_CUSTOM_USER_LIST")
@@ -95,7 +159,11 @@ class UserListOfListsViewModel : ViewModel() {
 
 
     fun deleteListener() {
-        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
+        val ref = if(user.userType == Constants.ADMIN)
+            FirebaseDatabase.getInstance().getReference(Constants.USERS)
+        else
+            FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
+
         ref.removeEventListener(mListenerLists)
     }
 }

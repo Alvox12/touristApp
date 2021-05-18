@@ -257,7 +257,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
             R.id.nav_edituser -> {
                 useredit = user
                 nav_host_fragment.view?.let { view ->
-                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_editUserFragment)
+                    Navigation.findNavController(view).navigate(R.id.action_userDataFragment_to_userOptionsFragment)
                 }
             }
             R.id.nav_userlist -> {

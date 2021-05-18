@@ -23,6 +23,8 @@
     <!--Menu desplegable-->
     <string name="logout_menu">Cerrar sesión</string>
     <string name="edituser_menu">Editar perfil</string>
+    <string name="edituser_prefs">Editar preferencias</string>
+    <string name="confirmar_pref">Confirmar selección</string>
     <string name="deleteuser_menu">Eliminar usuario</string>
     <string name="userlist_menu">Lista usuarios</string>
     <string name="placeList_menu">Lista lugares</string>

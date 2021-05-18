@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.RadioGroup
+import androidx.core.view.children
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import java.util.*
@@ -13,10 +16,12 @@ import kotlin.collections.ArrayList
 class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Adapter<RecyclerRegisterTagsAdapter.ViewHolder>() {
 
     private var listTags: ArrayList<String>? = arrayListOf()
-    private var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
+    var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
     private var parent: ViewGroup? = null
+    private lateinit var radioGroup: RadioGroup
 
     private var arrayRadioBtn: ArrayList<RadioButton> = arrayListOf()
+    private var arrayRadioGroup: ArrayList<RadioGroup> = arrayListOf()
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
@@ -49,14 +54,28 @@ class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Ada
             this.parent?.let { parent ->
 
                 holder.bind(it, parent)
-                val radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
-                radioBtn.isChecked = listTagsSelected?.get(position) == true
-                arrayRadioBtn.add(radioBtn)
+                var radioGroup = holder.view.findViewById<RadioGroup>(R.id.radioGroup)
+                //var radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
+                //radioBtn.isChecked = listTagsSelected?.get(position) == true
+                arrayRadioGroup.add(radioGroup)
+                var radioBtn = radioGroup.get(0) as RadioButton
+                if(listTagsSelected?.get(position) == true)
+                    arrayRadioGroup[position].check(R.id.radioButton)
+                //arrayRadioBtn.add(radioBtn)
+
 
                 radioBtn.setOnClickListener {
                     listTagsSelected!![position] = !listTagsSelected?.get(position)!!
                     Log.d("TAGS_CLICKED", "Ha sido pulsado ${radioBtn.text}")
-                    arrayRadioBtn[position].isChecked = listTagsSelected?.get(position) == true
+                    val checked: Boolean = listTagsSelected?.get(position) == true
+                    arrayRadioGroup[position].clearCheck()
+                    if(checked)
+                        arrayRadioGroup[position].check(R.id.radioButton)
+                    else {
+                        arrayRadioGroup[position].clearCheck()
+                        (arrayRadioGroup[position].get(0) as RadioButton).isChecked = false
+                    }
+                    //(arrayRadioGroup[position].get(0) as RadioButton).isChecked = checked
                     notifyItemChanged(position)
                 }
 
@@ -65,6 +84,10 @@ class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Ada
     }
 
     override fun getItemCount() = this.listTags?.size ?: 0
+
+    fun uploadSetListSelected(selected: ArrayList<Boolean>) {
+        listTagsSelected = selected.clone() as ArrayList<Boolean>
+    }
 
     fun getTagsSelected(): ArrayList<Boolean>? {
         return listTagsSelected
