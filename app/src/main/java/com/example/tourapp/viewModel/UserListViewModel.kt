@@ -15,6 +15,7 @@ class UserListViewModel : ViewModel() {
 
     lateinit var myAdapter: RecyclerUserListAdapter
 
+    lateinit var user: User
     var listUsu: ArrayList<User> = ArrayList()
     private lateinit var mListenerUser : ValueEventListener
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -22,6 +23,7 @@ class UserListViewModel : ViewModel() {
 
     fun configAdapter() {
         myAdapter = RecyclerUserListAdapter()
+        myAdapter.setUser(user)
     }
 
     fun getUserList() {

@@ -54,10 +54,10 @@ class EditTagsViewModel: ViewModel() {
             if(selected?.get(index) == true) {
                 if(firstTag) {
                     firstTag = false
-                    msg += elem
+                    msg += index
                 }
                 else {
-                    msg += ",${elem}"
+                    msg += ",${index}"
                 }
             }
         }

@@ -98,6 +98,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
         } else {//Si no hace login
 
+            email.text.clear()
+            password.text.clear()
+
             val dialogBuilder = AlertDialog.Builder(this)
             val dialogView = layoutInflater.inflate(R.layout.dialog_error_login, null)
             val b = dialogBuilder.setView(dialogView).create()

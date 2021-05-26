@@ -23,9 +23,10 @@ class RecyclerTagListAdapter(val list: ArrayList<String>, selected: ArrayList<Bo
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
-        fun bind(tag: String, parent: ViewGroup){
+        fun bind(tag: String, selected: Boolean, parent: ViewGroup){
             val radioButton = view.findViewById<RadioButton>(R.id.radioButton)
             radioButton.text = tag
+            radioButton.isChecked = selected
 
             /*val tvname = view.findViewById<TextView>(R.id.tv_place_name)
             val tvdescription = view.findViewById<TextView>(R.id.tv_place_description)
@@ -33,6 +34,10 @@ class RecyclerTagListAdapter(val list: ArrayList<String>, selected: ArrayList<Bo
             tvname.text = place.placeName
             tvdescription.text = place.placeDescription
             tvscore.text = place.placeScore.toString()*/
+        }
+
+        fun getRadioBtn(): RadioButton {
+            return view.findViewById<RadioButton>(R.id.radioButton)
         }
     }
 
@@ -52,11 +57,12 @@ class RecyclerTagListAdapter(val list: ArrayList<String>, selected: ArrayList<Bo
         listTags?.get(position)?.let {
             this.parent?.let { parent ->
 
-                holder.bind(it, parent)
-                val radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
-                radioBtn.isChecked = listTagsSelected?.get(position) == true
-                arrayRadioBtn.add(radioBtn)
-
+                val select = listTagsSelected?.get(position) == true
+                holder.bind(it, select, parent)
+                //val radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
+                //radioBtn.isChecked = listTagsSelected?.get(position) == true
+                //arrayRadioBtn.add(radioBtn)
+                val radioBtn = holder.getRadioBtn()
                 radioBtn.setOnClickListener {
                     listTagsSelected!![position] = !listTagsSelected?.get(position)!!
                     Log.d("TAGS_CLICKED", "Ha sido pulsado ${radioBtn.text}")
@@ -64,6 +70,7 @@ class RecyclerTagListAdapter(val list: ArrayList<String>, selected: ArrayList<Bo
                     notifyItemChanged(position)
                 }
 
+                arrayRadioBtn.add(radioBtn)
             }
         }
     }

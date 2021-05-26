@@ -25,16 +25,20 @@ class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Ada
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
-        fun bind(tag: String, parent: ViewGroup){
+        fun bind(tag: String, select: Boolean, parent: ViewGroup){
             val radioButton = view.findViewById<RadioButton>(R.id.radioButton)
             radioButton.text = tag
-
+            radioButton.isChecked = select
             /*val tvname = view.findViewById<TextView>(R.id.tv_place_name)
             val tvdescription = view.findViewById<TextView>(R.id.tv_place_description)
             val tvscore = view.findViewById<TextView>(R.id.tv_place_score)
             tvname.text = place.placeName
             tvdescription.text = place.placeDescription
             tvscore.text = place.placeScore.toString()*/
+        }
+
+        fun getRadioBtn(): RadioButton {
+            return view.findViewById<RadioButton>(R.id.radioButton)
         }
     }
 
@@ -53,32 +57,27 @@ class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Ada
         listTags?.get(position)?.let {
             this.parent?.let { parent ->
 
-                holder.bind(it, parent)
-                var radioGroup = holder.view.findViewById<RadioGroup>(R.id.radioGroup)
+                val select = listTagsSelected?.get(position) == true
+                holder.bind(it, select, parent)
+                //var radioGroup = holder.view.findViewById<RadioGroup>(R.id.radioGroup)
                 //var radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
                 //radioBtn.isChecked = listTagsSelected?.get(position) == true
-                arrayRadioGroup.add(radioGroup)
-                var radioBtn = radioGroup.get(0) as RadioButton
-                if(listTagsSelected?.get(position) == true)
-                    arrayRadioGroup[position].check(R.id.radioButton)
+                //arrayRadioGroup.add(radioGroup)
+               // var radioBtn = radioGroup.get(0) as RadioButton
+                //if(listTagsSelected?.get(position) == true)
+                  //  arrayRadioGroup[position].check(R.id.radioButton)
                 //arrayRadioBtn.add(radioBtn)
 
-
+                val radioBtn = holder.getRadioBtn()
                 radioBtn.setOnClickListener {
                     listTagsSelected!![position] = !listTagsSelected?.get(position)!!
                     Log.d("TAGS_CLICKED", "Ha sido pulsado ${radioBtn.text}")
-                    val checked: Boolean = listTagsSelected?.get(position) == true
-                    arrayRadioGroup[position].clearCheck()
-                    if(checked)
-                        arrayRadioGroup[position].check(R.id.radioButton)
-                    else {
-                        arrayRadioGroup[position].clearCheck()
-                        (arrayRadioGroup[position].get(0) as RadioButton).isChecked = false
-                    }
-                    //(arrayRadioGroup[position].get(0) as RadioButton).isChecked = checked
+                    arrayRadioBtn[position].isChecked = listTagsSelected?.get(position) == true
+
                     notifyItemChanged(position)
                 }
 
+                arrayRadioBtn.add(radioBtn)
             }
         }
     }

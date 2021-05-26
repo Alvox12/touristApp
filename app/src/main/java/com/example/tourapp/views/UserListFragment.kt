@@ -36,6 +36,7 @@ class UserListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModelUser = ViewModelProvider(this).get(UserListViewModel::class.java)
+        viewModelUser.user = (activity as MainActivity).user
 
         manager = LinearLayoutManager(this.activity)
         viewModelUser.configAdapter()
