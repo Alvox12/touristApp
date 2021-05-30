@@ -3,10 +3,12 @@ package com.example.tourapp.views
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.app.ActivityCompat.invalidateOptionsMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -24,6 +26,7 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_delete_place.view.*
 import kotlinx.android.synthetic.main.dialog_logout.view.*
+import kotlinx.android.synthetic.main.dialog_score_place.*
 import kotlinx.android.synthetic.main.fragment_place_data.*
 
 
@@ -39,6 +42,7 @@ class PlaceDataFragment : Fragment() {
     private var favInitialSetup = false
 
     private lateinit var menu: Menu
+    private lateinit var favIcon: MenuItem
 
 
     override fun onCreateView(
@@ -51,8 +55,9 @@ class PlaceDataFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.placedata_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
+        favIcon = this.menu.findItem(R.id.opt_fav_place)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -96,6 +101,7 @@ class PlaceDataFragment : Fragment() {
         val user = (activity as MainActivity).user
         viewModel.user = user
 
+
         (context as MainActivity).toolbar.title = viewModel.place.placeName
 
         tv_placeName.text = viewModel.place.placeName
@@ -107,6 +113,8 @@ class PlaceDataFragment : Fragment() {
 
         viewModel.getFavListId()
         viewModel.getCommentList()
+
+        favInitialSetup = false
 
         initSetup()
 
@@ -156,7 +164,11 @@ class PlaceDataFragment : Fragment() {
             }
         }
 
-        btn_rate.setOnClickListener {
+        /*btn_rate.setOnClickListener {
+            (activity as MainActivity).ratePlace(viewModel)
+        }*/
+
+        place_rating_bar.setOnClickListener {
             (activity as MainActivity).ratePlace(viewModel)
         }
 
@@ -172,7 +184,7 @@ class PlaceDataFragment : Fragment() {
         observerFavPlace = Observer {
             if(it) {
                 //Cambiamos icono de favoritos
-                this.menu.findItem(R.id.opt_fav_place).icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_checked_24)
+                favIcon.icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_checked_24)!!
                 if(favInitialSetup)
                     Toast.makeText((activity as MainActivity), "Lugar añadido a favoritos", Toast.LENGTH_SHORT).show()
                 else
@@ -180,7 +192,7 @@ class PlaceDataFragment : Fragment() {
             }
             else {
                 //Cambiamos icono de favoritos
-                this.menu.findItem(R.id.opt_fav_place).icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_unchecked_24)
+                favIcon.icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_unchecked_24)!!
                 if(favInitialSetup)
                     Toast.makeText((activity as MainActivity), "Lugar eliminado de favoritos", Toast.LENGTH_SHORT).show()
                 else

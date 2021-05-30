@@ -89,6 +89,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             btn_save_location.isEnabled = false
             btn_save_location.visibility = View.GONE
 
+            btn_add_location.isEnabled = false
+            btn_add_location.visibility = View.GONE
+
             placeName = intent.getSerializableExtra("Name") as String
             latitude = intent.getSerializableExtra("Lat") as Double
             longitude = intent.getSerializableExtra("Lng") as Double
@@ -102,6 +105,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_save_location.isEnabled = false
         btn_save_location.setOnClickListener {
+            onBackPressed()
+        }
+
+        btn_add_location.isEnabled = false
+        btn_add_location.setOnClickListener {
             onBackPressed()
         }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -165,6 +173,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)))
 
                btn_save_location.isEnabled = true
+               btn_add_location.isEnabled = true
             }
         }
 
@@ -310,6 +319,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             marker = mMap.addMarker(options)
             btn_save_location.isEnabled = true
+            btn_add_location.isEnabled = true
         }
         else {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)

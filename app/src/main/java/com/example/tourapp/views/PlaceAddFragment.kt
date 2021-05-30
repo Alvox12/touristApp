@@ -275,7 +275,7 @@ class PlaceAddFragment : Fragment() {
             imagePath = data.data
 
             if(!(activity as MainActivity).validPicture(imagePath))
-                Toast.makeText((context as MainActivity), "tam. maximo es ${Constants.ICON_MAX_SIZE2}x${Constants.ICON_MAX_SIZE2}px", Toast.LENGTH_SHORT).show()
+                Toast.makeText((context as MainActivity), "tam. maximo es ${Constants.ICON_MAX_SIZE4}x${Constants.ICON_MAX_SIZE4}px", Toast.LENGTH_SHORT).show()
             else {
                 val type = imagePath?.let { activity?.contentResolver?.getType(it) }
                 imageExtension = type?.substring(type.lastIndexOf('/') + 1)

@@ -161,6 +161,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
             .addToBackStack(null)
             .commit()*/
         ll_register.isVisible = false
+        hideSoftKeyboard()
         supportFragmentManager.beginTransaction()
                 .add(R.id.frame_layout_register, RegisterTagsFragment())
                 .addToBackStack(null)
@@ -171,10 +172,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         return model
     }
 
-    //Ocultar teclado
-    private fun View.hideKeyboard() {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+    private fun hideSoftKeyboard() {
+        //this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        val view = this.currentFocus
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     //Eliminamos observer de loginNotify y lo ponemos a false para evitar probelmas en login

@@ -6,6 +6,9 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.RelativeSizeSpan
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -26,7 +29,6 @@ import com.example.tourapp.dataModel.Comment
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityMainBinding
 import com.example.tourapp.viewModel.*
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -103,7 +105,16 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         val tvName = viewHeader.findViewById<TextView>(R.id.tv_name)
         val tvEmail = viewHeader.findViewById<TextView>(R.id.tv_email)
 
-        tvName.text = user.userName
+        //Ponemos la primera letra del nombre a mayuscula
+        val nameStr = user.userName
+        val nameAux = nameStr.substring(0, 1).toUpperCase() + nameStr.substring(1)
+
+        //Cambiamos el tamaño de la fuente. Puedes cambiar 2f como desees.
+        //Change font size of the first character. You can change 2f as you want
+        val spannableString = SpannableString(nameAux)
+        spannableString.setSpan(RelativeSizeSpan(2f), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        tvName.text = spannableString
         tvEmail.text = user.userMail
 
         if(user.userType != Constants.ADMIN){
@@ -225,7 +236,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         b.show()
     }
 
-    fun editListNamePopup(listId: String, position: Int, oldName: String ,model: UserListOfListsViewModel) {
+    fun editListNamePopup(listId: String, position: Int, oldName: String, model: UserListOfListsViewModel) {
         val dialogBuilder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_list_name, null)
         val b = dialogBuilder.setView(dialogView).create()
@@ -375,7 +386,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         val input: InputStream? = uri?.let { contentResolver?.openInputStream(it) }
         val bitmap = BitmapFactory.decodeStream(input)
 
-        if(bitmap.height <= Constants.ICON_MAX_SIZE2 && bitmap.width <= Constants.ICON_MAX_SIZE2)
+        if(bitmap.height <= Constants.ICON_MAX_SIZE4 && bitmap.width <= Constants.ICON_MAX_SIZE4)
             valido = true
 
         input?.close()
@@ -408,7 +419,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     private fun darDeBaja() {
         val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         mFirebaseAuth.currentUser?.let { fuser ->
-            userRef.child(fuser.uid).removeValue().addOnCompleteListener {it1->
+            userRef.child(fuser.uid).removeValue().addOnCompleteListener { it1->
                 if(it1.isSuccessful) {
                     mFirebaseAuth.currentUser!!.delete().addOnSuccessListener {
                         startActivity(Intent(this, LoginActivity::class.java))

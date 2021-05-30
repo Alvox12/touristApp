@@ -73,6 +73,7 @@ class Constants {
         //Icono
         const val ICON_MAX_SIZE = 1024
         const val ICON_MAX_SIZE2 = 2048
+        const val ICON_MAX_SIZE4 = 4096
 
         //Request read external storage
         const val MY_PERMISSIONS_REQUEST_READ_STORAGE = 2
