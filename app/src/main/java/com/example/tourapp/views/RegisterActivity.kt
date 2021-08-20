@@ -37,6 +37,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     lateinit var observerRegister: Observer<Boolean>
     //Avisa de si se puede introducir los tags
     lateinit var observerTags: Observer<Boolean>
+    lateinit var observerTagsDownloaded: Observer<Boolean>
 
     private lateinit var mListenerTags : ValueEventListener
     private var tagsDownloaded: MutableLiveData<Boolean> = MutableLiveData()
@@ -52,16 +53,21 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         nameuser = findViewById(R.id.input_name)
         backLogin = findViewById(R.id.backToLogin)
 
-
-        getTags()
-
         observerTags = Observer {
             if(model.tagLiveData.value!!) {
-                showTagFragment()
+                getTags()
             }
         }
 
         model.tagLiveData.observe(this, observerTags)
+
+        observerTagsDownloaded = Observer {
+            if(tagsDownloaded.value!!) {
+                showTagFragment()
+            }
+        }
+
+        tagsDownloaded.observe(this, observerTagsDownloaded)
 
         observerRegister = Observer {
             if(model.flagCreate.value!!) {
@@ -130,7 +136,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     }
 
-    private fun getTags() {
+    fun getTags() {
         arrayListTags.clear()
         val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
 
@@ -156,10 +162,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
     }
 
     fun showTagFragment() {
-        /*supportFragmentManager.beginTransaction()
-            .add(RegisterTagsFragment.newInstance(), "Register_Tags_Fragment")
-            .addToBackStack(null)
-            .commit()*/
+
         ll_register.isVisible = false
         hideSoftKeyboard()
         supportFragmentManager.beginTransaction()
@@ -184,6 +187,9 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         super.onStop()
         model.tagLiveData.removeObserver(observerTags)
         model.tagLiveData.value = false
+
+        tagsDownloaded.removeObserver(observerTagsDownloaded)
+        tagsDownloaded.value = false
 
         model.flagCreate.removeObserver(observerRegister)
         model.flagCreate.value = false

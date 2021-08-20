@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/drawable/ic_edit_user_black.xml" value="0.14635416666666667" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/activity_main.xml" value="0.20108695652173914" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/activity_register.xml" value="0.13451086956521738" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_delete_account.xml" value="0.20652173913043478" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_delete_user_fromlist.xml" value="0.20652173913043478" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_delete_userlist_elem.xml" value="0.23278985507246377" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_logout.xml" value="0.20652173913043478" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/fragment_custom_place_list.xml" value="0.19429347826086957" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/fragment_place_data.xml" value="0.1526268115942029" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/fragment_user_list.xml" value="0.20652173913043478" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/nav_header.xml" value="0.20108695652173914" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/menu/placedata_menu.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/menu/user_list_menu.xml" value="0.25416666666666665" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

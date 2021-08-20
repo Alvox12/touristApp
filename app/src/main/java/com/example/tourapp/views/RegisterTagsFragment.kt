@@ -57,7 +57,7 @@ class RegisterTagsFragment : Fragment() {
                 rv_register_tags.isEnabled = true
             }
             else {
-                viewModel.uploadUserData(viewModel.user.userPassword)
+                viewModel.createUser(viewModel.user.userPassword)
             }
         }
     }

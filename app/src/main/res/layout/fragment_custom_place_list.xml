@@ -51,7 +51,7 @@
             android:layout_marginBottom="16dp"
             android:clickable="true"
             android:backgroundTint="@color/purple_200"
-            android:src="@drawable/ic_baseline_add_white_24"
+            android:src="@drawable/ic_baseline_edit_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

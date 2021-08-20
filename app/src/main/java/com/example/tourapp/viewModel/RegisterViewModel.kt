@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerRegisterTagsAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -73,13 +73,18 @@ class RegisterViewModel : ViewModel() {
      */
     private fun onSignUp() {
 
-        //var userMail = userClient.value!!.userMail
-        //var pass = userClient.value!!.userPassword
-        //var userPassword = Utils.decodeString(pass)
-        var usrPassAux = user.userPassword
-
         if(user.userMail.isNotEmpty() && user.userPassword.isNotEmpty()) {
-            mFirebaseAuth.createUserWithEmailAndPassword(user.userMail, user.userPassword)
+            mFirebaseAuth.signInAnonymously().addOnCompleteListener { result ->
+                if(result.isSuccessful) {
+                    tagLiveData.value = true
+                    Log.v("FIREBASE_LOGIN", "EXITO, REGISTRO ANONIMO")
+                }
+                else {
+                    tagLiveData.value = false
+                    Log.v("FIREBASE_LOGIN", "ERROR, REGISTRO ANONIMO")
+                }
+            }
+            /*mFirebaseAuth.createUserWithEmailAndPassword(user.userMail, user.userPassword)
                     .addOnCompleteListener {result ->
 
                         if(result.isSuccessful) {
@@ -91,11 +96,48 @@ class RegisterViewModel : ViewModel() {
                             flagCreate.value = false
                             Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
                         }
-                    }
+                    }*/
 
             //mFirebaseAuth.signInWithEmailAndPassword(userMail,userPassword)
         }
 
+    }
+
+    fun createUser(userPass: String) {
+
+        val usrPassAux = user.userPassword
+        mFirebaseAuth.signOut()
+
+        mFirebaseAuth.createUserWithEmailAndPassword(user.userMail, user.userPassword)
+            .addOnCompleteListener {result ->
+
+                if(result.isSuccessful) {
+                    Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
+                    loginAfterSignUp(usrPassAux)
+                }
+                else {
+                    flagCreate.value = false
+                    Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
+                }
+            }
+    }
+
+    /**
+     * Tras registrar al usuario nos entramos en su cuenta.
+     */
+    private fun loginAfterSignUp(usrPassAux: String) {
+
+        mFirebaseAuth?.signInWithEmailAndPassword(user.userMail, usrPassAux)
+            ?.addOnCompleteListener {
+                if(it.isSuccessful) {
+                    Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
+                    uploadUserData(usrPassAux)
+                }
+                else {
+                    Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
+                    flagCreate.value = false
+                }
+            }
     }
 
     fun uploadUserData(userPass: String) {
@@ -125,7 +167,6 @@ class RegisterViewModel : ViewModel() {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_TAGS_UPLOAD")
                 flagCreate.value = true
-                //loginAfterSignUp(userPass)
             }
         }
     }
@@ -161,28 +202,6 @@ class RegisterViewModel : ViewModel() {
         return msg
     }
 
-    /**
-     * Tras registrar al usuario nos entramos en su cuenta.
-     */
-    private fun loginAfterSignUp(usrPassAux: String) {
-
-        mFirebaseAuth?.signInWithEmailAndPassword(user.userMail, usrPassAux)
-                ?.addOnCompleteListener {
-                    if(it.isSuccessful) {
-                        //loadClient(mFirebaseAuth.uid.toString())
-                        Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
-                        tagLiveData.value = true
-                        //flagCreate.value = true
-                        //loginNotify.value = true
-                    }
-                    else {
-                        //SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
-                        Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
-                        flagCreate.value = false
-                        //loginNotify.value = false
-                    }
-                }
-    }
 
     /**
      * Funcion para autenticar al usuario y añadirlo en DB

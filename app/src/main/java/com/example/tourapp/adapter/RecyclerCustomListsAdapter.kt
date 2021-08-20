@@ -63,9 +63,12 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
                 when(item.itemId) {
                     R.id.opt_eliminar_lista_lugares -> {
                         popupMenu.dismiss()
+
+                        /*
                         val nombre = arrayNames[position]
                         model.deleteList(arrayCodigos[position], position)
-                        Toast.makeText(parent.context, "Lista $nombre eliminada", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(parent.context, "Lista $nombre eliminada", Toast.LENGTH_SHORT).show()*/
+                        (parent.context as MainActivity).deleteUserListElement(model, arrayNames[position], arrayCodigos[position], position)
                         true
                     }
                     R.id.opt_cambiar_nom_lista_lugares -> {

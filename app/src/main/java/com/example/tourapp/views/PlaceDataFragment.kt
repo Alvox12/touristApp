@@ -107,7 +107,8 @@ class PlaceDataFragment : Fragment() {
         tv_placeName.text = viewModel.place.placeName
         tv_placeDescription.text = viewModel.place.placeDescription
         place_rating_bar.rating = viewModel.place.placeScore.toFloat()
-        place_rating_bar.isEnabled = false
+        place_rating_bar.isActivated = false
+        //place_rating_bar.isEnabled = false
 
         sliderView.setSliderAdapter(viewModel.sliderAdapter)
 
@@ -115,6 +116,14 @@ class PlaceDataFragment : Fragment() {
         viewModel.getCommentList()
 
         favInitialSetup = false
+
+        if(user.userType != Constants.ADMIN && user.userId != place.placeCreator) {
+            menu.getItem(R.id.opt_delete_place).isEnabled = false
+            menu.getItem(R.id.opt_delete_place).isVisible = false
+
+            menu.getItem(R.id.opt_edit_place).isEnabled = false
+            menu.getItem(R.id.opt_edit_place).isVisible = false
+        }
 
         initSetup()
 
@@ -168,8 +177,11 @@ class PlaceDataFragment : Fragment() {
             (activity as MainActivity).ratePlace(viewModel)
         }*/
 
-        place_rating_bar.setOnClickListener {
-            (activity as MainActivity).ratePlace(viewModel)
+        place_rating_bar.setOnTouchListener OnTouchListener@{ view, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                (activity as MainActivity).ratePlace(viewModel)
+            }
+            return@OnTouchListener true
         }
 
         if(viewModel.latLng.latitude == 0.0 && viewModel.latLng.longitude == 0.0) {

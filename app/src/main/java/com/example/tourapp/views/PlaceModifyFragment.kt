@@ -64,7 +64,7 @@ class PlaceModifyFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(PlaceModifyViewModel::class.java)
         place = arguments?.get("Place") as Place
 
-        viewModel.arrayListTags = (activity as MainActivity).arrayListTags
+        viewModel.arrayListTags = (activity as MainActivity).arrayListTags.clone() as ArrayList<String>
         viewModel.arrayListTags.removeAt(0)
 
         viewModel.listTagsSelected = ArrayList(Collections.nCopies(viewModel.arrayListTags.size, false))

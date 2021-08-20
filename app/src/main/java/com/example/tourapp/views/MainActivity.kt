@@ -289,7 +289,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
                 }
             }
             R.id.opt_deleteuser -> {
-                model.deleteUserData(useredit, useredit.userPassword, user)
+                deleteAccountPopupAdmin()
             }
             R.id.nav_user_custom_lists -> {
                 nav_host_fragment.view?.let { view ->
@@ -408,6 +408,58 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         dialogView.btn_delete_accept.setOnClickListener {
             dialogView.btn_delete_cancel.isEnabled = false
             darDeBaja()
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
+
+    /**
+     * Ventana flotante al eliminar usuario de la lista de usuarios
+     */
+    private fun deleteAccountPopupAdmin() {
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_user_fromlist, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btn_delete_cancel.setOnClickListener {
+            dialogView.btn_delete_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_delete_accept.setOnClickListener {
+            dialogView.btn_delete_cancel.isEnabled = false
+            model.deleteUserData(useredit, useredit.userPassword, user)
+
+            b.dismiss()
+        }
+
+        b.setCancelable(false)
+        b.show()
+    }
+
+    /**
+     * Ventana flotante al eliminar elemento de lista personalizada usuario
+     */
+    fun deleteUserListElement(listmodel: UserListOfListsViewModel, nombre:String, listId:String, position: Int) {
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_delete_userlist_elem, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btn_delete_cancel.setOnClickListener {
+            dialogView.btn_delete_accept.isEnabled = false
+            b.dismiss()
+        }
+
+        dialogView.btn_delete_accept.setOnClickListener {
+            dialogView.btn_delete_cancel.isEnabled = false
+
+            listmodel.deleteList(listId, position)
+            Toast.makeText(this, "Lista $nombre eliminada", Toast.LENGTH_SHORT).show()
 
             b.dismiss()
         }
