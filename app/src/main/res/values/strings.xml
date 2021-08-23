@@ -3,7 +3,7 @@
 
     <string name="google_maps_api_key">AIzaSyB3Y3dTrO2AEFq22lsV5APYFD-qq-RGPP0</string>
     <!--<string name="google_maps_api_key">AIzaSyB3Y3dTrO2AEFq22lsV5APYFD-qq-RGPP0</string>-->
-    <string name="google_places_api">AIzaSyDMV8RK8SGodntvhe6jztCKqirqOrRICrE</string>
+    <string name="google_places_api_key">AIzaSyDMV8RK8SGodntvhe6jztCKqirqOrRICrE</string>
     <!-- LOGIN -->
     <string name="acceder_login">Login</string>
     <string name="password_login">Contraseña</string>

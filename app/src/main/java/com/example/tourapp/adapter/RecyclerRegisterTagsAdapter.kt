@@ -59,14 +59,6 @@ class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Ada
 
                 val select = listTagsSelected?.get(position) == true
                 holder.bind(it, select, parent)
-                //var radioGroup = holder.view.findViewById<RadioGroup>(R.id.radioGroup)
-                //var radioBtn = holder.view.findViewById<RadioButton>(R.id.radioButton)
-                //radioBtn.isChecked = listTagsSelected?.get(position) == true
-                //arrayRadioGroup.add(radioGroup)
-               // var radioBtn = radioGroup.get(0) as RadioButton
-                //if(listTagsSelected?.get(position) == true)
-                  //  arrayRadioGroup[position].check(R.id.radioButton)
-                //arrayRadioBtn.add(radioBtn)
 
                 val radioBtn = holder.getRadioBtn()
                 radioBtn.setOnClickListener {
@@ -74,7 +66,7 @@ class RecyclerRegisterTagsAdapter(val list: ArrayList<String>): RecyclerView.Ada
                     Log.d("TAGS_CLICKED", "Ha sido pulsado ${radioBtn.text}")
                     arrayRadioBtn[position].isChecked = listTagsSelected?.get(position) == true
 
-                    notifyItemChanged(position)
+                   notifyDataSetChanged()
                 }
 
                 arrayRadioBtn.add(radioBtn)

@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
@@ -84,11 +85,24 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         super.onStart()
 
         btn_tags_select.setOnClickListener {
-            //showTagFragment()
             onRegisterClick()
         }
 
         backLogin.setOnClickListener {
+            val loginIntent = Intent(this, LoginActivity::class.java)
+            startActivity(loginIntent)
+            finish()
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        val currentFragment: Fragment? = supportFragmentManager.findFragmentById(R.id.frame_layout_register)
+        if(currentFragment is RegisterTagsFragment?) {
+            ll_register.isVisible = true
+        }
+        else {
             val loginIntent = Intent(this, LoginActivity::class.java)
             startActivity(loginIntent)
             finish()
@@ -194,7 +208,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         model.flagCreate.removeObserver(observerRegister)
         model.flagCreate.value = false
 
-        val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
-        tagsRef.removeEventListener(mListenerTags)
+        //val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
+        //tagsRef.removeEventListener(mListenerTags)
     }
 }

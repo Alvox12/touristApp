@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
+import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.Place
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.viewModel.UserListOfListsViewModel
@@ -59,15 +60,18 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
             val popupMenu = PopupMenu(holder.view.context, holder.view.iv_button_opt)
             popupMenu.inflate(R.menu.userlist_of_lists_menu_item)
 
+            //A la lista de Favoritos no se le puede cambiar el nombre
+            if(arrayNames[position] == Constants.FAVLIST) {
+                val nameItem = popupMenu.menu.findItem(R.id.opt_cambiar_nom_lista_lugares)
+                nameItem.isEnabled = false
+                nameItem.isVisible = false
+            }
+
             popupMenu.setOnMenuItemClickListener { item->
                 when(item.itemId) {
                     R.id.opt_eliminar_lista_lugares -> {
                         popupMenu.dismiss()
 
-                        /*
-                        val nombre = arrayNames[position]
-                        model.deleteList(arrayCodigos[position], position)
-                        Toast.makeText(parent.context, "Lista $nombre eliminada", Toast.LENGTH_SHORT).show()*/
                         (parent.context as MainActivity).deleteUserListElement(model, arrayNames[position], arrayCodigos[position], position)
                         true
                     }

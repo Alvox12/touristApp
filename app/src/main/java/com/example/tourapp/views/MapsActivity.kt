@@ -123,17 +123,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun initAutocompleteSupport() {
 
         // Initialize Places.
-        Places.initialize(applicationContext, resources.getString(R.string.google_places_api))
+        Places.initialize(applicationContext, resources.getString(R.string.google_maps_api_key))
         var placesClient = Places.createClient(this)
 
         this.autocompleteFrag = supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
-        autocompleteFrag.setTypeFilter(TypeFilter.GEOCODE)
-        autocompleteFrag.setLocationBias(RectangularBounds.newInstance(madridBounds))
+        //autocompleteFrag.setTypeFilter(TypeFilter.GEOCODE)
+        //autocompleteFrag.setLocationBias(RectangularBounds.newInstance(madridBounds))
+        autocompleteFrag.setLocationRestriction(RectangularBounds.newInstance(madridBounds))
         autocompleteFrag.setCountry("ES")
 
         // Specify the types of place data to return.
         autocompleteFrag.setPlaceFields(listOf
-        (com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME))
+        (com.google.android.libraries.places.api.model.Place.Field.ID, com.google.android.libraries.places.api.model.Place.Field.NAME,com.google.android.libraries.places.api.model.Place.Field.LAT_LNG,com.google.android.libraries.places.api.model.Place.Field.ADDRESS))
 
     }
 
