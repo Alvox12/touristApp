@@ -97,7 +97,7 @@ class PlaceModifyFragment : Fragment() {
     private fun getSelectedTags() {
         val array = place.arrayTags
         for(num in array.iterator()) {
-            viewModel.listTagsSelected?.set(num, true)
+            viewModel.listTagsSelected?.set(num-1, true)
         }
     }
 
@@ -147,7 +147,7 @@ class PlaceModifyFragment : Fragment() {
 
         observerPlaceUploaded = Observer{
             if(it) {
-                Toast.makeText((context as MainActivity), "Lugar dado de alta", Toast.LENGTH_SHORT).show()
+                Toast.makeText((context as MainActivity), "Datos lugar modificados", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).onBackPressed()
             }
         }

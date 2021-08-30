@@ -9,11 +9,14 @@
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_delete_account.xml" value="0.20652173913043478" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_delete_user_fromlist.xml" value="0.20652173913043478" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_delete_userlist_elem.xml" value="0.23278985507246377" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_error_login.xml" value="0.32653985507246375" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_error_register.xml" value="0.32653985507246375" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/dialog_logout.xml" value="0.20652173913043478" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/fragment_custom_place_list.xml" value="0.19429347826086957" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/fragment_place_data.xml" value="0.1526268115942029" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/fragment_user_list.xml" value="0.20652173913043478" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/nav_header.xml" value="0.20108695652173914" />
+        <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/layout/userplace_list_item.xml" value="0.35280797101449274" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/menu/placedata_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioWorkspace/touristApp/app/src/main/res/menu/user_list_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidWorkspace/touristApp/app/src/main/res/layout/activity_maps.xml" value="0.20520833333333333" />

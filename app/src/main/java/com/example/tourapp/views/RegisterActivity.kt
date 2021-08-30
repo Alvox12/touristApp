@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.dialog_error_register.view.*
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel>() {
 
@@ -76,6 +77,9 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
                 this.user = model.user
                 registerFinished(it)
             }
+            else {
+                dialogErrorMsg()
+            }
         }
 
         model.flagCreate.observe(this, observerRegister)
@@ -97,6 +101,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     override fun onBackPressed() {
         super.onBackPressed()
+        model.signOut()
 
         val currentFragment: Fragment? = supportFragmentManager.findFragmentById(R.id.frame_layout_register)
         if(currentFragment is RegisterTagsFragment?) {
@@ -194,6 +199,20 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
         val view = this.currentFocus
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun dialogErrorMsg() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_error_register, null)
+        val b = dialogBuilder.setView(dialogView).create()
+
+        dialogView.btnAceptarDialog.setOnClickListener {
+            b.dismiss()
+            onBackPressed()
+        }
+
+        b.setCancelable(false)
+        b.show()
     }
 
     //Eliminamos observer de loginNotify y lo ponemos a false para evitar probelmas en login

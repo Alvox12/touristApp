@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerRegisterTagsAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
+import com.example.tourapp.views.RegisterActivity
 import com.google.firebase.auth.*
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -295,5 +296,9 @@ class RegisterViewModel : ViewModel() {
         }
 
     }*/
+
+    fun signOut() {
+        mFirebaseAuth.signOut()
+    }
 
 }

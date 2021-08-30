@@ -33,6 +33,7 @@ class UserDataFragment: BaseFragment<FragmentUserDataBinding, UserViewModel>() {
 
     override fun onStart() {
         super.onStart()
+        (activity as MainActivity).setDrawerEnabled(true)
         observerUser = Observer {
             showUserData()
         }

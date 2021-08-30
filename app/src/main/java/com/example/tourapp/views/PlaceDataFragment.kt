@@ -44,12 +44,15 @@ class PlaceDataFragment : Fragment() {
     private lateinit var menu: Menu
     private lateinit var favIcon: MenuItem
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        this.setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_place_data, container, false)
     }
 
@@ -87,6 +90,18 @@ class PlaceDataFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        if(viewModel.user.userType != Constants.ADMIN && viewModel.user.userId != viewModel.place.placeCreator) {
+            menu.findItem(R.id.opt_delete_place).isEnabled = false
+            menu.findItem(R.id.opt_delete_place).isVisible = false
+
+            menu.findItem(R.id.opt_edit_place).isEnabled = false
+            menu.findItem(R.id.opt_edit_place).isVisible = false
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -117,14 +132,6 @@ class PlaceDataFragment : Fragment() {
 
         favInitialSetup = false
 
-        if(user.userType != Constants.ADMIN && user.userId != place.placeCreator) {
-            menu.getItem(R.id.opt_delete_place).isEnabled = false
-            menu.getItem(R.id.opt_delete_place).isVisible = false
-
-            menu.getItem(R.id.opt_edit_place).isEnabled = false
-            menu.getItem(R.id.opt_edit_place).isVisible = false
-        }
-
         initSetup()
 
         /*if(previo == "Comments") {
@@ -135,6 +142,7 @@ class PlaceDataFragment : Fragment() {
         else*/
         viewModel.getImages(viewModel.place.placePictures)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

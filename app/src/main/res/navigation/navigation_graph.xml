@@ -116,8 +116,8 @@
     <fragment
         android:id="@+id/userOptionsFragment"
         android:name="com.example.tourapp.views.UserOptionsFragment"
-        android:label="fragment_user_options"
-        tools:layout="@layout/fragment_user_options" >
+        android:label="Edición perfil"
+        tools:layout="@layout/fragment_user_options">
         <action
             android:id="@+id/action_userOptionsFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />
@@ -128,7 +128,7 @@
     <fragment
         android:id="@+id/editTagsFragment"
         android:name="com.example.tourapp.views.EditTagsFragment"
-        android:label="EditTagsFragment" />
+        android:label="Edición etiquetas" />
 
 
 </navigation>
