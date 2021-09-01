@@ -143,8 +143,25 @@ class PlaceDataFragment : Fragment() {
         viewModel.getImages(viewModel.place.placePictures)
     }
 
+    override fun onResume() {
+        super.onResume()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val navController = view?.let { Navigation.findNavController(it) }
+        // Instead of String any types of data can be used
+        if (navController != null) {
+            navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("key")?.observe(viewLifecycleOwner) { bundle ->
+                val previo = bundle.get("Previous") as String
+                if(previo == "Comments") {
+                    val arrayBitmap = bundle.get("ImagesMap") as ArrayList<Bitmap>
+                    viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
+                    viewModel.imagesDownloaded.value = true
+                    bundle.clear()
+                }
+            }
+        }
+    }
+
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         view.let {
@@ -157,11 +174,13 @@ class PlaceDataFragment : Fragment() {
                         val arrayBitmap = bundle.get("ImagesMap") as ArrayList<Bitmap>
                         viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
                         viewModel.imagesDownloaded.value = true
+                        bundle.clear()
+                        Toast.makeText((activity as MainActivity), "PREVIOOOOOO", Toast.LENGTH_LONG).show()
                     }
                 }
             }
         }
-    }
+    }*/
 
     private fun initSetup() {
 
@@ -288,14 +307,21 @@ class PlaceDataFragment : Fragment() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(viewModel.place.placeId)
         placeRef.removeValue().addOnCompleteListener {
             if(it.isSuccessful) {
-                val storageRef = FirebaseStorage.getInstance().getReference(viewModel.place.placePictures)
-                storageRef.delete().addOnCompleteListener { it2->
-                    if(it2.isSuccessful) {
-                        Toast.makeText((activity as MainActivity), "Lugar eliminado correctamente", Toast.LENGTH_SHORT).show()
-                        (activity as MainActivity).onBackPressed()
+
+                if(viewModel.place.placePictures.isNotBlank()) {
+                    val storageRef = FirebaseStorage.getInstance().getReference(viewModel.place.placePictures)
+                    storageRef.delete().addOnCompleteListener { it2 ->
+                        if (it2.isSuccessful) {
+                            Toast.makeText(
+                                (activity as MainActivity),
+                                "Lugar eliminado correctamente",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
+
         }
     }
 

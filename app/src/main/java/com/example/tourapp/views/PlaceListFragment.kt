@@ -130,7 +130,6 @@ class PlaceListFragment : Fragment() {
                     if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
                         viewModel.loadNewData()
                     }
-                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
                 }
             }
         })

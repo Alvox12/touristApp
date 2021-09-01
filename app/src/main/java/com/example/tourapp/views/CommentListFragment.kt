@@ -3,6 +3,7 @@ package com.example.tourapp.views
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -36,8 +37,14 @@ class CommentListFragment : Fragment()  {
     private lateinit var user: User
     private  lateinit var place: Place
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         return inflater.inflate(R.layout.fragment_comment_list, container, false)
     }
 
@@ -78,7 +85,6 @@ class CommentListFragment : Fragment()  {
                     if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
                         viewModel.loadNewData()
                     }
-                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -89,6 +95,14 @@ class CommentListFragment : Fragment()  {
         viewModel.descargas = 0
         
         viewModel.loadChildEventListener()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) { // ActionBar back/parent button is pressed
+            prepareCallback()
+            return true
+        }
+        return true
     }
 
     private fun prepareCallback() {

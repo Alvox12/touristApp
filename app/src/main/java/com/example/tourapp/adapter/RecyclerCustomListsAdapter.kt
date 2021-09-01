@@ -25,6 +25,7 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
     var arrayNames: ArrayList<String> = arrayListOf()
     var arrayElems: ArrayList<Int> = arrayListOf()
     var arrayCodigos: ArrayList<String> = arrayListOf()
+    var arrayCreators: ArrayList<String> = arrayListOf()
 
     private var parent: ViewGroup? = null
 
@@ -53,6 +54,10 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
                 //bundle.putString("codigo", arrayCodigos[position])
                 bundle.putString("nombre", arrayNames[position])
                 bundle.putString("ListCodes", arrayCodigos[position])
+
+                if(model.user.userType == Constants.ADMIN)
+                    bundle.putString("ListCreator", arrayCreators[position])
+
                 bundle.putBoolean("CustomList", true)
                 view.let { Navigation.findNavController(it).navigate(R.id.action_userListOfListsFragment_to_customPlaceListFragment, bundle)}
             }
@@ -93,14 +98,16 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
         }
     }
 
-    fun setLists(listNames: ArrayList<String>, listCodes: ArrayList<String>, listElems: ArrayList<Int>) {
+    fun setLists(listNames: ArrayList<String>, listCodes: ArrayList<String>, listElems: ArrayList<Int>, listCreators: ArrayList<String> = arrayListOf()) {
         arrayNames.clear()
         arrayCodigos.clear()
         arrayElems.clear()
+        arrayCreators.clear()
 
         arrayNames = listNames.clone() as ArrayList<String>
         arrayCodigos = listCodes.clone() as ArrayList<String>
         arrayElems = listElems.clone() as ArrayList<Int>
+        arrayCreators = listCreators.clone() as ArrayList<String>
     }
 
     override fun getItemCount() = this.arrayNames.size ?: 0

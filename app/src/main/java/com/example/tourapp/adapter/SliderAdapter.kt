@@ -31,7 +31,7 @@ class SliderAdapter:
 
     fun setMutableMap(myBitmap: MutableMap<Int, Bitmap>) {
         this.myBitmapPlaceImg.clear()
-        this.myBitmapPlaceImg = myBitmap
+        this.myBitmapPlaceImg = myBitmap.toMutableMap()
     }
 
 

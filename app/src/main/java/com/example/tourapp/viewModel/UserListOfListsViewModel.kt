@@ -27,7 +27,7 @@ class UserListOfListsViewModel : ViewModel() {
     private lateinit var mListenerLists : ValueEventListener
 
     private fun setLists() {
-        adapter.setLists(listNames, listCodes, listElems)
+        adapter.setLists(listNames, listCodes, listElems, listCreators)
         adapter.notifyDataSetChanged()
     }
 
@@ -42,6 +42,10 @@ class UserListOfListsViewModel : ViewModel() {
     //Solo si se es ADMIN
     fun getAllLists() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS)
+        listNames.clear()
+        listElems.clear()
+        listCodes.clear()
+        listCreators.clear()
 
         mListenerLists = object : ValueEventListener {
 
@@ -49,28 +53,51 @@ class UserListOfListsViewModel : ViewModel() {
             }
 
             override fun onDataChange(snapshot: DataSnapshot) {
+
+                listNames.clear()
+                listElems.clear()
+                listCodes.clear()
+                listCreators.clear()
+
+                var totalChildren: Int = 0
+
+                //Calculamos el numero total de listas personalizadas
+                snapshot.children.forEach {
+                    if(it.child(Constants.USERLISTS).exists()) {
+                        val childrenNum = it.child(Constants.USERLISTS).childrenCount.toInt()
+                        totalChildren += childrenNum
+                    }
+                }
+
                 snapshot.children.forEach { userSnapshot ->
 
                     var uid = userSnapshot.key as String
 
-                    userSnapshot.child(Constants.USERLISTS).children.forEach { listSnapshot ->
-                        while(listIndex < listSnapshot.childrenCount && descargas < Constants.MAX_DATABASE_ITEMS) {
-                            val nplaces = (listSnapshot.children.elementAt(listIndex).childrenCount-2).toInt()
-                            val key = listSnapshot.children.elementAt(listIndex).key as String
-                            val name = listSnapshot.children.elementAt(listIndex).child(Constants.LISTNAME).value as String
+                        if (userSnapshot.child(Constants.USERLISTS).exists()) {
 
-                            listIndex++
-                            descargas++
+                            userSnapshot.child(Constants.USERLISTS).children.forEach { listSnapshot ->
+                                val nplaces = (listSnapshot.childrenCount - 2).toInt()
+                                val key = (listSnapshot.key) as String
+                                val name = listSnapshot.child(Constants.LISTNAME).value as String
+                                /*val nplaces =
+                                        (listSnapshot.children.elementAt(listIndex).childrenCount - 2).toInt()
+                                    val key = listSnapshot.children.elementAt(listIndex).key as String
+                                    val name = listSnapshot.children.elementAt(listIndex)
+                                        .child(Constants.LISTNAME).value as String*/
 
-                            listNames.add(name)
-                            listCodes.add(key)
-                            listElems.add(nplaces)
-                            listCreators.add(uid)
+                                listIndex++
+                                descargas++
+
+                                listNames.add(name)
+                                listCodes.add(key)
+                                listElems.add(nplaces)
+                                listCreators.add(uid)
+                            }
                         }
 
-                        setLists()
-                    }
                 }
+
+                setLists()
             }
         }
 

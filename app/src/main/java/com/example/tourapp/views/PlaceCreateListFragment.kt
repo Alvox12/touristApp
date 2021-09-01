@@ -54,6 +54,11 @@ class PlaceCreateListFragment : Fragment() {
         val user = (activity as MainActivity).user
         viewModel.user = user
 
+        if(viewModel.user.userType == Constants.ADMIN)
+            viewModel.idCreator = arguments?.get("ListCreator") as String
+        else
+            viewModel.idCreator = viewModel.user.userId
+
         viewModel.placeIndex = 0
         viewModel.descargas = 0
 
@@ -82,7 +87,6 @@ class PlaceCreateListFragment : Fragment() {
                     if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
                         viewModel.loadNewData()
                     }
-                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
                 }
             }
         })

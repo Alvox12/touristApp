@@ -88,8 +88,9 @@ class PlaceDataViewModel : ViewModel() {
     fun getImages(path: String) {
         if (path != "") {
 
+            val bytes = Constants.ICON_MAX_SIZE4.toLong()
             val storageRef = FirebaseStorage.getInstance().getReference(path)
-            val maxDownloadBytes: Long = 1024 * 1024
+            val maxDownloadBytes: Long = bytes * bytes
 
             storageRef.listAll().addOnSuccessListener { listResult ->
 

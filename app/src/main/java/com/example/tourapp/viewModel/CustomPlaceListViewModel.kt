@@ -36,6 +36,7 @@ class CustomPlaceListViewModel : ViewModel() {
     lateinit var listCode: String
 
     lateinit var user: User
+    lateinit var idCreator: String
 
     var placeIndex = 0
     var descargas = 0
@@ -249,7 +250,7 @@ class CustomPlaceListViewModel : ViewModel() {
     }
 
     fun getCustomListCodes() {
-        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}/${listCode}")
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${idCreator}/${Constants.USERLISTS}/${listCode}")
         mListenerCustomList = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 keysPlaces.clear()
@@ -263,6 +264,8 @@ class CustomPlaceListViewModel : ViewModel() {
                     initialDownload = false
                     getPlaceList()
                 }
+                else
+                    setPlaceList()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -367,11 +370,11 @@ class CustomPlaceListViewModel : ViewModel() {
 
 
     fun deleteListElem(position: Int, placeId: String) {
-        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}/${listCode}")
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${idCreator}/${Constants.USERLISTS}/${listCode}")
         ref.child(placeId).removeValue().addOnCompleteListener {
             if(it.isSuccessful) {
                 listPlace.removeAt(position)
-                keysPlaces.removeAt(position)
+                //keysPlaces.removeAt(position)
                 Log.v("FIREBASE_BBDD_USER", "EXITO AL ELIMINAR ELEMENTO")
                 setPlaceList()
             }
@@ -438,7 +441,7 @@ class CustomPlaceListViewModel : ViewModel() {
 
     fun deletePlaceListener() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
-        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}/${listCode}")
+        val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${idCreator}/${Constants.USERLISTS}/${listCode}")
         placeRef.removeEventListener(mListenerPlace)
         userRef.removeEventListener(mListenerCustomList)
 

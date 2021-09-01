@@ -27,6 +27,9 @@ class PlaceCreateListViewModel : ViewModel() {
     lateinit var listName: String
     lateinit var listId: String
 
+    //ID dueño de la lista
+    lateinit var idCreator: String
+
     lateinit var user: User
     var listUploaded = MutableLiveData <Boolean>()
 
@@ -186,7 +189,7 @@ class PlaceCreateListViewModel : ViewModel() {
     }
 
     fun uploadListPlace(namePlace: String) {
-        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
+        val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${idCreator}/${Constants.USERLISTS}")
         var id: String
 
         if(newList) {

@@ -118,7 +118,6 @@ class CustomPlaceListFragment : Fragment() {
                     if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
                         viewModel.loadNewData()
                     }
-                    Toast.makeText((activity as MainActivity), "endOfScroll", Toast.LENGTH_SHORT).show()
                 }
             }
         })
@@ -128,6 +127,11 @@ class CustomPlaceListFragment : Fragment() {
 
         val nameBar = arguments?.get("nombre") as String
         (activity as MainActivity).supportActionBar?.title = nameBar
+
+        if(viewModel.user.userType == Constants.ADMIN)
+            viewModel.idCreator = arguments?.get("ListCreator") as String
+        else
+            viewModel.idCreator = viewModel.user.userId
 
         val listCode = arguments?.get("ListCodes") as String
         viewModel.listCode = listCode
@@ -141,6 +145,10 @@ class CustomPlaceListFragment : Fragment() {
                     bundle.putBoolean("newList", false)
                     bundle.putString("listId", viewModel.listCode)
                     bundle.putString("listName", nameBar)
+
+                    if(viewModel.user.userType == Constants.ADMIN)
+                        bundle.putString("ListCreator", viewModel.idCreator)
+
                     bundle.putStringArrayList("listSelected", viewModel.keysPlaces)
                     bundle.putStringArrayList("listCodes", arrayListOf())
                     Navigation.findNavController(it).navigate(R.id.action_customPlaceListFragment_to_placeCreateListFragment2, bundle)
