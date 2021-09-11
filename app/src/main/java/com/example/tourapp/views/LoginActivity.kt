@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
@@ -53,6 +54,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
            // }
         }
 
+        model.loginNotify = MutableLiveData()
         model.loginNotify.observe(this, observerLogin)
     }
 
@@ -60,7 +62,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         super.onStart()
 
         linkRegister.setOnClickListener {
-            val registerIntent = Intent(this, RegisterActivity::class.java)
+            val registerIntent = Intent(this, RegisterActivity2::class.java)
             startActivity(registerIntent)
             finish()
         }

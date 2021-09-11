@@ -1,6 +1,7 @@
 package com.example.tourapp.viewModel
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tourapp.adapter.RecyclerRegisterTagsAdapter
 import com.example.tourapp.commons.Constants
@@ -13,6 +14,8 @@ class EditTagsViewModel: ViewModel() {
     var arrayTags: ArrayList<String> = arrayListOf()
     var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
     lateinit var myAdapter: RecyclerRegisterTagsAdapter
+
+    var tagsEdited: MutableLiveData<Boolean> = MutableLiveData()
 
     fun configAdapter() {
         myAdapter = RecyclerRegisterTagsAdapter(arrayTags)
@@ -29,7 +32,11 @@ class EditTagsViewModel: ViewModel() {
 
         prefRef.setValue(msg).addOnCompleteListener {
             if(it.isSuccessful) {
+                tagsEdited.value = true
                 Log.v("FIREBASE_BBDD", "SUCCESS_TAGS_UPLOAD")
+            }
+            else {
+                tagsEdited.value = false
             }
         }
     }

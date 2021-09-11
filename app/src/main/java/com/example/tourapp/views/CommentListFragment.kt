@@ -108,11 +108,11 @@ class CommentListFragment : Fragment()  {
     private fun prepareCallback() {
 
         val bundle : Bundle = Bundle()
-        val arrayBitmap: ArrayList<Bitmap> = viewModel.arrayLIstBitmap
+        //val arrayBitmap: ArrayList<Bitmap> = viewModel.arrayLIstBitmap
 
-        bundle.putParcelableArrayList("ImagesMap", arrayBitmap)
+        /*bundle.putParcelableArrayList("ImagesMap", arrayBitmap)
         bundle.putSerializable("Place", this.place)
-        bundle.putString("Previous", "Comments")
+        bundle.putString("Previous", "Comments")*/
 
         /*val manager: FragmentManager = (activity as MainActivity).supportFragmentManager
         val trans: FragmentTransaction = manager.beginTransaction()

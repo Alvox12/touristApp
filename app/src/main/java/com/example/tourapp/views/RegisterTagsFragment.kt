@@ -31,8 +31,8 @@ class RegisterTagsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         //viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
-        viewModel = (activity as RegisterActivity).getCurrentViewModel()
-        viewModel.arrayTags = (activity as RegisterActivity).arrayListTags
+        viewModel = (activity as RegisterActivity2).viewModel
+        //viewModel.arrayTags = (activity as RegisterActivity2).arrayListTags
 
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
@@ -53,7 +53,7 @@ class RegisterTagsFragment : Fragment() {
         val list = viewModel.myAdapter.getTagsSelected()
         if (list != null) {
             if(!list.contains(true)) {
-                Toast.makeText((activity as RegisterActivity), "Selecciona preferencias", Toast.LENGTH_SHORT).show()
+                Toast.makeText((activity as RegisterActivity2), "Selecciona preferencias", Toast.LENGTH_SHORT).show()
                 rv_register_tags.isEnabled = true
             }
             else {

@@ -21,17 +21,18 @@ import com.example.tourapp.adapter.RecyclerTagListAdapter
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.Utils
 import com.example.tourapp.dataModel.Place
+import com.example.tourapp.viewModel.PlaceModify2ViewModel
 import com.example.tourapp.viewModel.PlaceModifyViewModel
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.android.synthetic.main.fragment_place_modify2.*
+import androidx.lifecycle.Observer
 import java.util.*
 import kotlin.collections.ArrayList
-import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.fragment_place_modify.*
 
-class PlaceModifyFragment : Fragment() {
+class PlaceModify2Fragment : Fragment() {
 
     companion object {
-        fun newInstance() = PlaceModifyFragment()
+        fun newInstance() = PlaceModify2Fragment()
     }
 
     private lateinit var viewModel: PlaceModifyViewModel
@@ -56,7 +57,7 @@ class PlaceModifyFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_place_modify, container, false)
+        return inflater.inflate(R.layout.fragment_place_modify2, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -135,12 +136,16 @@ class PlaceModifyFragment : Fragment() {
         }
         et_place_info.addTextChangedListener(et_info_watcher)
 
-        btn_images.setOnClickListener {
+        btn_map.setOnClickListener {
+            openMap()
+        }
+
+        /*btn_images.setOnClickListener {
             if (!Utils.checkPermission(activity as MainActivity))
                 view?.let { it1 -> Utils.askforPermission(it1) }
             else
                 openFileChooser()
-        }
+        }*/
 
 
         imgb_upload.setOnClickListener {
@@ -287,7 +292,7 @@ class PlaceModifyFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
-                && data != null && data.data != null) {
+            && data != null && data.data != null) {
             imagePath = data.data
 
             if(!(activity as MainActivity).validPicture(imagePath))

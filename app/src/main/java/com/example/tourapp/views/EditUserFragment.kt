@@ -67,11 +67,17 @@ class EditUserFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         observerUser = Observer {
+
+            if(it) {
+                (activity as MainActivity).editMenuName(input_name.text.toString())
+            }
+
             //showUserData()
             input_name.text.clear()
             input_password.text.clear()
             input_password_sec.text.clear()
             //enableElements(true)
+
             (activity as MainActivity).onBackPressed()
         }
         viewModel.userEdited.observe(this, observerUser)

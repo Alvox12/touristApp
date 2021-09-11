@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.viewModel.EditTagsViewModel
 import kotlinx.android.synthetic.main.fragment_edit_tags.*
+import kotlinx.android.synthetic.main.fragment_edit_user.*
 
 
 class EditTagsFragment : Fragment() {
@@ -18,6 +20,9 @@ class EditTagsFragment : Fragment() {
     private lateinit var viewModel: EditTagsViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
+
+    //Observador del booleano tags editados
+    lateinit var observerTags: Observer<Boolean>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -47,6 +52,15 @@ class EditTagsFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        observerTags = Observer {
+            (activity as MainActivity).onBackPressed()
+        }
+        viewModel.tagsEdited.observe(this, observerTags)
+    }
+
     private fun getSelectedTags() {
         val array = viewModel.user.arrayPrefs
         for(num in array.iterator()) {
@@ -54,6 +68,13 @@ class EditTagsFragment : Fragment() {
         }
         viewModel.myAdapter.listTagsSelected?.let { viewModel.myAdapter.uploadSetListSelected(it) }
         viewModel.myAdapter.notifyDataSetChanged()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        viewModel.tagsEdited.removeObserver(observerTags)
+        viewModel.tagsEdited.value = false
     }
 
 }

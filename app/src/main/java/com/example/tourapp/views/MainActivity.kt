@@ -106,7 +106,31 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         val tvEmail = viewHeader.findViewById<TextView>(R.id.tv_email)
 
         //Ponemos la primera letra del nombre a mayuscula
-        val nameStr = user.userName
+        editMenuName(user.userName)
+        /*val nameStr = user.userName
+        val nameAux = nameStr.substring(0, 1).toUpperCase() + nameStr.substring(1)
+
+        //Cambiamos el tamaño de la fuente. Puedes cambiar 2f como desees.
+        //Change font size of the first character. You can change 2f as you want
+        val spannableString = SpannableString(nameAux)
+        spannableString.setSpan(RelativeSizeSpan(2f), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        tvName.text = spannableString
+        tvEmail.text = user.userMail*/
+
+        if(user.userType != Constants.ADMIN){
+            nav_view.menu.findItem(R.id.nav_userlist).isEnabled = false
+            nav_view.menu.findItem(R.id.nav_userlist).isVisible = false
+        }
+
+    }
+
+    //Establece el nombre del menu lateral de la cabecera
+    fun editMenuName(nameStr: String) {
+        val viewHeader = nav_view.getHeaderView(0)
+        val tvName = viewHeader.findViewById<TextView>(R.id.tv_name)
+        val tvEmail = viewHeader.findViewById<TextView>(R.id.tv_email)
+
         val nameAux = nameStr.substring(0, 1).toUpperCase() + nameStr.substring(1)
 
         //Cambiamos el tamaño de la fuente. Puedes cambiar 2f como desees.
@@ -116,14 +140,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
         tvName.text = spannableString
         tvEmail.text = user.userMail
-
-        if(user.userType != Constants.ADMIN){
-            nav_view.menu.findItem(R.id.nav_userlist).isEnabled = false
-            nav_view.menu.findItem(R.id.nav_userlist).isVisible = false
-        }
-
     }
-
 
     /**
      *Activa o descativa la presencia del menu lateral y muestra el boton de la barra superior

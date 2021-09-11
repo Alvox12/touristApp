@@ -76,6 +76,7 @@ class UserListOfListsFragment : Fragment() {
                     val bundle = Bundle()
                     bundle.putBoolean("newList", true)
                     bundle.putStringArrayList("listCodes", viewModel.listCodes)
+                    bundle.putString("ListCreator", user.userId)
                     Navigation.findNavController(it).navigate(R.id.action_userListOfListsFragment_to_placeCreateListFragment2, bundle)
                 }
             }

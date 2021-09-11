@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_placeDataFragment_to_placeModifyFragment"
             app:destination="@id/placeModifyFragment" />
+        <action
+            android:id="@+id/action_placeDataFragment_to_placeModify2Fragment"
+            app:destination="@id/placeModify2Fragment" />
     </fragment>
     <fragment
         android:id="@+id/commentListFragment"
@@ -129,6 +132,11 @@
         android:id="@+id/editTagsFragment"
         android:name="com.example.tourapp.views.EditTagsFragment"
         android:label="Edición etiquetas" />
+    <fragment
+        android:id="@+id/placeModify2Fragment"
+        android:name="com.example.tourapp.views.PlaceModify2Fragment"
+        android:label="fragment_place_modify2"
+        tools:layout="@layout/fragment_place_modify2" />
 
 
 </navigation>

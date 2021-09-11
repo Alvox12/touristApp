@@ -18,6 +18,7 @@ class UserListOfListsViewModel : ViewModel() {
 
     //Solo se utilizara si se esta en modo ADMIN
     var listCreators: ArrayList<String> = arrayListOf()
+    var listUserNames: ArrayList<String> = arrayListOf()
 
     lateinit var user: User
 
@@ -27,7 +28,7 @@ class UserListOfListsViewModel : ViewModel() {
     private lateinit var mListenerLists : ValueEventListener
 
     private fun setLists() {
-        adapter.setLists(listNames, listCodes, listElems, listCreators)
+        adapter.setLists(listNames, listCodes, listElems, listCreators, listUserNames)
         adapter.notifyDataSetChanged()
     }
 
@@ -46,6 +47,7 @@ class UserListOfListsViewModel : ViewModel() {
         listElems.clear()
         listCodes.clear()
         listCreators.clear()
+        listUserNames.clear()
 
         mListenerLists = object : ValueEventListener {
 
@@ -58,6 +60,7 @@ class UserListOfListsViewModel : ViewModel() {
                 listElems.clear()
                 listCodes.clear()
                 listCreators.clear()
+                listUserNames.clear()
 
                 var totalChildren: Int = 0
 
@@ -92,6 +95,9 @@ class UserListOfListsViewModel : ViewModel() {
                                 listCodes.add(key)
                                 listElems.add(nplaces)
                                 listCreators.add(uid)
+
+                                var userName = userSnapshot.child(Constants.USERNAME).value as String
+                                listUserNames.add(userName)
                             }
                         }
 

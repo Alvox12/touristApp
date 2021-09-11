@@ -43,6 +43,7 @@ class PlaceDataFragment : Fragment() {
 
     private lateinit var menu: Menu
     private lateinit var favIcon: MenuItem
+    private var previo: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +70,7 @@ class PlaceDataFragment : Fragment() {
                 view?.let {
                     val bundle = Bundle()
                     bundle.putSerializable("Place", viewModel.place)
-                    Navigation.findNavController(it).navigate(R.id.action_placeDataFragment_to_placeModifyFragment, bundle)
+                    Navigation.findNavController(it).navigate(R.id.action_placeDataFragment_to_placeModify2Fragment, bundle)
                 }
             }
             R.id.opt_delete_place -> {
@@ -110,7 +111,7 @@ class PlaceDataFragment : Fragment() {
         val place = arguments?.get("Place") as Place
         viewModel.place = place
         viewModel.latLng = viewModel.getLatLng(place.placeCoordinates)
-        val previo = arguments?.get("Previous") as String
+       //val previo = arguments?.get("Previous") as String
 
 
         val user = (activity as MainActivity).user
@@ -130,9 +131,8 @@ class PlaceDataFragment : Fragment() {
         viewModel.getFavListId()
         viewModel.getCommentList()
 
-        favInitialSetup = false
-
-        initSetup()
+        /*favInitialSetup = false
+        initSetup()*/
 
         /*if(previo == "Comments") {
             val arrayBitmap =arguments?.get("ImagesMap") as ArrayList<Bitmap>
@@ -146,20 +146,26 @@ class PlaceDataFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        favInitialSetup = false
+        initSetup()
+
         val navController = view?.let { Navigation.findNavController(it) }
         // Instead of String any types of data can be used
         if (navController != null) {
             navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("key")?.observe(viewLifecycleOwner) { bundle ->
-                val previo = bundle.get("Previous") as String
+                bundle.clear()
+                favInitialSetup = false
+               /* previo = bundle.get("Previous") as String
                 if(previo == "Comments") {
                     val arrayBitmap = bundle.get("ImagesMap") as ArrayList<Bitmap>
                     viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
                     viewModel.imagesDownloaded.value = true
                     bundle.clear()
-                }
+                }*/
             }
         }
     }
+
 
     /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -276,6 +282,9 @@ class PlaceDataFragment : Fragment() {
         val gmmIntentUri = Uri.parse("geo:40.416775,-3.703790")
         //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         //mapIntent.setPackage("com.google.android.apps.maps")
+
+        viewModel.favPlaceLiveData.removeObserver(this.observerFavPlace)
+        viewModel.deleteCommentListener()
 
         val mapIntent = Intent((context as MainActivity), MapsActivity::class.java)
 

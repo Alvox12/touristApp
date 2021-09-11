@@ -50,6 +50,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         email = findViewById(R.id.input_email)
         password = findViewById(R.id.input_password)
         nameuser = findViewById(R.id.input_name)
@@ -82,8 +83,11 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, RegisterViewModel
             }
         }
 
+        model.flagCreate = MutableLiveData()
         model.flagCreate.observe(this, observerRegister)
     }
+
+
 
     override fun onStart() {
         super.onStart()

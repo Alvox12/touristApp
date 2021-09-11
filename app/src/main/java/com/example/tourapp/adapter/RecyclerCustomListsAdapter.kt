@@ -26,14 +26,22 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
     var arrayElems: ArrayList<Int> = arrayListOf()
     var arrayCodigos: ArrayList<String> = arrayListOf()
     var arrayCreators: ArrayList<String> = arrayListOf()
+    var arrayUserNames: ArrayList<String> = arrayListOf()
 
     private var parent: ViewGroup? = null
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view){
 
-        fun bind(name: String, num: Int, parent: ViewGroup){
+        fun bind(name: String, num: Int, tipoUsu: String, userName: String, parent: ViewGroup){
+            val tvusuname: View
             val tvlistname = view.findViewById<TextView>(R.id.tv_list_name)
             val tvnumelems = view.findViewById<TextView>(R.id.tv_num_elems)
+
+            if(tipoUsu == Constants.ADMIN) {
+                tvusuname = view.findViewById<TextView>(R.id.tv_usu_name)
+                tvusuname.visibility = View.VISIBLE
+                tvusuname.text = userName
+            }
             tvlistname.text = name
             tvnumelems.text = "Num. de lugares: $num"
         }
@@ -47,7 +55,12 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         this.parent?.let { parent ->
-            holder.bind(arrayNames[position], arrayElems[position], parent)
+
+            if(model.user.userType == Constants.ADMIN)
+                holder.bind(arrayNames[position], arrayElems[position], Constants.ADMIN, arrayUserNames[position], parent)
+            else
+                holder.bind(arrayNames[position], arrayElems[position], Constants.NORMAL, "", parent)
+
             val llCard = holder.view.findViewById<LinearLayout>(R.id.ll_list_card)
             llCard.setOnClickListener { view ->
                 val bundle = Bundle()
@@ -98,16 +111,19 @@ class RecyclerCustomListsAdapter(var model: UserListOfListsViewModel):
         }
     }
 
-    fun setLists(listNames: ArrayList<String>, listCodes: ArrayList<String>, listElems: ArrayList<Int>, listCreators: ArrayList<String> = arrayListOf()) {
+    fun setLists(listNames: ArrayList<String>, listCodes: ArrayList<String>, listElems: ArrayList<Int>,
+                 listCreators: ArrayList<String> = arrayListOf(), listUserNames: ArrayList<String> = arrayListOf()) {
         arrayNames.clear()
         arrayCodigos.clear()
         arrayElems.clear()
         arrayCreators.clear()
+        arrayUserNames.clear()
 
         arrayNames = listNames.clone() as ArrayList<String>
         arrayCodigos = listCodes.clone() as ArrayList<String>
         arrayElems = listElems.clone() as ArrayList<Int>
         arrayCreators = listCreators.clone() as ArrayList<String>
+        arrayUserNames = listUserNames.clone() as ArrayList<String>
     }
 
     override fun getItemCount() = this.arrayNames.size ?: 0
