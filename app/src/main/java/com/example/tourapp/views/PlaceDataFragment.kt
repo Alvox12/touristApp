@@ -39,9 +39,15 @@ class PlaceDataFragment : Fragment() {
     private lateinit var viewModel: PlaceDataViewModel
     private lateinit var observerImageDownloaded : Observer<Boolean>
     private lateinit var observerFavPlace : Observer<Boolean>
+
+    /*Indica si se ha entrado por primera vez a la vista de datos del lugar desde otro fragmento
+    * una vez se pone a true indica que ya se ha configurado por primera vez la vista de datos del lugar.*/
     private var favInitialSetup = false
 
+    /*Menu barra superior*/
     private lateinit var menu: Menu
+
+    /*Icono favorito*/
     private lateinit var favIcon: MenuItem
     private var previo: String = ""
 
@@ -64,8 +70,10 @@ class PlaceDataFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /*Se establecen las acciones que cada elemento del menu de la barra superior ha de realizar*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            /*Opcion editar lugar*/
             R.id.opt_edit_place -> {
                 view?.let {
                     val bundle = Bundle()
@@ -73,10 +81,12 @@ class PlaceDataFragment : Fragment() {
                     Navigation.findNavController(it).navigate(R.id.action_placeDataFragment_to_placeModify2Fragment, bundle)
                 }
             }
+            /*Opcion eliminar lugar*/
             R.id.opt_delete_place -> {
                 //Dialog eliminar lugar
                 showDialogDelete()
             }
+            /*Opcion añadir lugar a favoritos*/
             R.id.opt_fav_place -> {
                 //Dependiendo del valor del booleanoo favoritePlace Eliminaremos o Subiremos un elemento a la lista
                 if(!viewModel.favoritePlace) { //Si no esta en la lista SUBIMOS ELEMENTO
@@ -94,6 +104,7 @@ class PlaceDataFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
 
+        /*Solo se puede editar o eliminar lugar si eres ADMIN o el creador de ese lugar*/
         if(viewModel.user.userType != Constants.ADMIN && viewModel.user.userId != viewModel.place.placeCreator) {
             menu.findItem(R.id.opt_delete_place).isEnabled = false
             menu.findItem(R.id.opt_delete_place).isVisible = false
@@ -124,22 +135,12 @@ class PlaceDataFragment : Fragment() {
         tv_placeDescription.text = viewModel.place.placeDescription
         place_rating_bar.rating = viewModel.place.placeScore.toFloat()
         place_rating_bar.isActivated = false
-        //place_rating_bar.isEnabled = false
 
         sliderView.setSliderAdapter(viewModel.sliderAdapter)
 
         viewModel.getFavListId()
         viewModel.getCommentList()
 
-        /*favInitialSetup = false
-        initSetup()*/
-
-        /*if(previo == "Comments") {
-            val arrayBitmap =arguments?.get("ImagesMap") as ArrayList<Bitmap>
-            viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
-            viewModel.imagesDownloaded.value = true
-        }
-        else*/
         viewModel.getImages(viewModel.place.placePictures)
     }
 
@@ -152,44 +153,18 @@ class PlaceDataFragment : Fragment() {
         val navController = view?.let { Navigation.findNavController(it) }
         // Instead of String any types of data can be used
         if (navController != null) {
+            /*Si vuelve hacia atras desde otro fragmento se establece que favInitialSetup ha de estar en true*/
             navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("key")?.observe(viewLifecycleOwner) { bundle ->
                 bundle.clear()
                 favInitialSetup = false
-               /* previo = bundle.get("Previous") as String
-                if(previo == "Comments") {
-                    val arrayBitmap = bundle.get("ImagesMap") as ArrayList<Bitmap>
-                    viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
-                    viewModel.imagesDownloaded.value = true
-                    bundle.clear()
-                }*/
             }
         }
     }
 
 
-    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        view.let {
-            if (it != null) {
-                val navController = Navigation.findNavController(it)
-                // Instead of String any types of data can be used
-                navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("key")?.observe(viewLifecycleOwner) { bundle ->
-                    val previo = bundle.get("Previous") as String
-                    if(previo == "Comments") {
-                        val arrayBitmap = bundle.get("ImagesMap") as ArrayList<Bitmap>
-                        viewModel.myBitmapPlaceImg = arrayListToMutableMap(arrayBitmap)
-                        viewModel.imagesDownloaded.value = true
-                        bundle.clear()
-                        Toast.makeText((activity as MainActivity), "PREVIOOOOOO", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        }
-    }*/
-
     private fun initSetup() {
 
+        /*Boton lleva a la vista de comentarios*/
         btn_comment.setOnClickListener {
             val bundle : Bundle = Bundle()
             bundle.putSerializable("Comments", viewModel.place)
@@ -206,10 +181,8 @@ class PlaceDataFragment : Fragment() {
             }
         }
 
-        /*btn_rate.setOnClickListener {
-            (activity as MainActivity).ratePlace(viewModel)
-        }*/
 
+        /*Al tocar barra puntuacion abre ventana flotante para modificar puntuacion*/
         place_rating_bar.setOnTouchListener OnTouchListener@{ view, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 (activity as MainActivity).ratePlace(viewModel)
@@ -217,19 +190,23 @@ class PlaceDataFragment : Fragment() {
             return@OnTouchListener true
         }
 
+        /*Si la longitud y latitud valen 0 ocultar opcion mostrar posicion*/
         if(viewModel.latLng.latitude == 0.0 && viewModel.latLng.longitude == 0.0) {
             btn_map.isEnabled = false
             btn_map.visibility = View.GONE
         }
-        
+
+        /*Abrir mapa tras pulsar boton*/
         btn_map.setOnClickListener {
             openMap()
         }
 
+        /*Si lugar se ha añadido o eliminado de lista de favoritos en la BBDD avisar al usuario y cambiar icono barra superior*/
         observerFavPlace = Observer {
             if(it) {
                 //Cambiamos icono de favoritos
                 favIcon.icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_checked_24)!!
+                //Si ya se ha realizado configuracion inicial avisar al usuario del cambio
                 if(favInitialSetup)
                     Toast.makeText((activity as MainActivity), "Lugar añadido a favoritos", Toast.LENGTH_SHORT).show()
                 else
@@ -238,6 +215,7 @@ class PlaceDataFragment : Fragment() {
             else {
                 //Cambiamos icono de favoritos
                 favIcon.icon = ContextCompat.getDrawable((activity as MainActivity), R.drawable.ic_baseline_favorite_unchecked_24)!!
+                //Si ya se ha realizado configuracion inicial avisar al usuario del cambio
                 if(favInitialSetup)
                     Toast.makeText((activity as MainActivity), "Lugar eliminado de favoritos", Toast.LENGTH_SHORT).show()
                 else
@@ -247,6 +225,7 @@ class PlaceDataFragment : Fragment() {
 
         viewModel.favPlaceLiveData.observe(viewLifecycleOwner, observerFavPlace)
 
+        /*Si las imagenes se han descargado correctamente mostrarlas en pantalla*/
         observerImageDownloaded = Observer {
             if(it) {
                 if(viewModel.myBitmapPlaceImg.isNotEmpty()) {
@@ -271,13 +250,8 @@ class PlaceDataFragment : Fragment() {
         return mutableMap
     }
 
+    /**Funcion para abrir actividad de google maps en las coordenadas especificadas y con el nombre del lugar*/
     private fun openMap() {
-
-        //val permissionGranted = (activity as MainActivity).checkMapServices()
-        //val permissionGranted = (activity as MainActivity).mLocationPermissionGranted
-
-        //val gmmIntentUri = Uri.parse("geo:37.7749,-122.4192?q=" + Uri.encode("1st & Pike, Seattle"))
-
 
         val gmmIntentUri = Uri.parse("geo:40.416775,-3.703790")
         //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -287,10 +261,6 @@ class PlaceDataFragment : Fragment() {
         viewModel.deleteCommentListener()
 
         val mapIntent = Intent((context as MainActivity), MapsActivity::class.java)
-
-        /*mapIntent.putExtra("Place", viewModel.place)
-        mapIntent.putExtra("AddPlace", false)
-        mapIntent.putExtra("MyUser", viewModel.user)*/
 
         mapIntent.putExtra("AddNewPlace", false)
         //mapIntent.putExtra("Place", viewModel.place)
@@ -306,12 +276,8 @@ class PlaceDataFragment : Fragment() {
 
     }
 
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == requestCode) {
-            //Obtenemos resultados de data
-        }
-    }*/
 
+    /**Funcion para eliminar lugar de la base de datos*/
     fun deletePlace() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(viewModel.place.placeId)
         placeRef.removeValue().addOnCompleteListener {

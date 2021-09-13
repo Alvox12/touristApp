@@ -22,6 +22,7 @@ class RegisterActivity2 : AppCompatActivity() {
 
     lateinit var viewModel: RegisterViewModel
 
+    /*Lista completa de preferencias de usuarios*/
     var arrayListTags: ArrayList<String> = arrayListOf()
 
     //Observador del booleano registerNotify
@@ -43,12 +44,14 @@ class RegisterActivity2 : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        /*Se activa cuando varia el valor de flagCreate (tras registrar al usuario en la BBDD)*/
         observerRegister = Observer {
             if(viewModel.flagCreate.value!!) {
                 //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
                 registerFinished(it, viewModel.user)
             }
             else {
+                /*Muestra mensaje error*/
                 dialogErrorMsg()
             }
         }
@@ -57,6 +60,7 @@ class RegisterActivity2 : AppCompatActivity() {
         viewModel.flagCreate.observe(this, observerRegister)
     }
 
+    /*Función registrar usuario en base de datos*/
     fun onRegisterClick() {
 
         viewModel.addNewUser(
@@ -68,9 +72,10 @@ class RegisterActivity2 : AppCompatActivity() {
 
     }
 
+    /*Registro finalizado*/
     fun registerFinished(registerSuccess: Boolean, user: User) {
 
-        if (registerSuccess){//Si hace login correctamente
+        if (registerSuccess){//Si hace login correctamente entra aplicación
 
             val intent = Intent(this, MainActivity::class.java)//Entramos a pantallan principal
             intent.putExtra("MyUser", user)
@@ -79,22 +84,9 @@ class RegisterActivity2 : AppCompatActivity() {
             finish()
             //Cerramos la actividad del login
 
-        } else {//Si no hace login
+        } else {//Si no hace login mensaje error
 
             dialogErrorMsg()
-            /*val dialogBuilder = AlertDialog.Builder(this)//Mostramos alerta de error en los datos introducidos
-            val inflater = this.layoutInflater
-            val dialogView = inflater.inflate(R.layout.dialog_error_login, null)
-            dialogBuilder.setView(dialogView)
-            val b = dialogBuilder.create()
-            b.show()
-            b.setCancelable(false)
-            val b_cerrar = dialogView.findViewById<View>(R.id.btnAceptarDialog)
-
-            b_cerrar.setOnClickListener(){
-                b.dismiss()
-                //cl_loading_user.visibility = View.GONE
-            }*/
         }
 
     }

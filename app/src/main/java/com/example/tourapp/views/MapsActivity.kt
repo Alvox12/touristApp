@@ -42,6 +42,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     //Booleano que indica si hay permiso localizacion
     private var mLocationPermissionsGranted: Boolean = false
     lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
+
+    //Codigo para comprobar si permiso localizacion es aceptado
     private val LOCATION_PERMISSION_REQUEST_CODE = 1234
 
     private lateinit var currentLocation : Location
@@ -49,17 +51,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //Indica si vamos a añadir una nueva localizacion o solo consultar
     private var addNewLocation: Boolean = false
-    //private lateinit var place: Place
+
+    //Informacion localizacion
     private var placeName: String = ""
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+
+    //Datos usuario
     private lateinit var user: User
 
     private lateinit var autocompleteFrag: AutocompleteSupportFragment
 
-    private var AllMarkers: ArrayList<Marker> = arrayListOf()
-
-    //Limite de comunidad de madrid
+    //Limite geografico de comunidad de madrid
     private val comuMadridBounds = LatLngBounds(
             LatLng(40.227935, -4.515052),   // SW bounds
             LatLng(41.066457, -3.127167)    // NE bounds
@@ -71,7 +74,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             LatLng(40.543836, -3.552375)    // NE bounds
     )
 
+    //Indica si se ha añadido o no un marcador por primera vez en el mapa
+    //lo cual desbloqueara ciertos elementos
     private var firstMarker = true
+
     private lateinit var marker: Marker
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,9 +88,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         initAutocompleteSupport()
 
+        /*Booleano que indica si se agrega una nueva localizacion o solo se consulta*/
         addNewLocation = intent.getSerializableExtra("AddNewPlace") as Boolean
         user = intent.getSerializableExtra("MyUser") as User
 
+        /*Si solo se consulta se deshabilitan varios elementos*/
         if(!addNewLocation) {
             btn_save_location.isEnabled = false
             btn_save_location.visibility = View.GONE
@@ -112,14 +120,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         btn_add_location.setOnClickListener {
             onBackPressed()
         }
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        /*val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)*/
+
         getLocationPermission()
     }
 
 
+    //Inicializa la barra de búsqueda por texto que utiliza los servicios de google
     private fun initAutocompleteSupport() {
 
         // Initialize Places.
@@ -127,8 +133,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         var placesClient = Places.createClient(this)
 
         this.autocompleteFrag = supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
-        //autocompleteFrag.setTypeFilter(TypeFilter.GEOCODE)
-        //autocompleteFrag.setLocationBias(RectangularBounds.newInstance(madridBounds))
         autocompleteFrag.setLocationRestriction(RectangularBounds.newInstance(madridBounds))
         autocompleteFrag.setCountry("ES")
 
@@ -177,40 +181,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                btn_add_location.isEnabled = true
             }
         }
-
-        /*input_search.setOnEditorActionListener { textView, actionId, keyEvent ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE
-                    || keyEvent.action == KeyEvent.ACTION_DOWN || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
-                //execute our method for searching
-                hideSoftKeyboard()
-                geoLocate()
-            }
-            hideSoftKeyboard()
-            false
-        }*/
     }
 
-    /*private fun geoLocate() {
-        Log.d(TAG, "geoLocate: geolocating")
-
-        if(!input_search.text.isBlank()) {
-
-            val searchString: String = input_search.text.toString()
-            val geocoder = Geocoder(this@MapsActivity245)
-            var list: List<Address> = ArrayList()
-            try {
-                list = geocoder.getFromLocationName(searchString, 1)
-            } catch (e: IOException) {
-                Log.e(TAG, "geoLocate: IOException: " + e.message)
-            }
-            if (!list.isEmpty()) {
-                val address: Address = list[0]
-                Log.d(TAG, "geoLocate: found a location: " + address.toString())
-                moveCamera(LatLng(address.latitude, address.longitude), NORMAL_ZOOM, address.getAddressLine(0))
-                //Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }*/
 
     override fun onBackPressed() {
 
@@ -233,6 +205,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onBackPressed()
     }
 
+    /*Pide al usuario permiso para acceder a la posicion del usuario en el mapa*/
     private fun getLocationPermission() {
         Log.d(TAG, "getLocationPermission: getting location permissions")
         val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -255,6 +228,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /*Recibe la respuesta del usuario sobre si puede acceder a la localizacion en el mapa*/
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         Log.d(TAG, "onRequestPermissionsResult: called.")
         mLocationPermissionsGranted = false
@@ -286,6 +260,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
+    /*Obtiene la posicion del usuario en el mapa solo si el usuario lo ha permitido*/
     private fun getLastKnownLocation() {
         if (ContextCompat.checkSelfPermission(this.applicationContext,
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.applicationContext,
@@ -304,6 +279,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /*Mueve la camara a la latitud y longitud especificadas y pone un marcador*/
     private fun moveCamera(latLng: LatLng, zoom: Float, title: String) {
         Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
@@ -338,6 +314,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return mMap.cameraPosition.target
     }
 
+    /*Oculta el teclado virtual*/
     private fun hideSoftKeyboard() {
         //this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         val view = this.currentFocus
@@ -381,10 +358,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         init()
-        // Add a marker in Sydney and move the camera
-        /*val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
     }
 
 }

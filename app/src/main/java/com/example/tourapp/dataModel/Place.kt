@@ -11,10 +11,8 @@ class Place(
     var placeCreator: String = "",
     var placeScore: Double = 0.0,
     var placePictures: String = "",
-    //var placeLocation: MyLocation = MyLocation(),
     var placeCoordinates: String = "0.0,0.0",
     var placeTags: String = "",
-    //var placeComments: MutableList<Comment> = mutableListOf(),
     var placeComments: MutableMap<String, Comment> = mutableMapOf()
 ): Serializable {
 
@@ -39,6 +37,7 @@ class Place(
         return place
     }
 
+    /*Genera id para lugar de 30 caracteres*/
     fun generateId(): String {
         val randomString = RandomString()
         return randomString.generateId(30)

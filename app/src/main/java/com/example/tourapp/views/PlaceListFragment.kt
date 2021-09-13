@@ -32,9 +32,13 @@ class PlaceListFragment : Fragment() {
     lateinit var arrayAdapter: ArrayAdapter<String>
     var arrayListTags: ArrayList<String> = arrayListOf()
 
+    /*Posicion por defecto del spinner de filtros por etiqueta*/
     var positionSpinner: Int = 0
+    /*Filtro por defecto de categorias*/
     private var categoryFilter: PlaceListViewModel.FilterCategory = PlaceListViewModel.FilterCategory.NONE
 
+    /*Booleano que indica si la lista actual es la lista general de lugares o una de las listas
+    * personales del usuario logueado*/
     private var customList = false
 
 
@@ -57,6 +61,7 @@ class PlaceListFragment : Fragment() {
             addItem.isVisible = false
         }
 
+        /*Configuracion barra de busqueda por texto*/
         val searchItem = menu.findItem(R.id.opt_search_place).actionView as SearchView
         searchItem.maxWidth = Int.MAX_VALUE
         searchItem.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -73,6 +78,8 @@ class PlaceListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * En funcion de la opcion del menu superior seleccionada se aplicará un filtro u otro o puede añadirse un lugar nuevo*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.opt_add_place -> {
@@ -122,6 +129,8 @@ class PlaceListFragment : Fragment() {
             adapter =  viewModel.myAdapter
         }
 
+        /*Hay un tope de 30 descargas si se desea descargar mas lugares hay que bajar hasta abajo de la pantalla
+        * donde se avisará a una funcion que descargue los lugares restantes si son menos de 30 u otros 30 más*/
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -133,13 +142,6 @@ class PlaceListFragment : Fragment() {
                 }
             }
         })
-        /*recyclerView = recycler_user_view.apply {
-            layoutManager = manager
-            adapter =  viewModel.myAdapter
-        }*/
-        //configSpinner()
-
-        //val customList = arguments?.get("CustomList") as Boolean
 
         viewModel.placeIndex = 0
         viewModel.descargas = 0
@@ -161,6 +163,8 @@ class PlaceListFragment : Fragment() {
         configSpinner()
     }
 
+    /**Configuracion inicial del spinner que en funcion de la posicion del mismo se
+     * filtrará por una etiqueta u otra (o ninguna que es la posicion 0)*/
     private fun configSpinner() {
 
         arrayAdapter = ArrayAdapter((context as MainActivity), android.R.layout.simple_spinner_item, arrayListTags)
@@ -187,19 +191,6 @@ class PlaceListFragment : Fragment() {
 
             }
         })
-        /*spinner_places_filter.onItemSelectedListener = object : OnItemSelectedListener {
-
-            override fun onItemSelected(parent: AdapterView<*>, view: View, pos: Int, id: Long) {
-                if(positionSpinner != pos) {
-                    if (pos >= 0 && pos < arrayListTags.size) {
-                        positionSpinner = pos
-                        viewModel.filterPlaceList(pos)
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }*/
     }
 
     /**Eliminamos observer*/

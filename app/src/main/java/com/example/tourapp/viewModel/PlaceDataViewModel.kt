@@ -21,26 +21,37 @@ import com.google.firebase.storage.FirebaseStorage
 
 class PlaceDataViewModel : ViewModel() {
 
+    /*Almacenamos los datos de lugar*/
     lateinit var place:Place
+    /*Almacenamos la longitud y latitud*/
     lateinit var latLng: LatLng
+    /*Datos del usuario actual*/
     lateinit var user: User
     private lateinit var mListenerComment : ValueEventListener
     private lateinit var mListenerFav : ValueEventListener
 
+    /*Mapa en el que se almacenan las imagenes del lugar a mostrar*/
     var myBitmapPlaceImg: MutableMap<Int, Bitmap> = mutableMapOf()
+    /*Objeto en el que se muestran las imagenes*/
     var sliderAdapter: SliderAdapter = SliderAdapter()
+    /*Se actualiza su valor cuendo imagnes se han descargado*/
     var imagesDownloaded = MutableLiveData <Boolean>()
 
+    /*ID único de la lista de favoritos del usuario logueado*/
     private lateinit var keyFavList: String
+
+    /*Indica que la lista de favoritos ha sido actualizada*/
     var favPlaceLiveData = MutableLiveData <Boolean>()
     var favoritePlace: Boolean = false
 
 
+    /**Se insertan las imagenes a mostrar en pantalla*/
     fun setImagesSlider() {
         sliderAdapter.setMutableMap(myBitmapPlaceImg)
         sliderAdapter.notifyDataSetChanged()
     }
 
+    /**Se descargan los comentarios asociados al lugar*/
     fun getCommentList() {
 
         place.placeComments.clear()
@@ -85,6 +96,7 @@ class PlaceDataViewModel : ViewModel() {
     }
 
 
+    /**Se descargan las imagenes asociadas al lugar*/
     fun getImages(path: String) {
         if (path != "") {
 
@@ -110,6 +122,7 @@ class PlaceDataViewModel : ViewModel() {
 
     }
 
+    /**Subimos la puntuacion en formato float a las rutas especificadas en la BBDD*/
     fun uploadScoreUser(score: Float) {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(place.placeId).child(
             Constants.PLACECOMMENTS
@@ -129,6 +142,8 @@ class PlaceDataViewModel : ViewModel() {
         }
     }
 
+    /**Dadas las coordenadas en formato string las convertimos a LatLng,
+     * si la cadena esta vacia devolvemos 0,0*/
     fun getLatLng(aux: String): LatLng {
 
         if(aux != "") {
@@ -144,6 +159,10 @@ class PlaceDataViewModel : ViewModel() {
         return LatLng(0.0, 0.0)
     }
 
+    /**
+     * Se busca entre las listas del usuario en la BBDD si hay una lista de favoritos,
+     * si se encuentra comprobamos si el lugar en cuestion se encuentra en la misma,
+     * si no se crea una lista de favoritos vacia con un ID generado al azar*/
     fun getFavListId() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
         mListenerFav = object : ValueEventListener {
@@ -186,17 +205,17 @@ class PlaceDataViewModel : ViewModel() {
         ref.addValueEventListener(mListenerFav)
     }
 
+    /**Funcion que si el booleano upload es true agrega lugar a favoritos
+     * y si es false lo elimina de la lista de favoritos*/
     fun favUploadDelete(upload: Boolean) {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
 
         if (upload) { //Subimos a favoritos
-            //val arrayPlace: ArrayList<String> = arrayListOf()
-            //arrayPlace.add(place.placeId)
             ref.child("${keyFavList}/${place.placeId}").setValue(place.placeId).addOnSuccessListener {
                 favPlaceLiveData.value = true
             }
         }
-        else { //Eliminamos
+        else { //Eliminamos de favoritos
             ref.child("${keyFavList}/${place.placeId}").removeValue().addOnSuccessListener {
                 favPlaceLiveData.value = false
             }

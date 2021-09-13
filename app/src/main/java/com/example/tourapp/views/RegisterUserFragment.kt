@@ -54,15 +54,17 @@ class RegisterUserFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
+
         viewModel = (activity as RegisterActivity2).viewModel
 
+        /*Al variar el valor de tagLiveData se ejecuta getTags*/
         observerTags = Observer {
             if(viewModel.tagLiveData.value!!) {
                 getTags()
             }
         }
 
+        /*tagLiveData ejeuta observerTags tras terminar de obtener datos usuario*/
         viewModel.tagLiveData.observe(viewLifecycleOwner, observerTags)
 
         observerTagsDownloaded = Observer {
@@ -87,6 +89,7 @@ class RegisterUserFragment : Fragment() {
         }
     }
 
+    /**Descarga etiquetas o tags de ls base de datos*/
     fun getTags() {
         (activity as RegisterActivity2).arrayListTags.clear()
         val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)

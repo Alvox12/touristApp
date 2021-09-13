@@ -19,18 +19,24 @@ import com.google.firebase.database.ValueEventListener
 
 class UserViewModel : ViewModel() {
 
+    /*Escucha a ver si hay o se dan cambios en los datos de la ruta especificada de la BBDD*/
     private lateinit var mListenerUser : ValueEventListener
-    //private lateinit var mListenerTags : ValueEventListener
+
+    /*ID del usuario logueado*/
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+    /*Avisa de que los datos del uusario han sido editados o modificados correctamente*/
     var userEdited: MutableLiveData<Boolean> = MutableLiveData()
+
+    /*Avisa de que los datos del usuario han sido descargados*/
     var userNotify: MutableLiveData<User> = MutableLiveData()
         private set
 
     private val mFirebaseAuth = FirebaseAuth.getInstance()
 
-    //var mapTags: MutableMap<Int, String> = mutableMapOf()
-    //var arrayListTags: ArrayList<String> = arrayListOf()
 
+
+    /**Descarga de los datos de usuario de la BBDD*/
     fun getUserData() {
         //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
         val userRef = FirebaseDatabase.getInstance().getReference("USUARIOS/$currentUser")
@@ -59,13 +65,14 @@ class UserViewModel : ViewModel() {
         userRef.addValueEventListener(mListenerUser)
     }
 
-    
+    /**Actualiza los datos del usuario especificado*/
     fun uploadUserData(newuser: User, oldPssw: String, currentuser: User) {
 
         var data = Base64.decode(oldPssw, Base64.DEFAULT)
         var psswd = String(data)
         val credential = EmailAuthProvider.getCredential(newuser.userMail, psswd)
 
+        /*Sale de la cuenta actual, entra con los datos del nuevo usuario y actualiza la información correspondiente*/
         mFirebaseAuth.signOut()
         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener {
             if(it.isSuccessful) {
@@ -82,6 +89,7 @@ class UserViewModel : ViewModel() {
                             FirebaseAuth.getInstance().signOut()
                             data = Base64.decode(currentuser.userPassword, Base64.DEFAULT)
                             psswd = String(data)
+                            /*Tras actualizar la informacion vuelve a entrar con su usuario y contraseña normal (ADMIN)*/
                             FirebaseAuth.getInstance().signInWithEmailAndPassword(currentuser.userMail, psswd).addOnCompleteListener {
                                 userEdited.value = true
                             }
@@ -93,6 +101,7 @@ class UserViewModel : ViewModel() {
 
     }
 
+    /**Elimina al usuario de la base de datos y elimina tambien su información*/
     fun deleteUserData(userDel: User, oldPssw: String, currentuser: User) {
 
         var data = Base64.decode(oldPssw, Base64.DEFAULT)

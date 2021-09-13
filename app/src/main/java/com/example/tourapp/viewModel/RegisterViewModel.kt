@@ -14,15 +14,21 @@ import com.google.firebase.database.FirebaseDatabase
 
 class RegisterViewModel : ViewModel() {
 
-    //var registerNotify: MutableLiveData<Boolean> = MutableLiveData()
     private  var mFirebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
+    /*Se almacena datos usuario*/
     lateinit var user: User
-    var userClient: MutableLiveData<User> = MutableLiveData()
+
+    /*Variable indica que registro realizado*/
     var flagCreate: MutableLiveData<Boolean> = MutableLiveData()
+
+    /*Variable indica que se puede pasar a vista de seleccion etiquetas*/
     var tagLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
+    /*Preferencias seleccionadas por el usuario aregistrar*/
     var arrayTags: ArrayList<String> = arrayListOf()
 
+    /*Adaptador lista de preferencias o tags*/
     lateinit var myAdapter: RecyclerRegisterTagsAdapter
 
     private  var refUser: DatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.USERS)
@@ -85,25 +91,11 @@ class RegisterViewModel : ViewModel() {
                     Log.v("FIREBASE_LOGIN", "ERROR, REGISTRO ANONIMO")
                 }
             }
-            /*mFirebaseAuth.createUserWithEmailAndPassword(user.userMail, user.userPassword)
-                    .addOnCompleteListener {result ->
-
-                        if(result.isSuccessful) {
-                            Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
-                            //uploadUserData(usrPassAux)
-                            loginAfterSignUp(usrPassAux)
-                        }
-                        else {
-                            flagCreate.value = false
-                            Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
-                        }
-                    }*/
-
-            //mFirebaseAuth.signInWithEmailAndPassword(userMail,userPassword)
         }
 
     }
 
+    /**Registramos usuario en lista de usuarios con permisos de Firebase*/
     fun createUser(userPass: String) {
 
         val usrPassAux = user.userPassword
@@ -141,6 +133,7 @@ class RegisterViewModel : ViewModel() {
             }
     }
 
+    /**Dada de alta de datos de usuario en BBDD*/
     fun uploadUserData(userPass: String) {
         user.userPassword =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
         mFirebaseAuth.uid?.let { uid ->
@@ -157,6 +150,8 @@ class RegisterViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Dar de alta preferencias seelccionadas por el usuario como un string*/
     private fun uploadUserPrefs(userPass: String) {
         val prefRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(user.userId).child(Constants.USERPREFS)
 
@@ -203,99 +198,6 @@ class RegisterViewModel : ViewModel() {
         return msg
     }
 
-
-    /**
-     * Funcion para autenticar al usuario y añadirlo en DB
-     */
-    /*private fun onSignUp(clientName: String){
-        var userMail = userClient.value!!.userMail
-        var pass = userClient.value!!.userPassword
-        var userPassword = Utils.decodeString(pass)
-
-        var client = userClient.value
-        if(user.userMail.isNotEmpty() && user.userPassword.isNotEmpty()) {
-            mFirebaseAuth.createUserWithEmailAndPassword(user.userMail, user.userPassword)
-                .addOnCompleteListener {result ->
-
-                    if(result.isSuccessful) {
-                        user.userPassword =  Base64.encodeToString(user.userPassword.toByteArray(), Base64.DEFAULT)
-                        mFirebaseAuth.uid?.let {uid ->
-
-                            // para cliente asignamos su uid
-                            if(user.userType == Constants.CLIENTE){
-                                user.clientId = uid
-                            }
-
-                            //Damos de alta el usuraio en el nodo User
-                            refUser.child(uid).setValue(user).addOnCompleteListener {result ->
-
-                                if (result.isSuccessful) {
-                                    //Añadimos el nuevo contactos a la lista de contactos del cliente
-
-                                    var nodo: String
-
-                                    when(client) {
-                                        null -> nodo = user.clientId
-                                        else -> nodo = client.clientId
-                                    }
-
-                                    /*if(client?.userType == Constants.ADMIN && user.userType != Constants.CLIENTE) {
-                                        refContact
-                                            .child(user.clientId)
-                                            .child(Constants.CONTACTS)
-                                            .child(uid)
-                                            .setValue(Contact(
-                                                userName = user.userName,
-                                                userMail = user.userMail,
-                                                userPhone = user.userPhone,
-                                                proyectCode = user.userProyectCode,
-                                                userType = user.userType,
-                                                userClient = user.clientName).toAnyObject())
-                                    }*/
-
-                                    /*refContact
-                                        .child(nodo)
-                                        .child(Constants.CONTACTS)
-                                        .child(uid)
-                                        .setValue(Contact(
-                                            userName = user.userName,
-                                            userMail = user.userMail,
-                                            userPhone = user.userPhone,
-                                            proyectCode = user.userProyectCode,
-                                            userType = user.userType,
-                                            userClient = user.clientName).toAnyObject())
-                                        .addOnCompleteListener { result ->
-                                            if (result.isSuccessful) {
-                                                flagCreate.value = true
-                                            }else {
-                                                //Si el usuario no se actualiza correctamente en la DB lo eliminamos de authentication y de DB del nodo uders
-                                                mFirebaseAuth.currentUser?.delete()
-                                                refUser.child(uid).removeValue()
-                                                flagCreate.value = false
-                                            }
-                                        }*/
-
-                                }else{
-
-                                    //Si el usuario no se añade correctamente en la DB lo eliminamos de authentication
-                                    mFirebaseAuth.currentUser?.delete()
-                                    flagCreate.value = false
-
-                                }
-                            }
-                        }
-
-                        Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
-
-                    } else {
-                        flagCreate.value = false
-                        Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
-                    }
-                }
-            mFirebaseAuth.signInWithEmailAndPassword(userMail,userPassword)
-        }
-
-    }*/
 
     fun signOut() {
         mFirebaseAuth.signOut()

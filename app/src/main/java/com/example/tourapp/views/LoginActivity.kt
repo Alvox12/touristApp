@@ -24,7 +24,6 @@ import kotlinx.android.synthetic.main.dialog_score_place.view.btn_score_cancel
 
 class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
-    //private val executor = Executor {}
     lateinit var email : EditText
     lateinit var password : EditText
     lateinit var linkRegister: TextView
@@ -46,14 +45,12 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         password = findViewById(R.id.input_password)
         linkRegister = findViewById(R.id.link_register)
 
+        /*Si se da el login descarga la informacion del usuario*/
         observerLogin = Observer {
-            //if(model.loginNotify.value!!) {
-                //loginFinished(SharedPreferencesManager.getSomeBooleanValues(Constants.SAVELOGIN))
-                getUserData(it)
-                //loginFinished(it)
-           // }
+            getUserData(it)
         }
 
+        /*Cuando el valor de loginNotify varie ejecutar lo especificado en obseverLogin*/
         model.loginNotify = MutableLiveData()
         model.loginNotify.observe(this, observerLogin)
     }
@@ -61,6 +58,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     override fun onStart() {
         super.onStart()
 
+        /*Opción de registro de un nuevo usuario*/
         linkRegister.setOnClickListener {
             val registerIntent = Intent(this, RegisterActivity2::class.java)
             startActivity(registerIntent)
@@ -69,6 +67,8 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
     }
 
 
+    /*Al pulsar el boton de login tomara los valores del campo de email y contraseña e intentara realizar un login, si alguno esta vacio
+    * no permitira que se de este proceso*/
     fun onLoginClick(v: View){
 
         when {
@@ -76,7 +76,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
                 if (email.text.toString().isEmpty()) tiEmail.error = getString(R.string.ob_campo) else tiEmail.error = null
                 if (password.text.toString().isEmpty()) tiPassword.error = getString(R.string.ob_campo) else tiPassword.error = null
             } else -> {
-            //cl_loading_user.visibility = View.VISIBLE
+
             v.hideKeyboard()
             tiEmail.error = null
             tiPassword.error = null
@@ -87,13 +87,14 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         }
     }
 
+    /*Si el proceso del login ha sido exitoso llevara a la aplicacion,
+    en caso contrario mostrará ventana flotante*/
     private fun loginFinished(loginSuccess : Boolean) {
 
         if (loginSuccess){//Si hace login correctamente
 
             val intent = Intent(this, MainActivity::class.java)//Entramos a pantallan principal
             intent.putExtra("MyUser", user)
-            //intent.putExtra(Constants.USERS, model.user)
             startActivity(intent)
             finish()
             //Cerramos la actividad del login
@@ -113,29 +114,15 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
             b.setCancelable(false)
             b.show()
-
-            ////////////////////////////////////////////////////////////////////////////////////////
-            /*val dialogBuilder = AlertDialog.Builder(this)//Mostramos alerta de error en los datos introducidos
-            val inflater = this.layoutInflater
-            val dialogView = inflater.inflate(R.layout.dialog_error_login, null)
-            dialogBuilder.setView(dialogView)
-            val b = dialogBuilder.create()
-            b.show()
-            b.setCancelable(false)
-            val b_cerrar = dialogView.findViewById<View>(R.id.btnAceptarDialog)
-
-            b_cerrar.setOnClickListener(){
-                b.dismiss()
-                //cl_loading_user.visibility = View.GONE
-            }
-            */
         }
     }
 
+    /*Obtiene datos del usuario*/
     private fun getUserData(loginSuccess: Boolean) {
         if(!loginSuccess)
             loginFinished(loginSuccess)
         else {
+            /*Si la descarga de datos del usuario es exitosa finaliza login*/
             observerUser = Observer { user ->
                 this.user = user
                 loginFinished(loginSuccess)
@@ -145,7 +132,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         }
     }
 
-    //Ocultar teclado
+    //Ocultar teclado virtual
     private fun View.hideKeyboard() {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
@@ -161,7 +148,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
         if(this::observerUser.isInitialized)
             model.userNotify.removeObserver(observerUser)
 
-        //model.loginNotify.value = false
     }
 
 }

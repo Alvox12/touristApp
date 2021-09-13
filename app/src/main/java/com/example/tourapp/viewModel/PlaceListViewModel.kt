@@ -37,12 +37,19 @@ class PlaceListViewModel : ViewModel() {
     var placeIndex = 0
     var descargas = 0
 
+    /*Filtros: ninguno, lugares creados por el usuario actual,
+    * mayor puntuacion,
+    * menor puntuacion,
+    * mayor numero de preferencias que coincidan con los gustos del usuario*/
     enum class FilterCategory {
         NONE, USERID, HIGHRATE, LOWRATE, USERPREFS
     }
 
+    /*Objeto donde se almacenan las puntuaciones de los lugares*/
     private var numScores: MutableMap<String, Int> = mutableMapOf()
 
+    /*Clase privada en la que se almacena el id del lugar y su puntuacion,
+    * y sirve para comprarar las puntuaciones de los lugares y ordenarlas en funcion de las mismas*/
     private class ScoreClass(var id: String = "",
                              var score: Double = 0.0,
                              var num: Int? = 0): Comparator<ScoreClass>, Comparable<ScoreClass> {
@@ -64,6 +71,8 @@ class PlaceListViewModel : ViewModel() {
         }
     }
 
+    /*Clase privada en la que se almacena el lugar y el numero de etiquetas en común con las
+     preferencias de el usuario, sirve para compararlas entre si de forma eficiente y ordenarlas*/
     private class PrefsClass(var place: Place, var common: Int): Comparator<PrefsClass>, Comparable<PrefsClass> {
         override fun compare(a: PrefsClass, b: PrefsClass): Int {
             if (a != null && b != null) {
@@ -90,16 +99,19 @@ class PlaceListViewModel : ViewModel() {
         myAdapter = RecyclerPlaceListAdapter()
     }
 
+    /**Muestra en pantalla la lista sin filtrar*/
     fun setPlaceList() {
         myAdapter.setPlaceList(listPlace)
         myAdapter.notifyDataSetChanged()
     }
 
+    /**Muestra en pantalla la lista filtrada*/
     private fun setFilteredPlaceList(listFiltered: ArrayList<Place>) {
         myAdapter.setPlaceList(listFiltered)
         myAdapter.notifyDataSetChanged()
     }
 
+    /**Filtra lista en funcion de la etiqueta indicada por el int position (position del spinner del fragmento)*/
     fun filterPlaceList(listAux: ArrayList<Place>, position: Int) {
         if(position == 0) {
             setFilteredPlaceList(listAux)
@@ -116,6 +128,7 @@ class PlaceListViewModel : ViewModel() {
         }
     }
 
+    /**Filtra lista por la categoría indicada en el campo category*/
     fun filterByCategory(position: Int, category: FilterCategory) {
 
         var listFiltered: ArrayList<Place> = arrayListOf()
@@ -148,6 +161,7 @@ class PlaceListViewModel : ViewModel() {
 
     }
 
+    /**Ordena lista por puntuacion de mas alta a mas baja, luego si es LOWRATE la revierte*/
     private fun filterByRate(category: FilterCategory): ArrayList<Place> {
         var listFiltered: ArrayList<Place> = orderList()
         if(category == FilterCategory.LOWRATE) {
@@ -157,6 +171,8 @@ class PlaceListViewModel : ViewModel() {
         return listFiltered
     }
 
+    /**Se ordena la lista de lugares por puntuacion de mayor a menor y teniendo en cuenta el numero de
+     * puntuaciones realizadas por los usuarios (vale mas un 5 con seis votos que un 5 con solo dos votos)*/
     private fun orderList(): ArrayList<Place> {
         val mapPlacesScores: MutableMap<String, Double> = mutableMapOf()
         for(place in listPlace.iterator()) {
@@ -197,6 +213,7 @@ class PlaceListViewModel : ViewModel() {
         return listFiltered
     }
 
+    /**Dado el ID único de un lugar devuelve su correspondiente objeto tipo Place*/
     private fun getPlaceById(id: String): Place? {
         listPlace.forEach { place ->
             if(place.placeId == id)
@@ -205,6 +222,8 @@ class PlaceListViewModel : ViewModel() {
         return null
     }
 
+    /**Ordena la lista de lugares en funcion de las coincidencias que los tags
+     * del lugar tiene con las preferencias del usuario*/
     private fun filterByPrefs(): ArrayList<Place> {
         val userPrefs = user.arrayPrefs
         var priorityQueue: PriorityQueue<PrefsClass> = PriorityQueue<PrefsClass>()
@@ -225,6 +244,7 @@ class PlaceListViewModel : ViewModel() {
 
     }
 
+    /**Obtiene el numero de puntuaciones dadas por los usuarios que tiene cada lugar en total*/
     private fun getNumScores() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.PLACESCORES)
         numScores.clear()
@@ -252,6 +272,7 @@ class PlaceListViewModel : ViewModel() {
         getPlaceList(arrayListOf())
     }
 
+    /**Descarga la informacion de un lugar concreto de la base de datos*/
     private fun getPlaceData(place: DataSnapshot): Place {
 
         var placeAux: Place
@@ -282,6 +303,7 @@ class PlaceListViewModel : ViewModel() {
     }
 
 
+    /**Descarga los datos de los lugares de la abse de datos*/
     fun getPlaceList(listCodes: ArrayList<String>) {
 
         listPlace.clear()
@@ -312,48 +334,6 @@ class PlaceListViewModel : ViewModel() {
 
                     setPlaceList()
                 }
-                /*snapshot.children.forEachIndexed { index, place ->
-
-                    Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
-
-                   /* if (customList && listCodes.contains(place.key)) {
-                        
-                        val name = place.child(Constants.PLACENAME).value as String
-                        val description = place.child(Constants.PLACEDESCRIPTION).value as String
-                        val id = place.child(Constants.PLACEID).value as String
-                        val creator = place.child(Constants.PLACECREATOR).value as String
-                        val score = place.child(Constants.PLACESCORE).value
-                        val pictures = place.child(Constants.PLACEPICTURES).value as String
-                        val tags = place.child(Constants.PLACEETIQUETAS).value as String
-
-                        val coordinates = place.child(Constants.PLACECOORDINATES).value as String
-
-                        //val latlng = getLatLng(coordinates)
-                        val arrayTags = getTags(tags)
-
-                        listCodes.add(id)
-
-                        val doubleScore = score.toString()
-                        var scoreDouble = doubleScore.toDoubleOrNull()
-                        if (scoreDouble == null) {
-                            scoreDouble = 0.0
-                        }
-
-
-                        placeAux = Place(id, name, description, creator, scoreDouble, pictures, coordinates, tags)
-                        placeAux.arrayTags = arrayTags
-                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
-                        listPlace.add(placeAux)
-                        setPlaceList()
-                    }*/
-                    //else {
-
-                        placeAux = getPlaceData(place)
-                        //placeAux = Place(id, name, description, creator, Integer.parseInt(score))
-                        listPlace.add(placeAux)
-                        setPlaceList()
-                    //}
-                }*/
             }
 
         }

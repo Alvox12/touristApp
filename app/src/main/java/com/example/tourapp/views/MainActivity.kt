@@ -81,6 +81,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         super.onCreate(savedInstanceState)
         setSupportActionBar(toolbar)
 
+        //Recibimos datos de usuario recien logueado
         user = intent.getSerializableExtra("MyUser") as User
 
         tagsDownloaded.value = false
@@ -95,6 +96,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     }
 
 
+    /**Establece el emnu lateral y la cabecera del mismo*/
     private fun initNavigation() {
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         NavigationUI.setupActionBarWithNavController(this, navController, drawer_layout)
@@ -107,16 +109,6 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
         //Ponemos la primera letra del nombre a mayuscula
         editMenuName(user.userName)
-        /*val nameStr = user.userName
-        val nameAux = nameStr.substring(0, 1).toUpperCase() + nameStr.substring(1)
-
-        //Cambiamos el tamaño de la fuente. Puedes cambiar 2f como desees.
-        //Change font size of the first character. You can change 2f as you want
-        val spannableString = SpannableString(nameAux)
-        spannableString.setSpan(RelativeSizeSpan(2f), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        tvName.text = spannableString
-        tvEmail.text = user.userMail*/
 
         if(user.userType != Constants.ADMIN){
             nav_view.menu.findItem(R.id.nav_userlist).isEnabled = false
@@ -125,7 +117,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
     }
 
-    //Establece el nombre del menu lateral de la cabecera
+    /**Establece el nombre del menu lateral de la cabecera*/
     fun editMenuName(nameStr: String) {
         val viewHeader = nav_view.getHeaderView(0)
         val tvName = viewHeader.findViewById<TextView>(R.id.tv_name)
@@ -160,6 +152,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
             super.onBackPressed()
     }
 
+    /**Cierra el teclado virtual*/
     fun closeKeyboard() {
         val view = this.currentFocus
         if (view != null) {
@@ -169,6 +162,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     }
 
 
+    /**Ventana flotante para modificar la puntuación de un lugar y actualizarla*/
     fun ratePlace(place_model: PlaceDataViewModel) {
 
         val dialogBuilder = AlertDialog.Builder(this)
@@ -182,6 +176,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
         dialogView.btn_score_accept.setOnClickListener {
             dialogView.btn_score_cancel.isEnabled = false
+            //ratingBar es un objeto que con un numero de estrellas predeterminado puedes establecer una puntuación
             dialogView.ratingBar.isEnabled = false
             val rating = dialogView.ratingBar.rating
 
@@ -195,6 +190,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     }
 
 
+    /**Ventana flotante para editar el nombre de una de las listas del usuario*/
     fun addCustomListName(list_model: PlaceCreateListViewModel) {
         val dialogBuilder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_name_list, null)
@@ -217,8 +213,6 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
                 Toast.makeText(this, "No hay ningún nombre escrito", Toast.LENGTH_SHORT).show()
             }
 
-            //list_model.uploadScoreUser(rating)
-
             b.dismiss()
         }
 
@@ -226,6 +220,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         b.show()
     }
 
+    /**Ventana flotante en la cual se puede editar un comentario de la lista de comentarios*/
     fun editCommentPopup(comment: Comment, comment_model: CommentListViewModel) {
 
         val dialogBuilder = AlertDialog.Builder(this)
@@ -329,7 +324,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
 
 
     /**
-     * Funcion que infla una modal para desloguear al usuario de la app
+     * Funcion que muestra una ventana flotante para cerrar sesion de la aplicacion
      */
     private fun showDialogLogout(itemId: MenuItem) {
 
@@ -355,9 +350,11 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
     }
 
 
+    /**Descargamos todas las etiquetas o tags disponibles*/
     private fun getTags() {
         arrayListTags.clear()
         arrayListTags.add("Selecciona etiqueta")
+        //Ruta de la base de datos donde se encuentran las etiquetas
         val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
 
         mListenerTags = object : ValueEventListener {
@@ -381,18 +378,13 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         tagsRef.addValueEventListener(mListenerTags)
     }
 
+    /**Una vez los tags han sido descargados eliminamos las funciones de escucha ya que no son necesarios*/
     private fun deleteListeners() {
         val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
         tagsRef.removeEventListener(mListenerTags)
         tagsDownloaded.removeObserver(observerTags)
     }
 
-    //Eliminamos observer
-    /* override fun onStop() {
-         super.onStop()
-         model.deleteUserListener()
-         model.userNotify.removeObserver(observerUser)
-     }*/
 
     /**
      * Comprueba si la imagen del icono tiene las medidas correctas*/
@@ -411,6 +403,7 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         return valido
     }
 
+    /**Ventana flotante que pregunta al usuario si desea eliminar o dar de baja su cuenta en Firebase*/
     fun deleteAccountPopup() {
         val dialogBuilder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.dialog_delete_account, null)
@@ -485,12 +478,16 @@ class MainActivity :  BaseActivity<ActivityMainBinding, UserViewModel>(), Naviga
         b.show()
     }
 
+    /**Función que elimina la cuenta de los servicios de firebase*/
     private fun darDeBaja() {
         val userRef = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         mFirebaseAuth.currentUser?.let { fuser ->
+            //Se eliminan los datos del usuario de la base de datos
             userRef.child(fuser.uid).removeValue().addOnCompleteListener { it1->
                 if(it1.isSuccessful) {
+                    //Se da de baja al usuario
                     mFirebaseAuth.currentUser!!.delete().addOnSuccessListener {
+                        //Se devuelve al usuario a la pantalla de login
                         startActivity(Intent(this, LoginActivity::class.java))
                         finish()
                     }

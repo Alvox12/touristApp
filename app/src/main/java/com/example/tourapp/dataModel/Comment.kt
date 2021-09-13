@@ -5,7 +5,7 @@ import com.example.tourapp.commons.Constants
 import com.example.tourapp.commons.RandomString
 import java.io.Serializable
 
-
+/*Cada comentario tiene el texto, ID único, el ID del usuario que los escribio y la fecha*/
 class Comment : Serializable {
     lateinit var commentTxt: String
     lateinit var commentId: String
@@ -52,6 +52,7 @@ class Comment : Serializable {
         return com
     }
 
+    /*Genera id para comentario al azar de 16 caracteres*/
     fun generateId(): String {
         val randomString = RandomString()
         return randomString.generateId(16)

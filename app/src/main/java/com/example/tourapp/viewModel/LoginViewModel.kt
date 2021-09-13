@@ -13,32 +13,35 @@ import com.google.firebase.database.*
 
 class LoginViewModel : ViewModel() {
 
+    /*Se almacena los datos necesarios para el login*/
     var loginData : Login = Login(email = "", password = "")
+
+    //Instancia autentificacion firebase
     val mFirebaseAuth = FirebaseAuth.getInstance()
+
+    //Variable que notifica si el login ha sido terminado
     var loginNotify: MutableLiveData<Boolean> = MutableLiveData()
+
+    //En la ruta especificada espera para ver si se da un evento
     private lateinit var mListenerUser : ValueEventListener
+
+    //Variable que indica si se ha descargado la información del usuario tras el login
     var userNotify: MutableLiveData<User> = MutableLiveData()
 
 
+    /*Se almacebaran los datos del usuario*/
     lateinit var user: User
 
+    /*Con los datos del email y contraseña comprueba si son validos para acceder a los
+    * servicios de Firebase*/
     fun onLoginClick(){
-        /*when{
-            SharedPreferencesManager.getSomeStringValues(Constants.EMAIL).toString() == loginData.email
-            ->{
-                loginData.email = SharedPreferencesManager
-                        .getSomeStringValues(SharedPreferencesManager.getSomeStringValues(Constants.EMAIL).toString()).toString()
-            }
-        }*/
         mFirebaseAuth?.signInWithEmailAndPassword(loginData.email, loginData.password)
                 ?.addOnCompleteListener {
                     if(it.isSuccessful) {
-                        //loadClient(mFirebaseAuth.uid.toString())
                         Log.v("FIREBASE_LOGIN", "SUCCESS_LOGIN")
                         loginNotify.value = true
                     }
                     else {
-                        //SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, false)
                         Log.v("FIREBASE_LOGIN", "ERROR, BAD CREDENCIALES")
                         loginNotify.value = false
                     }
@@ -53,10 +56,6 @@ class LoginViewModel : ViewModel() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                /*p0.children.forEach {
-                    user = it.getValue(User::class.java) as User
-                    onSaveData(check)
-                }*/
 
                 if ( p0.value !=null ){
                     SharedPreferencesManager.setSomeBooleanValues(Constants.SAVELOGIN, true)
@@ -67,9 +66,12 @@ class LoginViewModel : ViewModel() {
         })
     }
 
+    /*Descarga de firebase tras el proceso de login los datos del usuario*/
     fun getUserData() {
-        //currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+        /*ID único del usuario logueado*/
         val currentUser = FirebaseAuth.getInstance().currentUser?.uid.toString()
+        /*Ruta donde se encuentran los datos del usuario*/
         val userRef = FirebaseDatabase.getInstance().getReference("${Constants.USERS}/$currentUser")
 
         mListenerUser = object : ValueEventListener {
@@ -77,6 +79,7 @@ class LoginViewModel : ViewModel() {
                 Log.v("FIREBASE_BBDD_USER", "ERROR AL DESCARGAR INFO")
             }
 
+            /*Obtencion de los datos del usuario*/
             override fun onDataChange(snapshot: DataSnapshot) {
                 if(snapshot.key == currentUser) {
                     Log.v("FIREBASE_BBDD_USER", "EXITO AL DESCARGAR INFO")
@@ -100,6 +103,7 @@ class LoginViewModel : ViewModel() {
         userRef.addValueEventListener(mListenerUser)
     }
 
+    /*Obtención preferencias del usuario logueado*/
     private fun getPrefs(prefs: String): ArrayList<Int> {
         val listInt: ArrayList<Int> = arrayListOf()
 

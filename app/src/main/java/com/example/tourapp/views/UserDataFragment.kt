@@ -16,8 +16,8 @@ class UserDataFragment: BaseFragment<FragmentUserDataBinding, UserViewModel>() {
 
     //Observador del  usuario descargado
     lateinit var observerUser: Observer<User>
+    //Objeto donde se almacena la informacion del usuario
     lateinit var user: User
-    //lateinit var observerFinished: Observer<Boolean>
 
     override fun getLayoutResource(): Int = R.layout.fragment_user_data
     override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
@@ -33,22 +33,28 @@ class UserDataFragment: BaseFragment<FragmentUserDataBinding, UserViewModel>() {
 
     override fun onStart() {
         super.onStart()
+        //Permitimos al usuario interactuar con el menu lateral
         (activity as MainActivity).setDrawerEnabled(true)
+
+        /*Una vez obtenidos los datos del usuario se muestran en pantalla*/
         observerUser = Observer {
             showUserData()
         }
+        /*Al variar el valor de userNotify se invoca lo de observerUser*/
         model.userNotify.observe(this, observerUser)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //showUserData()
+        //Obtenemos los datos del usuario
         model.getUserData()
     }
 
+    /**Se muestran los datos del usuario (nombre, email y tipo de usuario) en pantalla*/
     private fun showUserData() {
         user = model.userNotify.value!!
-        //user = (activity as MainActivity).user
+
         tv_user_name.text = user.userName
         tv_user_email.text = user.userMail
         tv_user_type.text = user.userType

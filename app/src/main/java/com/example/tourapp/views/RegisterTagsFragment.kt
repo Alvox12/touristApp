@@ -30,18 +30,19 @@ class RegisterTagsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
+
         viewModel = (activity as RegisterActivity2).viewModel
-        //viewModel.arrayTags = (activity as RegisterActivity2).arrayListTags
 
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
 
+        /*RecyclerView de las etiquetas*/
         recyclerView = rv_register_tags.apply {
             layoutManager = manager
             adapter =  viewModel.myAdapter
         }
 
+        /*Boton dar alta usuario en BBDD*/
         btn_register.setOnClickListener {
             rv_register_tags.isEnabled = false
             registerUser()
@@ -49,6 +50,7 @@ class RegisterTagsFragment : Fragment() {
 
     }
 
+    /**Se registra usuario en la base de datos*/
     private fun registerUser() {
         val list = viewModel.myAdapter.getTagsSelected()
         if (list != null) {

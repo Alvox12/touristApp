@@ -25,6 +25,7 @@ class ListPlaces(
         return list
     }
 
+    /*Genera id para la lista de lugares de 30 caracteres*/
     fun generateId(): String {
         val randomString = RandomString()
         return randomString.generateId(30)

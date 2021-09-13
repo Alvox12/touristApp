@@ -39,7 +39,9 @@ class PlaceAddFragment : Fragment() {
     private var imagePath: Uri? = null
     private var imageExtension: String? = null
 
+    /*Numeros de imagenes seleccionadas para subir a la BBDD*/
     private var cnt_images = 0
+    /*Coordenadas del lugar a subir (si no se desean añadir se dejaran en 0,0)*/
     private var latLng: LatLng = LatLng(0.0, 0.0)
 
     private lateinit var et_name_watcher: TextWatcher
@@ -50,6 +52,7 @@ class PlaceAddFragment : Fragment() {
 
     private lateinit var observerPlaceUploaded : Observer<Boolean>
 
+    /*Ruta del lugar donde se guardaran las imagenes almacenadas en la BBDD*/
     private var pathImage = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +78,7 @@ class PlaceAddFragment : Fragment() {
 
     private fun initSetup() {
 
+        /*Si no hay imagenes seleccionadas no mostrar campo que enseña el numero de imagenes seleccionadas*/
         if(this.cnt_images == 0) {
             tv_img_counter.visibility = View.GONE
         }
@@ -207,15 +211,7 @@ class PlaceAddFragment : Fragment() {
 
     private fun openMap() {
 
-        //val permissionGranted = (activity as MainActivity).checkMapServices()
-        //val permissionGranted = (activity as MainActivity).mLocationPermissionGranted
-
-        //val gmmIntentUri = Uri.parse("geo:37.7749,-122.4192?q=" + Uri.encode("1st & Pike, Seattle"))
-
-
         val gmmIntentUri = Uri.parse("geo:40.416775,-3.703790")
-        //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-        //mapIntent.setPackage("com.google.android.apps.maps")
 
         val mapIntent = Intent((context as MainActivity), MapsActivity::class.java)
 

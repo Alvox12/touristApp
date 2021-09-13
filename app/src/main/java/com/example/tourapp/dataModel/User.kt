@@ -6,7 +6,6 @@ import com.example.tourapp.commons.RandomString
 import java.io.Serializable
 
 class User(
-    //var clientId: String = "",
     var userName: String = "",
     var userPassword: String = "",
     var userType: String = "",
@@ -25,16 +24,12 @@ class User(
 
     fun toAnyObject(): MutableMap<String, Any>{
         val user: MutableMap<String, Any> = mutableMapOf()
-        //user[Constants.CLIENTID] = this.clientId
         user[Constants.USERNAME] = this.userName
         user[Constants.USERPASSWORD] = this.userPassword
         user[Constants.USERTYPE] = this.userType
-        //user[Constants.USERPHONE] = this.userPhone
         user[Constants.USERMAIL] = this.userMail
         user[Constants.USERID] = this.userId
         user[Constants.USERPREFS] = this.userPrefs
-        //user[Constants.CLIENTNAME] = this.clientName
-        //user[Constants.PROYECT_CODE] = this.userProyectCode
 
         return user
     }
