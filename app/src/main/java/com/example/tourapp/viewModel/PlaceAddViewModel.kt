@@ -18,10 +18,13 @@ import kotlin.collections.ArrayList
 
 class PlaceAddViewModel : ViewModel() {
 
+    /*Lista total de etiquetas*/
     var arrayListTags: ArrayList<String> = arrayListOf()
+    /*Lista de etiquetas seleccionadas por el usuario*/
     var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
     lateinit var tagsAdapter: RecyclerTagListAdapter
 
+    /*Lista de los IDs de los lugares pertenecientes a la BBDD*/
     var listCodes: ArrayList<String> = arrayListOf()
 
     var myMapPlaceImg: MutableMap<Int, Uri?> = mutableMapOf()
@@ -51,6 +54,7 @@ class PlaceAddViewModel : ViewModel() {
         listTagsSelected = tagsAdapter.getTagsSelected()
     }
 
+    /**Dar de alta lugar en BBDD*/
     fun uploadPlace(place: Place) {
         val refPlace: DatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.PLACES)
         refPlace.child(place.placeId).setValue(place).addOnCompleteListener {

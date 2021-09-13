@@ -36,13 +36,16 @@ class PlaceModify2Fragment : Fragment() {
     }
 
     private lateinit var viewModel: PlaceModifyViewModel
+    /*Objeto del lugar a modificar*/
     private lateinit var place: Place
 
     private val PICK_IMAGE_REQUEST: Int = 1
     private var imagePath: Uri? = null
     private var imageExtension: String? = null
 
+    /*Numeros de imagenes seleccionadas para subir a la BBDD*/
     private var cnt_images = 0
+    /*Coordenadas del lugar a subir (si no se desean añadir se dejaran en 0,0)*/
     private var latLng: LatLng = LatLng(0.0, 0.0)
 
     private lateinit var et_name_watcher: TextWatcher
@@ -51,8 +54,10 @@ class PlaceModify2Fragment : Fragment() {
     private lateinit var dialogBox: Dialog
     private lateinit var animalAdapter: RecyclerTagListAdapter
 
+    /*Reacciona a si el lugar ha sido actualizado en la BBDD*/
     private lateinit var observerPlaceUploaded : androidx.lifecycle.Observer<Boolean>
 
+    /*Ruta del lugar donde se guardaran las imagenes almacenadas en la BBDD*/
     private var pathImage = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +68,7 @@ class PlaceModify2Fragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(PlaceModifyViewModel::class.java)
+        /*Obtenemos del lugar anterior la informacion del lugar*/
         place = arguments?.get("Place") as Place
 
         viewModel.id_lugar = place.placeId
@@ -85,6 +91,7 @@ class PlaceModify2Fragment : Fragment() {
         initSetup()
     }
 
+    /**Obtiene las coordenadas del lugar en cuestion*/
     fun getLatLng() {
         if(place.placeCoordinates != "") {
             val list: List<String> = place.placeCoordinates.split(",")
@@ -97,6 +104,7 @@ class PlaceModify2Fragment : Fragment() {
         }
     }
 
+    /**Se establacen los tags del lugar a editar*/
     private fun getSelectedTags() {
         val array = place.arrayTags
         for(num in array.iterator()) {
@@ -106,10 +114,13 @@ class PlaceModify2Fragment : Fragment() {
 
     private fun initSetup() {
 
+        /*Muestra ventana flotante donde se seleccionan los tags para el lugar*/
         btn_tags.setOnClickListener {
             showDialogTags()
         }
 
+        /*Campo de texto para el nombre del lugar que si tras modificarlo se encuentra vacio
+        * mostrará un texto de error*/
         et_name_watcher = object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -123,6 +134,8 @@ class PlaceModify2Fragment : Fragment() {
         }
         et_place_name.addTextChangedListener(et_name_watcher)
 
+        /*Campo de texto para la descripcion del lugar que si tras modificarlo se encuentra vacio
+        * mostrará un texto de error*/
         et_info_watcher = object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -148,10 +161,12 @@ class PlaceModify2Fragment : Fragment() {
         }*/
 
 
+        /*Boton para dar de alta la infromacion actualizada a la BBDD*/
         imgb_upload.setOnClickListener {
             darAltaLugar()
         }
 
+        /*Si los datos han sido modificados y dados de alta se ejecuta lo de observerPlaceUploaded*/
         observerPlaceUploaded = Observer{
             if(it) {
                 Toast.makeText((context as MainActivity), "Datos lugar modificados", Toast.LENGTH_SHORT).show()
@@ -163,8 +178,10 @@ class PlaceModify2Fragment : Fragment() {
     }
 
 
+    /**Da de alta la informacion sobre el lugar haya sido modificada o no*/
     private fun darAltaLugar() {
         val tags = getStringTags()
+        /*Es necesario seleccionar al menos una etiqueta para el lugar*/
         if(tags == "") {
             Toast.makeText((context as MainActivity), "Has de seleccionar al menos una etiqueta", Toast.LENGTH_SHORT).show()
         }
@@ -174,6 +191,7 @@ class PlaceModify2Fragment : Fragment() {
             val latitude = this.latLng.latitude
             val longitude = this.latLng.longitude
 
+            /*Es obligatorio que los campos de nombre y descripcion no se encuentren vacios*/
             if(name.isBlank()) {
                 et_place_name.error = "Tienes que escribir un nombre"
             }
@@ -199,6 +217,7 @@ class PlaceModify2Fragment : Fragment() {
         }
     }
 
+    /**Toma los tags seleccionados y los convierte a un string para subirlos a la BBDD*/
     private fun getStringTags(): String {
         var msg = ""
         var first = true
@@ -226,13 +245,8 @@ class PlaceModify2Fragment : Fragment() {
         return listInt
     }
 
+    /**Funcion abre actividad google maps*/
     private fun openMap() {
-
-        //val permissionGranted = (activity as MainActivity).checkMapServices()
-        //val permissionGranted = (activity as MainActivity).mLocationPermissionGranted
-
-        //val gmmIntentUri = Uri.parse("geo:37.7749,-122.4192?q=" + Uri.encode("1st & Pike, Seattle"))
-
 
         val gmmIntentUri = Uri.parse("geo:40.416775,-3.703790")
         //val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -250,6 +264,8 @@ class PlaceModify2Fragment : Fragment() {
     }
 
 
+    /**Muestra ventana flotante con todos los tags para seleccionar los que el
+     * usuario desee*/
     private fun showDialogTags() {
 
         this.dialogBox = Dialog(context as MainActivity)
@@ -287,10 +303,13 @@ class PlaceModify2Fragment : Fragment() {
 
 
     /**
-     * Obtenemos la imagen seleccionada*/
+     * Obtenemos la imagen seleccionada o las coordenadas del mapa*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        /*Si el codigo es PICK_IMAGE_REQUEST significa que se ha seleccionado una imagen
+       * si el codigo es OPEN_MAP_REQUEST significa que se ha vuelto de seleccionar unas
+       * coordenadas de google maps*/
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
             && data != null && data.data != null) {
             imagePath = data.data

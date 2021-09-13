@@ -43,6 +43,7 @@ class PlaceModifyViewModel : ViewModel() {
         listTagsSelected = tagsAdapter.getTagsSelected()
     }
 
+    /**Se sube a la BBDD la informacion actualizada del lugar en cuestion*/
     fun modifyPlace(place: Place) {
         val refPlace: DatabaseReference = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(place.placeId)
         val comments = place.placeComments
@@ -54,11 +55,13 @@ class PlaceModifyViewModel : ViewModel() {
             if(it.isSuccessful) {
 
                 refPlace.child(Constants.PLACECOMMENTS).child(user.userId).setValue(comments)
+                //Si no hay imagenes a subir
                 if(myMapPlaceImg.isEmpty()) {
-                    //Pongo observer a true
+                    //Pongo observer a true para indicar que se ha terminado de subir
                     placeUploaded.value = true
                 }
                 else {
+                    //Se suben todas las imagenes seleccionadas por el usuario
                     myMapPlaceImg.iterator().forEach { entry ->
                         uploadImage(entry.value, myMapImgExtension[entry.key], entry.key, place.placeName)
                     }
@@ -90,7 +93,7 @@ class PlaceModifyViewModel : ViewModel() {
 
 
                 if(index == myMapPlaceImg.size-1) {
-                    //Pongo observer a true
+                    //Pongo observer a true para indicar que ha sido actualizado correctamente
                     placeUploaded.value = true
                 }
             }

@@ -83,6 +83,7 @@ class PlaceAddFragment : Fragment() {
             tv_img_counter.visibility = View.GONE
         }
 
+        /*Boton al pulsarlo abre vista seleccion de tags*/
         btn_tags.setOnClickListener {
             showDialogTags()
         }
@@ -114,6 +115,7 @@ class PlaceAddFragment : Fragment() {
         }
         et_place_info.addTextChangedListener(et_info_watcher)
 
+        /*Boton abre vista seleccion imagenes*/
         btn_images.setOnClickListener {
             if (!Utils.checkPermission(activity as MainActivity))
                 view?.let { it1 -> Utils.askforPermission(it1) }
@@ -121,6 +123,7 @@ class PlaceAddFragment : Fragment() {
                 openFileChooser()
         }
 
+        /*Boton abre vista google maps*/
         btn_map.setOnClickListener {
             openMap()
         }
@@ -129,6 +132,7 @@ class PlaceAddFragment : Fragment() {
             darAltaLugar()
         }
 
+        /*Elimina todas las imagenes seleccionadas*/
         btn_clear_images.setOnClickListener {
             viewModel.myMapPlaceImg.clear()
             viewModel.myMapImgExtension.clear()
@@ -139,6 +143,7 @@ class PlaceAddFragment : Fragment() {
             tv_img_counter.visibility = View.GONE
         }
 
+        /*Una vez el lugar ha sido dado de alta se vuelve a la vista anterior*/
         observerPlaceUploaded = Observer {
             if(it) {
                 Toast.makeText((context as MainActivity), "Lugar dado de alta", Toast.LENGTH_SHORT).show()
@@ -150,9 +155,11 @@ class PlaceAddFragment : Fragment() {
     }
 
 
+    /**Funcion para dar alta lugar en la BBDD*/
     private fun darAltaLugar() {
         val tags = getStringTags()
         if(tags == "") {
+            /*Si no hay tags no se puede dar de alta*/
             Toast.makeText((context as MainActivity), "Has de seleccionar al menos una etiqueta", Toast.LENGTH_SHORT).show()
         }
         else {
@@ -161,6 +168,8 @@ class PlaceAddFragment : Fragment() {
             val latitude = this.latLng.latitude
             val longitude = this.latLng.longitude
 
+            /*Si el campo de nombre o descripcion estan vacios no se permite subir
+            * el lugar*/
             if(name.isBlank()) {
                 et_place_name.error = "Tienes que escribir un nombre"
             }
@@ -182,6 +191,7 @@ class PlaceAddFragment : Fragment() {
         }
     }
 
+    /**Convierte los tags a formato string para subirlo a la BBDD*/
     private fun getStringTags(): String {
         var msg = ""
         var first = true
@@ -209,6 +219,7 @@ class PlaceAddFragment : Fragment() {
         return listInt
     }
 
+    /**Funcion abrir mapa con unas coordenadas especificas*/
     private fun openMap() {
 
         val gmmIntentUri = Uri.parse("geo:40.416775,-3.703790")
@@ -225,6 +236,8 @@ class PlaceAddFragment : Fragment() {
     }
 
 
+    /**Muestra ventana flotante con todos los tags para seleccionar los que el
+     * usuario desee*/
     private fun showDialogTags() {
 
         this.dialogBox = Dialog(context as MainActivity)
@@ -262,10 +275,13 @@ class PlaceAddFragment : Fragment() {
 
 
     /**
-     * Obtenemos la imagen seleccionada*/
+     * Obtenemos la imagen seleccionada o las coordenadas del mapa*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        /*Si el codigo es PICK_IMAGE_REQUEST significa que se ha seleccionado una imagen
+        * si el codigo es OPEN_MAP_REQUEST significa que se ha vuelto de seleccionar unas
+        * coordenadas de google maps*/
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK
             && data != null && data.data != null) {
             imagePath = data.data

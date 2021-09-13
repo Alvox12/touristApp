@@ -12,6 +12,8 @@ class UserListOfListsViewModel : ViewModel() {
 
     var adapter: RecyclerCustomListsAdapter = RecyclerCustomListsAdapter(this)
 
+    /*Listas con los nombres de cada lista, el numero de elementos de cada lista
+    * y los IDs de cada lista*/
     var listNames: ArrayList<String> = arrayListOf()
     var listElems: ArrayList<Int> = arrayListOf()
     var listCodes: ArrayList<String> = arrayListOf()
@@ -32,6 +34,8 @@ class UserListOfListsViewModel : ViewModel() {
         adapter.notifyDataSetChanged()
     }
 
+    /**Si el usuario ADMIN ha alcanzado la parte inferior de la lista descarga
+     * nuevas MAX_DATABASE_ITEMS listas*/
     fun loadNewData() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         ref.removeEventListener(mListenerLists)
@@ -40,7 +44,8 @@ class UserListOfListsViewModel : ViewModel() {
         getAllLists()
     }
 
-    //Solo si se es ADMIN
+    /**Si el usuario es ADMIN descarga todas las listas disponibles,
+     * descargara MAX_DATABASE_ITEMS listas hasta que el usuario desee ver mas*/
     fun getAllLists() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS)
         listNames.clear()
@@ -82,11 +87,6 @@ class UserListOfListsViewModel : ViewModel() {
                                 val nplaces = (listSnapshot.childrenCount - 2).toInt()
                                 val key = (listSnapshot.key) as String
                                 val name = listSnapshot.child(Constants.LISTNAME).value as String
-                                /*val nplaces =
-                                        (listSnapshot.children.elementAt(listIndex).childrenCount - 2).toInt()
-                                    val key = listSnapshot.children.elementAt(listIndex).key as String
-                                    val name = listSnapshot.children.elementAt(listIndex)
-                                        .child(Constants.LISTNAME).value as String*/
 
                                 listIndex++
                                 descargas++
@@ -110,6 +110,7 @@ class UserListOfListsViewModel : ViewModel() {
         ref.addValueEventListener(mListenerLists)
     }
 
+    /**Si el usuario es NORMAL descargara de la BBDD unicamente sus lista personales*/
     fun getLists() {
         val ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child("${user.userId}/${Constants.USERLISTS}")
         listNames.clear()
@@ -144,6 +145,8 @@ class UserListOfListsViewModel : ViewModel() {
         ref.addValueEventListener(mListenerLists)
     }
 
+    /**Dado un ID de una lista concreta y su posicion en los arrays eliminala y actualiza la informacion
+     * en la BBDD*/
     fun deleteList(listId: String, position: Int) {
         val ref: DatabaseReference
         if(user.userType == Constants.ADMIN) {
@@ -156,9 +159,6 @@ class UserListOfListsViewModel : ViewModel() {
         ref.removeValue().addOnCompleteListener {
             if(it.isSuccessful) {
                 Log.v("FIREBASE_BBDD", "SUCCESS_DEL_CUSTOM_USER_LIST")
-                //listCodes.removeAt(position)
-                //listNames.removeAt(position)
-                //listElems.removeAt(position)
 
                 setLists()
             }
@@ -169,6 +169,8 @@ class UserListOfListsViewModel : ViewModel() {
     }
 
 
+    /**Dado un ID y la posicion de una lista y un nombre se actualiza el nombre de la lista deseada
+     * y se sube a la BBDD*/
     fun changeListName(listId: String, name: String, position: Int) {
         val ref: DatabaseReference
         if(user.userType == Constants.ADMIN) {

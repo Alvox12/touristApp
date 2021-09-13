@@ -59,6 +59,8 @@ class UserListOfListsFragment : Fragment() {
                     fab_add_list.show()
 
                 if(user.userType == Constants.ADMIN) {
+                    /*Si el usuario es ADMIN al bajar a la parte inferior
+                    de la pantalla descargar nuevos elementos de la lista*/
                     //direction integers: -1 for up, 1 for down, 0 will always return false
                     if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         if(viewModel.descargas >= Constants.MAX_DATABASE_ITEMS) {
@@ -70,6 +72,7 @@ class UserListOfListsFragment : Fragment() {
             }
         })
 
+        /*Boton para crear una lista personalizada nueva*/
         fab_add_list.setOnClickListener { btnView ->
             view.let {
                 if (it != null) {
@@ -82,6 +85,8 @@ class UserListOfListsFragment : Fragment() {
             }
         }
 
+        /*Si el usuario es de tipo ADMIN descargar TODAS las listas de MAX_DATABASE_ITEMS en MAX_DATABASE_ITEMS,
+        * en caso contrario solo descargar las listas unicamente pertenecientes al usuario*/
         if(user.userType == Constants.ADMIN) {
             viewModel.listIndex = 0
             viewModel.descargas = 0

@@ -18,21 +18,8 @@ import com.example.tourapp.dataModel.User
 import com.example.tourapp.viewModel.UserViewModel
 import kotlinx.android.synthetic.main.fragment_edit_user.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//private const val ARG_PARAM1 = "param1"
-//private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [EditUserFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EditUserFragment : Fragment() {
 
-
-    //override fun getLayoutResource(): Int = R.layout.fragment_edit_user
-    //override fun getViewModel(): Class<UserViewModel> = UserViewModel::class.java
 
     //Observador del booleano usuario editado
     lateinit var observerUser: Observer<Boolean>
@@ -54,6 +41,7 @@ class EditUserFragment : Fragment() {
         input_name.setText(user.userName, TextView.BufferType.EDITABLE)
         initListener()
 
+        /*Al pulsar este boton la informacion actualizada se dara de alta en la BBDD*/
         btn_upload.setOnClickListener {
             onUploadData()
         }
@@ -66,6 +54,9 @@ class EditUserFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+        /*Si los datos de usuario se han actualizado en la BBDD apropiadamente se actualizara el valor de userEdited,
+        * se actualiza el nombre de la cabecera del menu lateral y se vuelve a la vista anterior*/
         observerUser = Observer {
 
             if(it) {
@@ -83,6 +74,7 @@ class EditUserFragment : Fragment() {
         viewModel.userEdited.observe(this, observerUser)
     }
 
+    /**Se crea un objeto de tipo User para subir la informacion a la BBDD*/
     private fun onUploadData() {
         val userAux = User(input_name.text.toString(),input_password.text.toString(), user.userType, user.userMail, user.userId)
         val currentuser = (activity as MainActivity).user
@@ -90,6 +82,7 @@ class EditUserFragment : Fragment() {
         viewModel.uploadUserData(userAux, user.userPassword, currentuser)
     }
 
+    /** Se bloquean o desbloquean los elementos de la vista*/
     private fun enableElements(value: Boolean) {
         btn_upload.isEnabled = value
         tiName.isEnabled = value
