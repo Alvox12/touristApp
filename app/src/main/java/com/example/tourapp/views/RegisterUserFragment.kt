@@ -1,22 +1,16 @@
 package com.example.tourapp.views
 
-import android.content.Intent
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
 import com.example.tourapp.commons.Constants
 import com.example.tourapp.dataModel.User
-import com.example.tourapp.viewModel.RegisterUserViewModel
 import com.example.tourapp.viewModel.RegisterViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -53,7 +47,7 @@ class RegisterUserFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = (activity as RegisterActivity2).viewModel
+        viewModel = (activity as RegisterActivity).viewModel
 
         /*Al variar el valor de tagLiveData se ejecuta getTags*/
         observerTags = Observer {
@@ -67,8 +61,8 @@ class RegisterUserFragment : Fragment() {
 
         observerTagsDownloaded = Observer {
             if(tagsDownloaded.value!!) {
-                viewModel.arrayTags = (activity as RegisterActivity2).arrayListTags
-                (activity as RegisterActivity2).showTagFragment()
+                viewModel.arrayTags = (activity as RegisterActivity).arrayListTags
+                (activity as RegisterActivity).showTagFragment()
             }
         }
 
@@ -79,17 +73,17 @@ class RegisterUserFragment : Fragment() {
         super.onStart()
 
         btn_tags_select.setOnClickListener {
-            (activity as RegisterActivity2).onRegisterClick()
+            (activity as RegisterActivity).onRegisterClick()
         }
 
         backToLogin.setOnClickListener {
-            (activity as RegisterActivity2).backToLogin()
+            (activity as RegisterActivity).backToLogin()
         }
     }
 
     /**Descarga etiquetas o tags de ls base de datos*/
     fun getTags() {
-        (activity as RegisterActivity2).arrayListTags.clear()
+        (activity as RegisterActivity).arrayListTags.clear()
         val tagsRef = FirebaseDatabase.getInstance().getReference(Constants.ETIQUETAS)
 
         mListenerTags = object : ValueEventListener {
@@ -102,7 +96,7 @@ class RegisterUserFragment : Fragment() {
 
                 snapshot.children.forEach {
                     //arrayListTags[it.key!!.toInt()] = it.value.toString()
-                    (activity as RegisterActivity2).arrayListTags.add(it.value.toString())
+                    (activity as RegisterActivity).arrayListTags.add(it.value.toString())
                 }
 
                 tagsDownloaded.value = true

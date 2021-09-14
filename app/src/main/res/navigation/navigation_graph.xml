@@ -127,9 +127,9 @@
         android:label="Edición etiquetas" />
     <fragment
         android:id="@+id/placeModify2Fragment"
-        android:name="com.example.tourapp.views.PlaceModify2Fragment"
+        android:name="com.example.tourapp.views.PlaceModifyFragment"
         android:label="fragment_place_modify2"
-        tools:layout="@layout/fragment_place_modify2" />
+        tools:layout="@layout/fragment_place_modify" />
 
 
 </navigation>

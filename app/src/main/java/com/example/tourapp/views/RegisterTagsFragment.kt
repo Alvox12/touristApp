@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.viewModel.RegisterViewModel
-import kotlinx.android.synthetic.main.fragment_comment_list.*
 import kotlinx.android.synthetic.main.fragment_register_tags.*
 
 class RegisterTagsFragment : Fragment() {
@@ -31,7 +30,7 @@ class RegisterTagsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel = (activity as RegisterActivity2).viewModel
+        viewModel = (activity as RegisterActivity).viewModel
 
         manager = LinearLayoutManager(this.activity)
         viewModel.configAdapter()
@@ -55,7 +54,7 @@ class RegisterTagsFragment : Fragment() {
         val list = viewModel.myAdapter.getTagsSelected()
         if (list != null) {
             if(!list.contains(true)) {
-                Toast.makeText((activity as RegisterActivity2), "Selecciona preferencias", Toast.LENGTH_SHORT).show()
+                Toast.makeText((activity as RegisterActivity), "Selecciona preferencias", Toast.LENGTH_SHORT).show()
                 rv_register_tags.isEnabled = true
             }
             else {

@@ -19,20 +19,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tourapp.R
 import com.example.tourapp.adapter.RecyclerTagListAdapter
 import com.example.tourapp.commons.Constants
-import com.example.tourapp.commons.Utils
 import com.example.tourapp.dataModel.Place
-import com.example.tourapp.viewModel.PlaceModify2ViewModel
 import com.example.tourapp.viewModel.PlaceModifyViewModel
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.fragment_place_modify2.*
+import kotlinx.android.synthetic.main.fragment_place_modify.*
 import androidx.lifecycle.Observer
 import java.util.*
 import kotlin.collections.ArrayList
 
-class PlaceModify2Fragment : Fragment() {
+class PlaceModifyFragment : Fragment() {
 
     companion object {
-        fun newInstance() = PlaceModify2Fragment()
+        fun newInstance() = PlaceModifyFragment()
     }
 
     private lateinit var viewModel: PlaceModifyViewModel
@@ -62,7 +60,7 @@ class PlaceModify2Fragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_place_modify2, container, false)
+        return inflater.inflate(R.layout.fragment_place_modify, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

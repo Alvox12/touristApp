@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +16,7 @@ import com.example.tourapp.viewModel.RegisterViewModel
 import kotlinx.android.synthetic.main.dialog_error_register.view.*
 import kotlinx.android.synthetic.main.fragment_register_user.*
 
-class RegisterActivity2 : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
 
     lateinit var viewModel: RegisterViewModel
 
@@ -30,7 +28,7 @@ class RegisterActivity2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.register_activity2)
+        setContentView(R.layout.register_activity)
 
         viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
 

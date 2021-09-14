@@ -12,15 +12,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.tourapp.R
 import com.example.tourapp.commons.BaseActivity
-import com.example.tourapp.commons.Constants
-import com.example.tourapp.commons.SharedPreferencesManager
 import com.example.tourapp.dataModel.User
 import com.example.tourapp.databinding.ActivityLoginBinding
 import com.example.tourapp.viewModel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.dialog_error_login.view.*
-import kotlinx.android.synthetic.main.dialog_score_place.view.*
-import kotlinx.android.synthetic.main.dialog_score_place.view.btn_score_cancel
 
 class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
@@ -60,7 +56,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding, LoginViewModel>() {
 
         /*Opción de registro de un nuevo usuario*/
         linkRegister.setOnClickListener {
-            val registerIntent = Intent(this, RegisterActivity2::class.java)
+            val registerIntent = Intent(this, RegisterActivity::class.java)
             startActivity(registerIntent)
             finish()
         }

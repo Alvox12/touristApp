@@ -60,7 +60,7 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <activity
-            android:name=".views.RegisterActivity2"
+            android:name=".views.RegisterActivity"
             android:theme="@style/Theme.TourappNoBar"
             android:exported="true" />
 
