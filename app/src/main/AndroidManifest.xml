@@ -65,9 +65,6 @@
             android:exported="true" />
 
         <activity
-            android:name=".views.RegisterActivity"
-            android:theme="@style/Theme.TourappNoBar" />
-        <activity
             android:name=".views.LoginActivity"
             android:theme="@style/Theme.TourappNoBar">
             <intent-filter>

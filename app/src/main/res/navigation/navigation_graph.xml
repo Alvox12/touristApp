@@ -62,9 +62,6 @@
             android:id="@+id/action_placeDataFragment_to_commentListFragment"
             app:destination="@id/commentListFragment" />
         <action
-            android:id="@+id/action_placeDataFragment_to_placeModifyFragment"
-            app:destination="@id/placeModifyFragment" />
-        <action
             android:id="@+id/action_placeDataFragment_to_placeModify2Fragment"
             app:destination="@id/placeModify2Fragment" />
     </fragment>
@@ -99,11 +96,7 @@
             android:id="@+id/action_userListOfListsFragment_to_customPlaceListFragment"
             app:destination="@id/customPlaceListFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/placeModifyFragment"
-        android:name="com.example.tourapp.views.PlaceModifyFragment"
-        android:label="Modificar datos"
-        tools:layout="@layout/fragment_place_modify" />
+
     <fragment
         android:id="@+id/customPlaceListFragment"
         android:name="com.example.tourapp.views.CustomPlaceListFragment"
