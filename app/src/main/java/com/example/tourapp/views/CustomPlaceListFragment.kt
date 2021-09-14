@@ -33,7 +33,9 @@ class CustomPlaceListFragment : Fragment() {
     lateinit var arrayAdapter: ArrayAdapter<String>
     var arrayListTags: ArrayList<String> = arrayListOf()
 
+    /*Posicion por defecto del spinner de filtros por etiqueta*/
     var positionSpinner: Int = 0
+    /*Filtro por defecto de categorias*/
     private var categoryFilter: CustomPlaceListViewModel.FilterCategory = CustomPlaceListViewModel.FilterCategory.NONE
 
     override fun onCreateView(
@@ -53,6 +55,7 @@ class CustomPlaceListFragment : Fragment() {
         addItem.isEnabled = false
         addItem.isVisible = false
 
+        /*Configuracion barra de busqueda por texto*/
         val searchItem = menu.findItem(R.id.opt_search_place).actionView as SearchView
         searchItem.maxWidth = Int.MAX_VALUE
         searchItem.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -69,6 +72,8 @@ class CustomPlaceListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    /**
+     * En funcion de la opcion del menu superior seleccionada se aplicará un filtro u otro o puede añadirse un lugar nuevo*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.filter_by_current_user-> {
@@ -110,6 +115,8 @@ class CustomPlaceListFragment : Fragment() {
             adapter =  viewModel.myAdapter
         }
 
+        /*Hay un tope de 30 descargas si se desea descargar mas lugares hay que bajar hasta abajo de la pantalla
+       * donde se avisará a una funcion que descargue los lugares restantes si son menos de 30 u otros 30 más*/
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -137,6 +144,8 @@ class CustomPlaceListFragment : Fragment() {
         viewModel.listCode = listCode
         viewModel.getCustomListCodes()
 
+        /*Boton que lleva al usuario a una pantalla donde podra editar los
+        * elementos de la lista*/
         fab_add_place.setOnClickListener {
             view.let {
                 if (it != null) {
@@ -162,6 +171,8 @@ class CustomPlaceListFragment : Fragment() {
         configSpinner()
     }
 
+    /**Configuracion inicial del spinner que en funcion de la posicion del mismo se
+     * filtrará por una etiqueta u otra (o ninguna que es la posicion 0)*/
     private fun configSpinner() {
 
         arrayAdapter = ArrayAdapter((context as MainActivity), android.R.layout.simple_spinner_item, arrayListTags)

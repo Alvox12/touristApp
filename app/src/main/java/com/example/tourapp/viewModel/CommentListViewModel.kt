@@ -15,10 +15,13 @@ import com.google.firebase.database.FirebaseDatabase
 class CommentListViewModel : ViewModel() {
 
     lateinit var myAdapter: RecyclerCommentListAdapter
+    /*Lista de comentarios descargados de la BBDD*/
     private var listComments :MutableList<Comment> = mutableListOf()
     private lateinit var childListener : ChildEventListener
 
+    /*ID del lugar donde se almacenan los comentarios*/
     lateinit var placeId: String
+    /*Asocia el ID unico de cada comentario a el objeto de tipo Comment correspondiente*/
     var mapComments: MutableMap<String, Comment> = mutableMapOf()
     lateinit var user: User
 
@@ -40,6 +43,7 @@ class CommentListViewModel : ViewModel() {
         myAdapter.notifyDataSetChanged()
     }
 
+    /**Obtiene los datos del comentario y los convierte en un objeto Comment*/
     private fun getCommentData(snapshot: DataSnapshot): Comment {
 
         val commenttxt = snapshot.child(Constants.COMMENTTXT).value as String
@@ -50,6 +54,7 @@ class CommentListViewModel : ViewModel() {
         return Comment(commenttxt, commentuserid, commentusername, commentid)
     }
 
+    /**Sube un comentario nuevo a la base de datos*/
     fun addComment(comment: Comment) {
 
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
@@ -65,6 +70,7 @@ class CommentListViewModel : ViewModel() {
     }
 
 
+    /**Dado el ID unico de un comentario lo elimina de los comentarios en la BBDD*/
     fun delComment(commentId: String) {
 
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
@@ -78,6 +84,7 @@ class CommentListViewModel : ViewModel() {
     }
 
 
+    /**Dado el ID de un comentario y un string actualiza el mensaje de un comentario en la BBDD*/
     fun editComment(commentId: String, commentTxt: String) {
 
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
@@ -92,6 +99,7 @@ class CommentListViewModel : ViewModel() {
     }
 
 
+    /**Descarga mas comentarios de la base de datos hasta descargar el maximo permitido o descargar todos*/
     fun loadNewData() {
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)
         placeRef.removeEventListener(childListener)
@@ -100,6 +108,8 @@ class CommentListViewModel : ViewModel() {
         loadChildEventListener()
     }
 
+    /**Detecta cambios en una ruta especificada de la base de datos y en funcion del cambio realiza un ajuste en
+     * la informacion u otro*/
     fun loadChildEventListener() {
 
         val placeRef = FirebaseDatabase.getInstance().getReference(Constants.PLACES).child(placeId).child(Constants.PLACECOMMENTS).child(user.userId)

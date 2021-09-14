@@ -34,7 +34,10 @@ class CommentListFragment : Fragment()  {
     private lateinit var viewModel: CommentListViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
+
+    /*Datos usuario logueado*/
     private lateinit var user: User
+    /*Lugar al que se encuentra asociado a lista de comentarios*/
     private  lateinit var place: Place
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,16 +54,18 @@ class CommentListFragment : Fragment()  {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(CommentListViewModel::class.java)
+        /*Se guarda la informacion del lugar para devolverla mas tarde y asi no tener que descargarla de nuevo*/
         this.place = arguments?.get("Comments") as Place
         viewModel.arrayLIstBitmap = arguments?.get("ImagesMap") as ArrayList<Bitmap>
 
         viewModel.placeId = place.placeId
+        /*Se hace una copia de los comentarios asignados al lugar*/
         viewModel.mapComments = place.placeComments
 
         this.user = (activity as MainActivity).user
         viewModel.user = this.user
 
-        // This callback will only be called when MyFragment is at least Started.
+        // Preparamos vuelta a la vista anterior personalizada
         val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
             // Handle the back button event
             prepareCallback()
@@ -77,6 +82,8 @@ class CommentListFragment : Fragment()  {
             adapter =  viewModel.myAdapter
         }
 
+        /*Los comentarios pueden ser descargados de MAX_DATABSE_ITEMS en MAX_DATABSE_ITEMS, para descargar
+        * nuevos comentarios el usuario ha de bajar a la parte inferior de la vista*/
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -105,25 +112,11 @@ class CommentListFragment : Fragment()  {
         return true
     }
 
+    /**Antes de volver a la pantalla anterior enviamos unos objetos para no tener que
+     * descargarlos de la BBDD*/
     private fun prepareCallback() {
 
         val bundle : Bundle = Bundle()
-        //val arrayBitmap: ArrayList<Bitmap> = viewModel.arrayLIstBitmap
-
-        /*bundle.putParcelableArrayList("ImagesMap", arrayBitmap)
-        bundle.putSerializable("Place", this.place)
-        bundle.putString("Previous", "Comments")*/
-
-        /*val manager: FragmentManager = (activity as MainActivity).supportFragmentManager
-        val trans: FragmentTransaction = manager.beginTransaction()
-
-       val fragment: Fragment = PlaceDataFragment()
-        fragment.arguments = bundle
-        manager.popBackStack()*/
-
-
-        //manager.popBackStack(R.id.commentListFragment, 0)
-       // manager.popBackStackImmediate()
 
         view.let {
             if (it != null) {
@@ -145,6 +138,7 @@ class CommentListFragment : Fragment()  {
         }
     }
 
+    /**Obtiene el mensaje escrito por el usuario y lo convierte en un objeto de tipo Comment*/
     private fun getComment(): Comment? {
         val txt = et_message_comment.text.toString()
 

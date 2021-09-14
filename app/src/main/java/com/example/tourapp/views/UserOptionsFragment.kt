@@ -25,6 +25,7 @@ class UserOptionsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        /*Lleva al usuario a pantalla donde edita datos de su cuenta*/
         btn_edit_user_data.setOnClickListener {
             nav_host_fragment.view?.let { view ->
                 (activity as MainActivity).useredit = (activity as MainActivity).user
@@ -32,12 +33,14 @@ class UserOptionsFragment : Fragment() {
             }
         }
 
+        /*Lleva al usuario a pantalla donde edita preferencias asociadas a su cuenta*/
         btn_edit_prefs.setOnClickListener {
             nav_host_fragment.view?.let { view ->
                 Navigation.findNavController(view).navigate(R.id.action_userOptionsFragment_to_editTagsFragment)
             }
         }
 
+        /*Se mostrara al usuario ventana flotante con la opcion de dar de baja su cuenta de los servicios de firebase*/
         btn_delete_account.setOnClickListener {
             (activity as MainActivity).deleteAccountPopup()
         }

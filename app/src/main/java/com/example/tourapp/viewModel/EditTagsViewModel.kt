@@ -10,8 +10,11 @@ import com.google.firebase.database.FirebaseDatabase
 
 class EditTagsViewModel: ViewModel() {
 
+    /*Se guardan los datos del usuario*/
     lateinit var user: User
+    /*Se guarda la lista completa de tags*/
     var arrayTags: ArrayList<String> = arrayListOf()
+    /*Se guardan los tags seleccionados por el usuario*/
     var listTagsSelected: ArrayList<Boolean>? = arrayListOf()
     lateinit var myAdapter: RecyclerRegisterTagsAdapter
 
@@ -22,6 +25,7 @@ class EditTagsViewModel: ViewModel() {
         myAdapter.notifyDataSetChanged()
     }
 
+    /**Se dan de alta la lista de preferencias seleccionadas por el usuario a la base de datos*/
     fun uploadUserPrefs() {
         val prefRef = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(user.userId).child(
             Constants.USERPREFS)
@@ -41,6 +45,7 @@ class EditTagsViewModel: ViewModel() {
         }
     }
 
+    /**Se toman los valores numericos del formato string y se añaden a un array de enteros*/
     private fun getPrefs(prefs: String): ArrayList<Int> {
         val listInt: ArrayList<Int> = arrayListOf()
 
@@ -53,6 +58,7 @@ class EditTagsViewModel: ViewModel() {
         return listInt
     }
 
+    /**Se toman las preferencias seleccionadas por el usuario y se convierten a string*/
     private fun getMsg(): String {
         val selected = myAdapter.getTagsSelected()
         var msg = ""

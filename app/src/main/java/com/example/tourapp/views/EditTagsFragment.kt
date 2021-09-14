@@ -33,7 +33,10 @@ class EditTagsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(EditTagsViewModel::class.java)
+        /*Obtenemos la lista completa de tags de la actividad*/
         viewModel.arrayTags = (activity as MainActivity).arrayListTags
+        /*Se elimina la primera ya que es una opcion
+        para que se muestren todos los lugares sin filtrar ninguno*/
         viewModel.arrayTags.removeAt(0)
         viewModel.user = (activity as MainActivity).user
 
@@ -46,6 +49,7 @@ class EditTagsFragment : Fragment() {
             adapter =  viewModel.myAdapter
         }
 
+        /*Actualiza datos preferencias usuario en la base de datos*/
         btn_update_tags.setOnClickListener {
             rv_register_tags.isEnabled = false
             viewModel.uploadUserPrefs()
@@ -55,12 +59,17 @@ class EditTagsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        /*Una vez dada de alta las nuevas preferencias del usuario en
+        * la base de datos, se vuelve a la pantalla anterior.
+        * Si el valor de tagsEdited se cambia se hace esto*/
         observerTags = Observer {
             (activity as MainActivity).onBackPressed()
         }
         viewModel.tagsEdited.observe(this, observerTags)
     }
 
+    /**Toma las preferncias seleccionadas previamente por el usuario
+     * para mostraralas como seleccionadas*/
     private fun getSelectedTags() {
         val array = viewModel.user.arrayPrefs
         for(num in array.iterator()) {
