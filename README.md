@@ -9,15 +9,15 @@ diferente.
 
 ## Características de la aplicación
 
-- Uso de cuenta (Login).
-- Menú lateral.
-- Perfil de lugares de interés.
-- Localización lugar.
-- Listas de lugares.
-- Dar alta lugar.
-- Comentarios.
+- [Uso de cuenta (Login)](#cuenta).
+- [Menú lateral](#menu).
+- [Perfil de lugares de interés](#perfil).
+- [Localización lugar](#localizacion).
+- [Listas de lugares](#lista).
+- [Dar alta lugar](#alta).
+- [Comentarios](#comentarios).
 
-### Cuenta aplicación
+### Cuenta aplicación<a name="cuenta"></a>
 
 El usuario para poder acceder a todas la funcionalidades de la aplicación requiere hacerse una cuenta en la aplicación de Tourapp, aunque es posible acceder a los servicios de forma parcial sin la misma. 
 
@@ -31,7 +31,7 @@ información disponible de los lugares, pero no le será posible hacer uso de la
   <img src="images/registro1.png" alt="pantalla signup" width="310" style="object-fit: cover;"/>
 </p>
 
-### Menú lateral
+### Menú lateral<a name="menu"></a>
 
 Desde la pantalla principal de la aplicación se puede desplegar un menú lateral desde el cual es posible acceder al resto de las opciones y servicios que ofrece la aplicación.
 
@@ -40,7 +40,7 @@ Desde la pantalla principal de la aplicación se puede desplegar un menú latera
   <img src="images/menulateral1.png" alt="menú desplegado" width="310" style="object-fit: cover;"/>
 </p>
 
-### Perfil de lugares
+### Perfil de lugares<a name="perfil"></a>
 
 Se muestra la información de los lugares dados de alta en la aplicación (imágenes, información, localización...). También es posible añadir a un lugar a la lista de favoritos y ver sus comentarios y localización.
 
@@ -49,7 +49,7 @@ Se muestra la información de los lugares dados de alta en la aplicación (imág
   <img src="images/lugarinfo2.png" alt="pantalla datos lugar 2" width="310" style="object-fit: cover;"/>
 </p>
 
-#### Localización del lugar
+#### Localización del lugar<a name="localizacion"></a>
 
 En el perfil del lugar puede aparecer información sobre la localización del mismo.
 
@@ -58,7 +58,7 @@ En el perfil del lugar puede aparecer información sobre la localización del mi
   <img src="images/capturamapa.png" alt="mapa con localización lugar" width="310" style="object-fit: cover;"/>
 </p>
 
-### Listas de lugares
+### Listas de lugares<a name="lista"></a>
 
 Los distintos lugares se muestran al usuario en formato de listas, las cuales se pueden filtrar por distintos criterios (categorías, puntuación del lugar, preferencias del usuario...).
 Las categorías son: museos, parques, lugares históricos, restaurantes, etc.
@@ -69,7 +69,7 @@ Las categorías son: museos, parques, lugares históricos, restaurantes, etc.
   <img src="images/listalug4.png" alt="pantalla lista lugar con otros filtros" width="290" style="object-fit: cover;"/>
 </p>
 
-#### Listas personales
+#### Listas personales<a name="listap"></a>
 
 Es posible para cada usuario crear, editar o eliminar sus propias listas personalizadas.
 
@@ -79,7 +79,7 @@ Es posible para cada usuario crear, editar o eliminar sus propias listas persona
   <img src="images/userlists3.png" alt="edición de nombre de lista usuario" width="290" style="object-fit: cover;"/>
 </p>
 
-### Dar alta lugar
+### Dar alta lugar<a name="alta"></a>
 
 En la lista de lugares hay una opción para agregar o dar de alta un lugar. Una vez en la pantalla se agregan todos los datos necesarios (nombre, descripción, localización, etiquetas/categorías ...). Y este se da de alta en la base de datos.
 
@@ -92,7 +92,7 @@ En la lista de lugares hay una opción para agregar o dar de alta un lugar. Una 
 </p>
 
 
-### Comentarios de usuarios
+### Comentarios de usuarios<a name="comentarios"></a>
 
 El perfil de cada lugar tiene una sección de comentarios para que cada usuario pueda compartir su opinión con los demás.
 
@@ -101,11 +101,11 @@ El perfil de cada lugar tiene una sección de comentarios para que cada usuario 
   <img src="images/comen1.png" alt="pantalla de comentarios" width="290" style="object-fit: cover;"/>
 </p>
 
-## Especificaciones aplicación
+## Especificaciones aplicación<a name="especificaciones"></a>
 
 La aplicación puede funcionar en cualquier smartphone o tablet que tenga Android 7.x o superior además de requerir conexión a internet.
 
-### Instalación apk
+### Instalación apk<a name="apk"></a>
 
 Debido a que la aplicación no se encuentra en ninguna tienda la única forma de instalarla es generar la <em>.apk</em> utilizando el software Android Studio, y que el smartphone o tablet en cuestión permita instalar apk individuales.
 
